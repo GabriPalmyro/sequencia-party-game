@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:router/router_config.dart';
+import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/di/injection.dart';
 import 'package:sequencia/routes/routes.dart';
 import 'package:sequencia/utils/app_strings.dart';
@@ -15,11 +16,14 @@ void main() async {
 
   await configureAppDependencies(getIt, routes, Routes.home.path);
 
-  runApp(const MyApp());
+  final DSThemeData theme = DSThemeAppData();
+
+  runApp(MyApp(theme: theme));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({ super.key});
+  const MyApp({required this.theme, super.key});
+  final DSThemeData theme;
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -30,7 +34,9 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
+    return DSTheme(
+      data: widget.theme,
+      child: MaterialApp.router(
         theme: ThemeData(
           pageTransitionsTheme: const PageTransitionsTheme(
             builders: {
@@ -50,6 +56,7 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         routerConfig: router,
         title: AppStrings.title,
-      );
+      ),
+    );
   }
 }
