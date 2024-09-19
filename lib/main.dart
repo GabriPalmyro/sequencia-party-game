@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
-import 'package:router/router_config.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
+import 'package:sequencia/common/router/router_config.dart';
 import 'package:sequencia/di/injection.dart';
-import 'package:sequencia/routes/routes.dart';
 import 'package:sequencia/utils/app_strings.dart';
 
-import 'routes/app_routes.dart';
+import 'common/router/app_routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final GetIt getIt = GetIt.instance;
 
-  await configureAppDependencies(getIt, routes, Routes.home.path);
+  await configureAppDependencies(getIt, routes);
 
   final DSThemeData theme = DSThemeAppData();
 

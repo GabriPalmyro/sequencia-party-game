@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 
 class DSButtonWidget extends StatefulWidget {
@@ -66,13 +67,11 @@ class _DSButtonWidgetState extends State<DSButtonWidget> {
           horizontal: theme.spacing.inline.xxs,
         ),
         child: Center(
-          child: Text(
+          child: DSText(
             widget.label,
-            style: TextStyle(
-              color: theme.colors.white,
-              fontSize: theme.font.size.sm,
+            textAlign: TextAlign.center,
+            customStyle: TextStyle(
               fontWeight: theme.font.weight.medium,
-              fontFamily: theme.font.family.base,
             ),
           ),
         ),

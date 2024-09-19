@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:sequencia/common/design_system/components/button/button_widget.dart';
+import 'package:sequencia/common/design_system/components/info_card/info_card_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
+import 'package:sequencia/common/router/app_navigator.dart';
+import 'package:sequencia/common/router/routes.dart';
+import 'package:sequencia/screens/main_screen/presentation/widgets/players_names_inputs_widget.dart';
 
 class MainScreenPage extends StatefulWidget {
   const MainScreenPage({super.key});
@@ -10,39 +15,100 @@ class MainScreenPage extends StatefulWidget {
   State<MainScreenPage> createState() => _MainScreenPageState();
 }
 
-class _MainScreenPageState extends State<MainScreenPage> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _logoAnimation;
-  late Animation<double> _buttonAnimation;
+class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStateMixin {
+  late AnimationController _logoController;
+  late Animation<Offset> _logoAnimation;
+
+  late AnimationController _fieldsController;
+  late Animation<Offset> _fieldsAnimation;
+
+  late AnimationController _buttonController;
+  late Animation<Offset> _buttonAnimation;
+
+  late AnimationController _infoCardController;
+  late Animation<Offset> _infoCardAnimation;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(seconds: 1),
+
+    // Logo Animation
+    _logoController = AnimationController(
+      duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-
-    _logoAnimation = Tween<double>(begin: -1.0, end: 0.0).animate(
+    _logoAnimation = Tween<Offset>(
+      begin: const Offset(0.0, -1.0),
+      end: Offset.zero,
+    ).animate(
       CurvedAnimation(
-        parent: _controller,
+        parent: _logoController,
         curve: Curves.easeOut,
       ),
     );
 
-    _buttonAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+    // Fields Animation
+    _fieldsController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _fieldsAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 1.0),
+      end: Offset.zero,
+    ).animate(
       CurvedAnimation(
-        parent: _controller,
+        parent: _fieldsController,
         curve: Curves.easeOut,
       ),
     );
 
-    _controller.forward();
+    // Button Animation
+    _buttonController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _buttonAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 1.0),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: _buttonController,
+        curve: Curves.easeOut,
+      ),
+    );
+
+    // Info Card Animation
+    _infoCardController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _infoCardAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 1.0),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: _infoCardController,
+        curve: Curves.easeOut,
+      ),
+    );
+
+    // Start Animations with delay
+    _logoController.forward();
+    Future.delayed(const Duration(milliseconds: 200), () {
+      _fieldsController.forward();
+    });
+    Future.delayed(const Duration(milliseconds: 400), () {
+      _infoCardController.forward();
+      _buttonController.forward();
+    });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _logoController.dispose();
+    _fieldsController.dispose();
+    _buttonController.dispose();
+    _infoCardController.dispose();
     super.dispose();
   }
 
@@ -52,44 +118,48 @@ class _MainScreenPageState extends State<MainScreenPage> with SingleTickerProvid
     final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: theme.colors.background,
-      body: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, child) {
-          return Stack(
-            children: [
-              Positioned(
-                top: _logoAnimation.value * size.height,
-                left: 0,
-                right: 0,
-                child: Column(
-                  children: [
-                    SizedBox(height: theme.spacing.inline.md),
-                    Image.asset(
-                      'assets/images/logo.png',
-                      width: size.width * 0.75,
-                    ),
-                  ],
+      body: SizedBox(
+        width: size.width,
+        height: size.height,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(height: theme.spacing.inline.sm),
+            SlideTransition(
+              position: _logoAnimation,
+              child: Image.asset(
+                'assets/images/logo.png',
+                width: 325,
+              ),
+            ),
+            SizedBox(height: theme.spacing.inline.md),
+            const PlayersNamesInputsWidget(),
+            const Spacer(),
+            SlideTransition(
+              position: _infoCardAnimation,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: theme.spacing.inline.xs,
+                ),
+                child: const InfoCardWidget(
+                  'Para começar um novo jogo, registre pelo menos 4 participantes.',
                 ),
               ),
-              Positioned(
-                bottom: _buttonAnimation.value * (size.height * -0.15),
-                left: 0,
-                right: 0,
-                child: Column(
-                  children: [
-                    DSButtonWidget(
-                      label: 'Começar',
-                      onPressed: () {
-                        HapticFeedback.selectionClick();
-                      },
-                    ),
-                    SizedBox(height: theme.spacing.inline.sm),
-                  ],
-                ),
+            ),
+            SizedBox(height: theme.spacing.inline.sm),
+            SlideTransition(
+              position: _buttonAnimation,
+              child: DSButtonWidget(
+                label: 'Começar',
+                onPressed: () {
+                  HapticFeedback.selectionClick();
+                  GetIt.I.get<AppNavigator>().pushNamed(Routes.gameplay);
+                },
               ),
-            ],
-          );
-        },
+            ),
+            SizedBox(height: theme.spacing.inline.sm),
+          ],
+        ),
       ),
     );
   }

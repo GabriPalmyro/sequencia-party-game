@@ -1,6 +1,6 @@
 enum Routes {
-  //! COMMON
-  home('/home');
+  home('/home'),
+  gameplay('/gameplay');
 
   const Routes(this.path);
 
