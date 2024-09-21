@@ -3,21 +3,23 @@ import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 
 class DSTextField extends StatefulWidget {
   const DSTextField({
-    required this.controller,
+     this.controller,
     Key? key,
     this.leading,
     this.trailing,
     this.hintText = '',
     this.onChanged,
     this.onTapOutside,
+    this.isEnabled = true,
   }) : super(key: key);
 
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final Widget? leading;
   final Widget? trailing;
   final String hintText;
   final void Function(String)? onChanged;
   final void Function(PointerDownEvent)? onTapOutside;
+  final bool isEnabled;
 
   @override
   State<DSTextField> createState() => _DSTextFieldState();
@@ -41,6 +43,7 @@ class _DSTextFieldState extends State<DSTextField> {
         ],
       ),
       child: TextField(
+        enabled: widget.isEnabled,
         controller: widget.controller,
         textAlign: TextAlign.center, // Centralize the input text
         style: TextStyle(
