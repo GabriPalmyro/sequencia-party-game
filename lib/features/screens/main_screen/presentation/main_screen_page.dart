@@ -2,11 +2,14 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:sequencia/common/design_system/components/button/button_widget.dart';
 import 'package:sequencia/common/design_system/components/info_card/info_card_widget.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
+import 'package:sequencia/common/router/app_navigator.dart';
+import 'package:sequencia/common/router/routes.dart';
 import 'package:sequencia/features/controller/players_controller.dart';
 import 'package:sequencia/features/screens/main_screen/presentation/widgets/players_names_inputs_widget.dart';
 
@@ -127,21 +130,21 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
               child: PlayersNamesInputsWidget(),
             ),
             SizedBox(height: theme.spacing.inline.xxs),
-              SlideTransition(
-                position: _infoCardAnimation,
-                child: AnimatedOpacity(
-                  opacity: context.watch<PlayersController>().playersCount < 4 ? 1.0 : 0.0,
-                  duration: const Duration(milliseconds: 300),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: theme.spacing.inline.xs,
-                    ),
-                    child: const InfoCardWidget(
-                      'Para começar um novo jogo, registre pelo menos 4 participantes.',
-                    ),
+            SlideTransition(
+              position: _infoCardAnimation,
+              child: AnimatedOpacity(
+                opacity: context.watch<PlayersController>().playersCount < 4 ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 300),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: theme.spacing.inline.xs,
+                  ),
+                  child: const InfoCardWidget(
+                    'Para começar um novo jogo, registre pelo menos 4 participantes.',
                   ),
                 ),
               ),
+            ),
             SizedBox(height: theme.spacing.inline.sm),
             SlideTransition(
               position: _buttonAnimation,
@@ -149,10 +152,12 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
                 label: 'Começar',
                 isEnabled: context.watch<PlayersController>().players.length >= 4,
                 onPressed: () {
+                  GetIt.I.get<AppNavigator>().pushNamed(Routes.gameplay);
+                  return;
                   HapticFeedback.selectionClick();
                   log(context.read<PlayersController>().players.map((e) => e.name).toList().toString());
                   if (context.read<PlayersController>().playersCount >= 4) {
-                    // GetIt.I.get<AppNavigator>().pushNamed(Routes.gameplay);
+                    GetIt.I.get<AppNavigator>().pushNamed(Routes.gameplay);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(

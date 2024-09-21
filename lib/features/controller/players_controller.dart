@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sequencia/core/app_card_colors.dart';
@@ -12,6 +14,12 @@ class PlayersController extends ChangeNotifier {
   Map<String, bool> get availableColors => _availableColors;
 
   int get playersCount => _players.length;
+
+  Color getRandomAvailableColor() {
+    final randomColor = _availableColors.keys.elementAt(Random().nextInt(_availableColors.length));
+    _availableColors[randomColor] = false;
+    return Color(int.parse(randomColor, radix: 16));
+  }
 
   void addPlayer(PlayerEntity player) {
     _players.add(player);

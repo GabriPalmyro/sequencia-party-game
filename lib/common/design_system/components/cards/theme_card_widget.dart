@@ -6,14 +6,18 @@ import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 
 class ThemeCard extends StatefulWidget {
   const ThemeCard({
-    required this.themeNumber,
-    required this.themeText,
-    this.isHidden = false,
+    required this.value,
+    this.label,
+    this.description,
+    this.isEnableFlip = true,
+    this.isInitReveal = false,
     Key? key,
   }) : super(key: key);
-  final String themeNumber;
-  final String themeText;
-  final bool isHidden;
+  final Widget? label;
+  final Widget value;
+  final Widget? description;
+  final bool isEnableFlip;
+  final bool isInitReveal;
 
   @override
   _ThemeCardState createState() => _ThemeCardState();
@@ -28,7 +32,7 @@ class _ThemeCardState extends State<ThemeCard> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    isRevealed = widget.isHidden;
+    isRevealed = widget.isInitReveal;
     // Controlador de Virada
     _flipController = AnimationController(
       vsync: this,
@@ -36,22 +40,17 @@ class _ThemeCardState extends State<ThemeCard> with TickerProviderStateMixin {
     );
     _rotationAnimation = Tween<double>(begin: 0, end: 1).animate(_flipController);
 
-    if (widget.isHidden) {
+    _flipCard();
+  }
+
+  void _flipCard() {
+    if (!widget.isEnableFlip) {
+      return;
+    }
+    if (isRevealed) {
       _flipController.forward();
     } else {
       _flipController.reverse();
-    }
-  }
-
-  @override
-  void didUpdateWidget(covariant ThemeCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.isHidden != widget.isHidden) {
-      if (widget.isHidden) {
-        _flipController.forward();
-      } else {
-        _flipController.reverse();
-      }
     }
   }
 
@@ -72,52 +71,85 @@ class _ThemeCardState extends State<ThemeCard> with TickerProviderStateMixin {
         final double angle = rotationValue * pi;
         final bool showBack = rotationValue >= 0.5;
 
-        return Transform(
-          transform: Matrix4.rotationY(angle),
-          alignment: Alignment.center,
-          child: showBack
-              ? Transform(
-                  transform: Matrix4.rotationY(pi),
-                  alignment: Alignment.center,
-                  child: CardContent(
-                    value: Padding(
-                      padding: EdgeInsets.all(
-                        theme.spacing.inline.xs,
+        return GestureDetector(
+          onTap: _flipCard,
+          child: Transform(
+            transform: Matrix4.rotationY(angle),
+            alignment: Alignment.center,
+            child: showBack
+                ? Transform(
+                    transform: Matrix4.rotationY(pi),
+                    alignment: Alignment.center,
+                    child: CardContent(
+                      value: Padding(
+                        padding: EdgeInsets.all(
+                          theme.spacing.inline.xs,
+                        ),
+                        child: Image.asset(
+                          'assets/images/logo.png',
+                        ),
                       ),
-                      child: Image.asset(
-                        'assets/images/logo.png',
-                      ),
                     ),
+                  )
+                : CardContent(
+                    label: widget.label,
+                    value: widget.value,
+                    description: widget.description,
                   ),
-                )
-              : CardContent(
-                  label: DSText(
-                    widget.themeNumber,
-                    textAlign: TextAlign.center,
-                    customStyle: TextStyle(
-                      fontSize: theme.font.size.xxxs,
-                      fontWeight: theme.font.weight.light,
-                    ),
-                  ),
-                  value: DSText(
-                    '65',
-                    textAlign: TextAlign.center,
-                    customStyle: TextStyle(
-                      fontSize: theme.font.size.xxxl,
-                      fontWeight: theme.font.weight.bold,
-                    ),
-                  ),
-                  description: DSText(
-                    widget.themeText,
-                    textAlign: TextAlign.center,
-                    customStyle: TextStyle(
-                      fontSize: theme.font.size.xxxs,
-                      fontWeight: theme.font.weight.light,
-                    ),
-                  ),
-                ),
+          ),
         );
       },
+    );
+  }
+}
+
+class PlayerColorCard extends StatelessWidget {
+  const PlayerColorCard({
+    required this.color,
+    required this.name,
+    super.key,
+  });
+  final Color color;
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = DSTheme.getDesignTokensOf(context);
+    return Container(
+      width: 130,
+      height: 200,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(
+          theme.borders.radius.medium,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colors.grey.withOpacity(0.2),
+            blurRadius: 0,
+            offset: const Offset(4, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding:  EdgeInsets.only(
+              left: theme.spacing.inline.xxs,
+              bottom: theme.spacing.inline.xxxs,
+            ),
+            child: DSText(
+              name,
+              customStyle: TextStyle(
+                fontSize: theme.font.size.xxxs,
+                fontWeight: theme.font.weight.semiBold,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -19,7 +19,12 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<PlayersController>().addPlayer(const PlayerEntity(name: ''));
+      context.read<PlayersController>().addPlayer(
+            PlayerEntity(
+              name: '',
+              color: context.read<PlayersController>().getRandomAvailableColor(),
+            ),
+          );
     });
   }
 
