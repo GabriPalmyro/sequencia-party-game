@@ -7,10 +7,9 @@ import 'package:sequencia/common/router/widgets/not_found_page.dart';
 class AppRouterConfig extends GoRouter {
   AppRouterConfig({
     required this.routes,
-    required this.initialLocation,
   }) : 
         super(
-          initialLocation: initialLocation.path,
+          initialLocation: Routes.home.path,
           routes: routes
             .map<GoRoute>((PageRoute route) => route.toGoRoute())
             .toList(),
@@ -19,5 +18,4 @@ class AppRouterConfig extends GoRouter {
         );
 
   final List<PageRoute> routes;
-  final Routes initialLocation;
 }

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:provider/provider.dart';
 import 'package:sequencia/common/design_system/components/button/button_widget.dart';
 import 'package:sequencia/common/design_system/components/info_card/info_card_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/common/router/app_navigator.dart';
 import 'package:sequencia/common/router/routes.dart';
-import 'package:sequencia/screens/main_screen/presentation/widgets/players_names_inputs_widget.dart';
+import 'package:sequencia/features/controller/players_controller.dart';
+import 'package:sequencia/features/screens/main_screen/presentation/widgets/players_names_inputs_widget.dart';
 
 class MainScreenPage extends StatefulWidget {
   const MainScreenPage({super.key});
@@ -20,7 +22,6 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
   late Animation<Offset> _logoAnimation;
 
   late AnimationController _fieldsController;
-  late Animation<Offset> _fieldsAnimation;
 
   late AnimationController _buttonController;
   late Animation<Offset> _buttonAnimation;
@@ -51,15 +52,6 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
     _fieldsController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
-    );
-    _fieldsAnimation = Tween<Offset>(
-      begin: const Offset(0.0, 1.0),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _fieldsController,
-        curve: Curves.easeOut,
-      ),
     );
 
     // Button Animation
@@ -115,13 +107,11 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
   @override
   Widget build(BuildContext context) {
     final theme = DSTheme.getDesignTokensOf(context);
-    final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: theme.colors.background,
-      body: SizedBox(
-        width: size.width,
-        height: size.height,
+      body: Center(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(height: theme.spacing.inline.sm),
@@ -133,19 +123,25 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
               ),
             ),
             SizedBox(height: theme.spacing.inline.md),
-            const PlayersNamesInputsWidget(),
-            const Spacer(),
-            SlideTransition(
-              position: _infoCardAnimation,
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: theme.spacing.inline.xs,
-                ),
-                child: const InfoCardWidget(
-                  'Para começar um novo jogo, registre pelo menos 4 participantes.',
-                ),
+            Expanded(
+              child: PlayersNamesInputsWidget(
+                controller: GetIt.I<PlayersController>(),
               ),
             ),
+            SizedBox(height: theme.spacing.inline.xxs),
+            if (context.read<PlayersController>().players.length < 4) ...[
+              SlideTransition(
+                position: _infoCardAnimation,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: theme.spacing.inline.xs,
+                  ),
+                  child: const InfoCardWidget(
+                    'Para começar um novo jogo, registre pelo menos 4 participantes.',
+                  ),
+                ),
+              ),
+            ],
             SizedBox(height: theme.spacing.inline.sm),
             SlideTransition(
               position: _buttonAnimation,
