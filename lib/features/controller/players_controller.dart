@@ -53,7 +53,7 @@ class PlayersController extends ChangeNotifier {
     if (newName != null) {
       _players[index] = player.copyWith(name: newName);
     }
-    
+
     if (newColor != null) {
       if (player.color != null) {
         _availableColors[player.color!.toHex()] = true;
@@ -77,11 +77,7 @@ class PlayersController extends ChangeNotifier {
   }
 
   void normalizePlayers() {
-    for (var player in _players) {
-      if (player.name.isEmpty) {
-        removePlayer(player);
-      }
-    }
+    _players.removeWhere((player) => player.name.isEmpty);
     notifyListeners();
   }
 }

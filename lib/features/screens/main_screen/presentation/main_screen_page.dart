@@ -155,6 +155,7 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
                   log(context.read<PlayersController>().players.map((e) => e.name).toList().toString());
                   if (context.read<PlayersController>().playersCount >= 4) {
                     context.read<GameController>().resetGame();
+                    context.read<PlayersController>().normalizePlayers();
                     GetIt.I.get<AppNavigator>().pushNamed(Routes.gamePrepare);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(

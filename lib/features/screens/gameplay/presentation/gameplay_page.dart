@@ -1,16 +1,19 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/common/design_system/core/tokens/design.dart';
-import 'package:sequencia/core/game_themes.dart';
+import 'package:sequencia/common/router/app_navigator.dart';
+import 'package:sequencia/common/router/routes.dart';
+import 'package:sequencia/features/controller/game_controller.dart';
 import 'package:sequencia/features/controller/players_controller.dart';
+import 'package:sequencia/features/domain/game/game_type_enum%20.dart';
 import 'package:sequencia/features/domain/player/entities/player_entity.dart';
+import 'package:sequencia/features/screens/gameplay/widgets/player_page_view.dart';
 
-import '../../../common/design_system/components/button/button_widget.dart';
-import '../../../common/design_system/components/cards/theme_card_widget.dart';
+import '../../../../common/design_system/components/button/button_widget.dart';
+import '../../../../common/design_system/components/cards/theme_card_widget.dart';
 
 class GameplayScreen extends StatefulWidget {
   const GameplayScreen({Key? key}) : super(key: key);
@@ -35,27 +38,27 @@ class _GameplayScreenState extends State<GameplayScreen> {
     _pageController.dispose();
     super.dispose();
   }
-  
+
   void _nextPage() {
-    if (currentPage <= players.length) {
+    if (currentPage < players.length) {
+      if (currentPage == 0) {
+        context.read<GameController>().changeGameType(GameTypeEnum.SHOW_PLAYERS_NUMBER);
+      }
+
       _pageController.nextPage(
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
+
+      if (currentPage + 1 == players.length) {
+        context.read<GameController>().changeGameType(GameTypeEnum.ORDER_PLAYERS);
+      }
+
       setState(() {
         currentPage++;
       });
     } else {
-      // Navigate to ordering screen
-      // Navigator.of(context).pushReplacement(
-      //   MaterialPageRoute(
-      //     builder: (context) => OrderingScreen(
-      //       players: players,
-      //       theme: selectedTheme,
-      //       playerCards: playerCards,
-      //     ),
-      //   ),
-      // );
+      GetIt.I<AppNavigator>().pushNamed(Routes.gameOrderPlayers);
     }
   }
 
@@ -64,7 +67,7 @@ class _GameplayScreenState extends State<GameplayScreen> {
     final theme = DSTheme.getDesignTokensOf(context);
     final playersController = Provider.of<PlayersController>(context);
     players = playersController.players;
-
+    final gameType = context.watch<GameController>().gameType;
     return Scaffold(
       backgroundColor: theme.colors.background,
       body: SafeArea(
@@ -74,30 +77,38 @@ class _GameplayScreenState extends State<GameplayScreen> {
             Expanded(
               child: PageView(
                 controller: _pageController,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  _buildThemePage(theme),
-                  ...players.asMap().entries.map((entry) => _buildPlayerPage(theme, entry.value, entry.key)),
+                  _buildThemePage(
+                    theme,
+                    context.read<GameController>().gameThemeNumber,
+                    context.read<GameController>().gameThemeDescription,
+                  ),
+                  ...players.asMap().entries.map(
+                        (entry) => PlayerPageView(
+                          player: entry.value,
+                        ),
+                      ),
                 ],
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: theme.spacing.inline.xs),
             DSButtonWidget(
-              label: currentPage == 0
+              label: gameType == GameTypeEnum.SHOW_PLAYERS_NUMBER
                   ? 'Revelar Tema'
-                  : currentPage <= players.length
-                      ? 'Próximo Jogador'
-                      : 'Iniciar Ordenação',
+                  : gameType == GameTypeEnum.SHOW_PLAYERS_NUMBER
+                      ? 'Próximo'
+                      : 'Ordenar Cartas',
               onPressed: _nextPage,
             ),
-            SizedBox(height: 40),
+            SizedBox(height: theme.spacing.inline.sm),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildThemePage(DSTokens theme) {
+  Widget _buildThemePage(DSTokens theme, String selectedTheme, String selectedDescription) {
     return Center(
       child: ThemeCard(
         label: DSText(
@@ -131,48 +142,6 @@ class _GameplayScreenState extends State<GameplayScreen> {
           ),
         ),
         isEnableFlip: false,
-      ),
-    );
-  }
-
-  Widget _buildPlayerPage(DSTokens theme, PlayerEntity player, int index) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Positioned(
-                bottom: -35,
-                left: 10,
-                child: PlayerColorCard(
-                  color: player.color ?? theme.colors.tertiary,
-                  name: player.name,
-                ),
-              ),
-              ThemeCard(
-                isInitHidden: true,
-                label: DSText(
-                  'Seu número é',
-                  customStyle: TextStyle(
-                    fontSize: theme.font.size.sm,
-                    fontWeight: theme.font.weight.light,
-                    color: theme.colors.white,
-                  ),
-                ),
-                value: DSText(
-                  selectedTheme,
-                  customStyle: TextStyle(
-                    fontSize: theme.font.size.xxxl,
-                    fontWeight: theme.font.weight.bold,
-                    color: theme.colors.white,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }

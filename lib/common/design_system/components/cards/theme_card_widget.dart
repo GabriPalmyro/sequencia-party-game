@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 
 class ThemeCard extends StatefulWidget {
@@ -10,21 +9,25 @@ class ThemeCard extends StatefulWidget {
     this.label,
     this.description,
     this.isEnableFlip = true,
-    this.isInitHidden = false,
+    this.isHidden = false,
+    this.onTap,
+    this.size = const Size(200, 300),
     Key? key,
   }) : super(key: key);
+
   final Widget? label;
   final Widget value;
   final Widget? description;
   final bool isEnableFlip;
-  final bool isInitHidden;
+  final bool isHidden;
+  final VoidCallback? onTap;
+  final Size size;
 
   @override
   _ThemeCardState createState() => _ThemeCardState();
 }
 
 class _ThemeCardState extends State<ThemeCard> with TickerProviderStateMixin {
-  bool isRevealed = false;
   late AnimationController _flipController;
   late Animation<double> _rotationAnimation;
 
@@ -32,7 +35,6 @@ class _ThemeCardState extends State<ThemeCard> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    isRevealed = widget.isInitHidden;
     // Controlador de Virada
     _flipController = AnimationController(
       vsync: this,
@@ -40,24 +42,29 @@ class _ThemeCardState extends State<ThemeCard> with TickerProviderStateMixin {
     );
     _rotationAnimation = Tween<double>(begin: 0, end: 1).animate(_flipController);
 
-    _flipCard();
+    // Verifica o estado inicial de isHidden
+    if (widget.isHidden) {
+      _flipController.value = 1; // Começa virado para mostrar a logo
+    }
   }
 
-  void _flipCard() {
-    if (!widget.isEnableFlip) {
-      return;
-    }
+  @override
+  void didUpdateWidget(covariant ThemeCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
 
-    if (isRevealed) {
-      _flipController.forward();
-      setState(() {
-        isRevealed = !isRevealed;
-      });
+    // Só executa a animação se o valor de isHidden mudar
+    if (oldWidget.isHidden != widget.isHidden) {
+      _flipCard(widget.isHidden);
+    }
+  }
+
+  void _flipCard(bool hide) {
+    if (!widget.isEnableFlip) return;
+
+    if (hide) {
+      _flipController.forward(); // Anima para "virar" e esconder o conteúdo
     } else {
-      _flipController.reverse();
-      setState(() {
-        isRevealed = !isRevealed;
-      });
+      _flipController.reverse(); // Anima para "desvirar" e mostrar o conteúdo
     }
   }
 
@@ -72,14 +79,14 @@ class _ThemeCardState extends State<ThemeCard> with TickerProviderStateMixin {
     final theme = DSTheme.getDesignTokensOf(context);
 
     return AnimatedBuilder(
-      animation: Listenable.merge([_flipController]),
+      animation: _flipController,
       builder: (context, child) {
         final double rotationValue = _rotationAnimation.value;
         final double angle = rotationValue * pi;
         final bool showBack = rotationValue >= 0.5;
 
         return GestureDetector(
-          onTap: _flipCard,
+          onTap: () => _flipCard(!widget.isHidden),
           child: Transform(
             transform: Matrix4.rotationY(angle),
             alignment: Alignment.center,
@@ -88,6 +95,7 @@ class _ThemeCardState extends State<ThemeCard> with TickerProviderStateMixin {
                     transform: Matrix4.rotationY(pi),
                     alignment: Alignment.center,
                     child: CardContent(
+                      size: widget.size,
                       value: Padding(
                         padding: EdgeInsets.all(
                           theme.spacing.inline.xs,
@@ -99,6 +107,7 @@ class _ThemeCardState extends State<ThemeCard> with TickerProviderStateMixin {
                     ),
                   )
                 : CardContent(
+                    size: widget.size,
                     label: widget.label,
                     value: widget.value,
                     description: widget.description,
@@ -110,74 +119,25 @@ class _ThemeCardState extends State<ThemeCard> with TickerProviderStateMixin {
   }
 }
 
-class PlayerColorCard extends StatelessWidget {
-  const PlayerColorCard({
-    required this.color,
-    required this.name,
-    super.key,
-  });
-  final Color color;
-  final String name;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = DSTheme.getDesignTokensOf(context);
-    return Container(
-      width: 130,
-      height: 200,
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(
-          theme.borders.radius.medium,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: theme.colors.grey.withOpacity(0.2),
-            blurRadius: 0,
-            offset: const Offset(4, 6),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding:  EdgeInsets.only(
-              left: theme.spacing.inline.xxs,
-              bottom: theme.spacing.inline.xxxs,
-            ),
-            child: DSText(
-              name,
-              customStyle: TextStyle(
-                fontSize: theme.font.size.xxxs,
-                fontWeight: theme.font.weight.semiBold,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class CardContent extends StatelessWidget {
   const CardContent({
     required this.value,
     this.label,
     this.description,
+    this.size = const Size(200, 300),
     Key? key,
   }) : super(key: key);
   final Widget? label;
   final Widget value;
   final Widget? description;
+  final Size size;
 
   @override
   Widget build(BuildContext context) {
     final theme = DSTheme.getDesignTokensOf(context);
     return Container(
-      width: 200,
-      height: 300,
+      width: size.width,
+      height: size.height,
       decoration: BoxDecoration(
         color: theme.colors.card,
         borderRadius: BorderRadius.circular(

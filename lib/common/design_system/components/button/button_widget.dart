@@ -50,7 +50,7 @@ class _DSButtonWidgetState extends State<DSButtonWidget> {
       child: AnimatedContainer(
         width: widget.size.width,
         height: widget.size.height,
-        duration: const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 100),
         decoration: BoxDecoration(
           color: widget.isEnabled ? theme.colors.primary : theme.colors.grey,
           boxShadow: [

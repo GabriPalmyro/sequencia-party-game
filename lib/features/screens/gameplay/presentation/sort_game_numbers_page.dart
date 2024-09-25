@@ -17,7 +17,6 @@ class SortGameNumbersPage extends StatefulWidget {
 }
 
 class _SortGameNumbersPageState extends State<SortGameNumbersPage> {
-
   @override
   void initState() {
     super.initState();
@@ -25,18 +24,20 @@ class _SortGameNumbersPageState extends State<SortGameNumbersPage> {
   }
 
   Future<void> _sortNumbers() async {
-    context.read<GameController>().selectRandomTheme();	
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      context.read<GameController>().selectRandomTheme();
 
-    final players = context.read<PlayersController>().players;
+      final players = context.read<PlayersController>().players;
 
-    for (var i = 0; i < players.length; i++) {
-      final newSortNumber = context.read<GameController>().getRandomAvailableNumber();
-      context.read<PlayersController>().updatePlayer(players[i], newNumber: newSortNumber);
-    }
+      for (var i = 0; i < players.length; i++) {
+        final newSortNumber = context.read<GameController>().getRandomAvailableNumber();
+        context.read<PlayersController>().updatePlayer(players[i], newNumber: newSortNumber);
+      }
 
-    await Future.delayed(const Duration(seconds: 3));
+      await Future.delayed(const Duration(seconds: 3));
 
-    GetIt.I<AppNavigator>().pushNamed(Routes.gameplay);
+      GetIt.I<AppNavigator>().pushNamed(Routes.gameplay);
+    });
   }
 
   @override
