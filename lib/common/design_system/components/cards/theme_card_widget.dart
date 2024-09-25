@@ -10,14 +10,14 @@ class ThemeCard extends StatefulWidget {
     this.label,
     this.description,
     this.isEnableFlip = true,
-    this.isInitReveal = false,
+    this.isInitHidden = false,
     Key? key,
   }) : super(key: key);
   final Widget? label;
   final Widget value;
   final Widget? description;
   final bool isEnableFlip;
-  final bool isInitReveal;
+  final bool isInitHidden;
 
   @override
   _ThemeCardState createState() => _ThemeCardState();
@@ -32,7 +32,7 @@ class _ThemeCardState extends State<ThemeCard> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    isRevealed = widget.isInitReveal;
+    isRevealed = widget.isInitHidden;
     // Controlador de Virada
     _flipController = AnimationController(
       vsync: this,
@@ -47,10 +47,17 @@ class _ThemeCardState extends State<ThemeCard> with TickerProviderStateMixin {
     if (!widget.isEnableFlip) {
       return;
     }
+
     if (isRevealed) {
       _flipController.forward();
+      setState(() {
+        isRevealed = !isRevealed;
+      });
     } else {
       _flipController.reverse();
+      setState(() {
+        isRevealed = !isRevealed;
+      });
     }
   }
 

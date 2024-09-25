@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sequencia/core/app_card_colors.dart';
 import 'package:sequencia/features/domain/player/entities/player_entity.dart';
+import 'package:sequencia/helpers/extension/color_extension.dart';
 
 @Injectable()
 class PlayersController extends ChangeNotifier {
@@ -16,10 +17,23 @@ class PlayersController extends ChangeNotifier {
   int get playersCount => _players.length;
 
   Color getRandomAvailableColor() {
-    final randomColor = _availableColors.keys.elementAt(Random().nextInt(_availableColors.length));
+    String randomColor = _availableColors.keys.elementAt(Random().nextInt(_availableColors.length));
+
+    while (!_availableColors[randomColor]!) {
+      randomColor = _availableColors.keys.elementAt(Random().nextInt(_availableColors.length));
+    }
+
     _availableColors[randomColor] = false;
-    return Color(int.parse(randomColor, radix: 16));
+    return HexColor.fromHex(randomColor);
   }
+
+  List<Color> getAvailableColors() => _availableColors.keys
+      .toList()
+      .where((color) => _availableColors[color]!)
+      .map(
+        (color) => HexColor.fromHex(color),
+      )
+      .toList();
 
   void addPlayer(PlayerEntity player) {
     _players.add(player);
@@ -29,28 +43,45 @@ class PlayersController extends ChangeNotifier {
   void removePlayer(PlayerEntity player) {
     _players.remove(player);
     if (player.color != null) {
-      _availableColors[player.color!.value.toRadixString(16).substring(2)] = true;
+      _availableColors[player.color!.toHex()] = true;
     }
     notifyListeners();
   }
 
-  void updatePlayerName(PlayerEntity player, String newName) {
+  void updatePlayer(PlayerEntity player, {String? newName, Color? newColor, String? newNumber}) {
     final index = _players.indexOf(player);
-    _players[index] = player.copyWith(name: newName);
-    notifyListeners();
-  }
-
-  void updatePlayerColor(PlayerEntity player, Color color) {
-    final index = _players.indexOf(player);
-    if (player.color != null) {
-      _availableColors[player.color!.value.toRadixString(16).substring(2)] = true;
+    if (newName != null) {
+      _players[index] = player.copyWith(name: newName);
     }
-    _availableColors[color.value.toRadixString(16).substring(2)] = false;
-    _players[index] = player.copyWith(color: color);
+    
+    if (newColor != null) {
+      if (player.color != null) {
+        _availableColors[player.color!.toHex()] = true;
+      }
+      _availableColors[newColor.toHex()] = false;
+      _players[index] = player.copyWith(color: newColor);
+    }
+
+    if (newNumber != null) {
+      _players[index] = player.copyWith(orderNumber: newNumber);
+    }
     notifyListeners();
   }
 
-  bool isAllPlayersNameValid() {
-    return _players.every((player) => player.name.isNotEmpty);
+  void resetPlayers() {
+    _players.clear();
+    _availableColors.forEach((key, value) {
+      _availableColors[key] = true;
+    });
+    notifyListeners();
+  }
+
+  void normalizePlayers() {
+    for (var player in _players) {
+      if (player.name.isEmpty) {
+        removePlayer(player);
+      }
+    }
+    notifyListeners();
   }
 }

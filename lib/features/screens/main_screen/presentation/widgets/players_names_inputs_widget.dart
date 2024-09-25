@@ -18,22 +18,32 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        context.read<PlayersController>().addPlayer(
+              PlayerEntity(
+                name: '',
+                color: context.read<PlayersController>().getRandomAvailableColor(),
+              ),
+            );
+      },
+    );
+  }
+
+  void _onTextChanged(String text, int index) {
+    final lowercaseText = text.toLowerCase();
+    context.read<PlayersController>().updatePlayer(
+          context.read<PlayersController>().players[index],
+          newName: lowercaseText,
+        );
+
+    if (lowercaseText.isNotEmpty && index == context.read<PlayersController>().players.length - 1) {
       context.read<PlayersController>().addPlayer(
             PlayerEntity(
               name: '',
               color: context.read<PlayersController>().getRandomAvailableColor(),
             ),
           );
-    });
-  }
-
-  void _onTextChanged(String text, int index) {
-    final lowercaseText = text.toLowerCase();
-    context.read<PlayersController>().updatePlayerName(context.read<PlayersController>().players[index], lowercaseText);
-
-    if (lowercaseText.isNotEmpty && index == context.read<PlayersController>().players.length - 1) {
-      context.read<PlayersController>().addPlayer(const PlayerEntity(name: ''));
     }
   }
 
@@ -50,11 +60,11 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
         return SelectPlayerColorModal(
-          availableColors: context.read<PlayersController>().availableColors,
+          availableColors: context.read<PlayersController>().getAvailableColors(),
           onColorSelected: (color) {
-            context.read<PlayersController>().updatePlayerColor(
+            context.read<PlayersController>().updatePlayer(
                   context.read<PlayersController>().players[index],
-                  color,
+                  newColor: color,
                 );
             Navigator.of(context).pop();
           },
@@ -86,10 +96,11 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
                     child: Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: theme.spacing.inline.xxs,
+                        vertical: theme.spacing.inline.xxxs,
                       ),
                       child: Container(
-                        height: 30,
                         width: 40,
+                        height: 30,
                         decoration: BoxDecoration(
                           color: player.color ?? theme.colors.secondary,
                           borderRadius: BorderRadius.circular(

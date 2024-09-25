@@ -2,6 +2,7 @@ import 'package:sequencia/common/router/page_route.dart';
 import 'package:sequencia/common/router/routes.dart';
 import 'package:sequencia/common/router/transition.dart';
 import 'package:sequencia/features/screens/gameplay/gameplay_page.dart';
+import 'package:sequencia/features/screens/gameplay/sort_game_numbers.dart';
 import 'package:sequencia/features/screens/main_screen/presentation/main_screen_page.dart';
 
 final routes = [
@@ -10,8 +11,13 @@ final routes = [
     builder: (_, __) => const MainScreenPage( ),
   ),
   PageRoute(
+    route: Routes.gamePrepare,
+    transition: PageTransition.slideFromBottom,
+    builder: (context, state) => const SortGameNumbersPage(),
+  ),
+  PageRoute(
     route: Routes.gameplay,
     transition: PageTransition.slideFromRight,
-    builder: (context, state) => GameplayScreen(),
+    builder: (context, state) => const GameplayScreen(),
   ),
 ];

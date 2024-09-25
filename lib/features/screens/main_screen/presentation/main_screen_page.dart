@@ -10,6 +10,7 @@ import 'package:sequencia/common/design_system/components/text/text_widget.dart'
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/common/router/app_navigator.dart';
 import 'package:sequencia/common/router/routes.dart';
+import 'package:sequencia/features/controller/game_controller.dart';
 import 'package:sequencia/features/controller/players_controller.dart';
 import 'package:sequencia/features/screens/main_screen/presentation/widgets/players_names_inputs_widget.dart';
 
@@ -117,7 +118,7 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(height: theme.spacing.inline.sm),
+            SizedBox(height: theme.spacing.inline.md),
             SlideTransition(
               position: _logoAnimation,
               child: Image.asset(
@@ -125,16 +126,14 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
                 width: 325,
               ),
             ),
-            SizedBox(height: theme.spacing.inline.md),
+            SizedBox(height: theme.spacing.inline.xxxs),
             const Expanded(
               child: PlayersNamesInputsWidget(),
             ),
             SizedBox(height: theme.spacing.inline.xxs),
-            SlideTransition(
-              position: _infoCardAnimation,
-              child: AnimatedOpacity(
-                opacity: context.watch<PlayersController>().playersCount < 4 ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 300),
+            if (context.watch<PlayersController>().players.length < 4) ...[
+              SlideTransition(
+                position: _infoCardAnimation,
                 child: Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: theme.spacing.inline.xs,
@@ -144,7 +143,7 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
                   ),
                 ),
               ),
-            ),
+            ],
             SizedBox(height: theme.spacing.inline.sm),
             SlideTransition(
               position: _buttonAnimation,
@@ -152,12 +151,11 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
                 label: 'Começar',
                 isEnabled: context.watch<PlayersController>().players.length >= 4,
                 onPressed: () {
-                  GetIt.I.get<AppNavigator>().pushNamed(Routes.gameplay);
-                  return;
                   HapticFeedback.selectionClick();
                   log(context.read<PlayersController>().players.map((e) => e.name).toList().toString());
                   if (context.read<PlayersController>().playersCount >= 4) {
-                    GetIt.I.get<AppNavigator>().pushNamed(Routes.gameplay);
+                    context.read<GameController>().resetGame();
+                    GetIt.I.get<AppNavigator>().pushNamed(Routes.gamePrepare);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(

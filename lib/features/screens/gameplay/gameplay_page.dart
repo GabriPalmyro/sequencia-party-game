@@ -13,14 +13,13 @@ import '../../../common/design_system/components/button/button_widget.dart';
 import '../../../common/design_system/components/cards/theme_card_widget.dart';
 
 class GameplayScreen extends StatefulWidget {
+  const GameplayScreen({Key? key}) : super(key: key);
   @override
   _GameplayScreenState createState() => _GameplayScreenState();
 }
 
 class _GameplayScreenState extends State<GameplayScreen> {
   late PageController _pageController;
-  String selectedTheme = '';
-  String selectedDescription = '';
   List<PlayerEntity> players = [];
   int currentPage = 0;
   List<int> playerCards = [];
@@ -28,7 +27,6 @@ class _GameplayScreenState extends State<GameplayScreen> {
   @override
   void initState() {
     super.initState();
-    _selectRandomTheme();
     _pageController = PageController(initialPage: 0);
   }
 
@@ -37,23 +35,8 @@ class _GameplayScreenState extends State<GameplayScreen> {
     _pageController.dispose();
     super.dispose();
   }
-
-  void _selectRandomTheme() {
-    final random = Random().nextInt(gameThemes.length);
-    selectedTheme = random.toString();
-    selectedDescription = gameThemes[random];
-  }
-
-  void _generatePlayerCards() {
-    final random = Random();
-    playerCards = List.generate(players.length, (_) => random.nextInt(90) + 10);
-    playerCards.sort();
-  }
-
+  
   void _nextPage() {
-    if (currentPage == 0) {
-      _generatePlayerCards();
-    }
     if (currentPage <= players.length) {
       _pageController.nextPage(
         duration: Duration(milliseconds: 300),
@@ -64,14 +47,15 @@ class _GameplayScreenState extends State<GameplayScreen> {
       });
     } else {
       // Navigate to ordering screen
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-            builder: (context) => OrderingScreen(
-                  players: players,
-                  theme: selectedTheme,
-                  playerCards: playerCards,
-                )),
-      );
+      // Navigator.of(context).pushReplacement(
+      //   MaterialPageRoute(
+      //     builder: (context) => OrderingScreen(
+      //       players: players,
+      //       theme: selectedTheme,
+      //       playerCards: playerCards,
+      //     ),
+      //   ),
+      // );
     }
   }
 
@@ -147,7 +131,6 @@ class _GameplayScreenState extends State<GameplayScreen> {
           ),
         ),
         isEnableFlip: false,
-        isInitReveal: true,
       ),
     );
   }
@@ -169,8 +152,7 @@ class _GameplayScreenState extends State<GameplayScreen> {
                 ),
               ),
               ThemeCard(
-                isEnableFlip: true,
-                isInitReveal: false,
+                isInitHidden: true,
                 label: DSText(
                   'Seu número é',
                   customStyle: TextStyle(
@@ -191,30 +173,6 @@ class _GameplayScreenState extends State<GameplayScreen> {
             ],
           ),
         ],
-      ),
-    );
-  }
-}
-
-// Placeholder for the OrderingScreen
-class OrderingScreen extends StatelessWidget {
-  final List<PlayerEntity> players;
-  final String theme;
-  final List<int> playerCards;
-
-  const OrderingScreen({
-    Key? key,
-    required this.players,
-    required this.theme,
-    required this.playerCards,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    // Implement the ordering screen here
-    return Scaffold(
-      body: Center(
-        child: Text('Ordering Screen - Implement me!'),
       ),
     );
   }

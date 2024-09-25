@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/common/router/router_config.dart';
 import 'package:sequencia/di/injection.dart';
+import 'package:sequencia/features/controller/game_controller.dart';
 import 'package:sequencia/features/controller/players_controller.dart';
 import 'package:sequencia/utils/app_strings.dart';
 
@@ -42,6 +43,9 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(
             create: (_) => GetIt.I<PlayersController>(),
           ),
+          ChangeNotifierProvider(
+            create: (_) => GetIt.I<GameController>(),
+          ),
         ],
         child: MaterialApp.router(
           theme: ThemeData(
@@ -51,6 +55,7 @@ class _MyAppState extends State<MyApp> {
                 TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
               },
             ),
+            primaryColor: widget.theme.designTokens.colors.primary,
           ),
           localizationsDelegates: const [
             GlobalMaterialLocalizations.delegate,

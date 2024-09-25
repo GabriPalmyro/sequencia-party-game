@@ -1,5 +1,6 @@
 enum Routes {
   home('/home'),
+  gamePrepare('/game-prepare'),
   gameplay('/gameplay');
 
   const Routes(this.path);

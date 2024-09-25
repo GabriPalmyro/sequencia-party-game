@@ -11,13 +11,14 @@ class SelectPlayerColorModal extends StatelessWidget {
   }) : super(key: key);
 
   final Function(Color) onColorSelected;
-  final Map<String, bool> availableColors;
+  final List<Color> availableColors;
 
   @override
   Widget build(BuildContext context) {
     final theme = DSTheme.getDesignTokensOf(context);
 
     return Container(
+      width: double.infinity,
       padding: theme.spacing.inset.sm,
       decoration: BoxDecoration(
         color: theme.colors.background,
@@ -47,14 +48,11 @@ class SelectPlayerColorModal extends StatelessWidget {
           ),
           SizedBox(height: theme.spacing.inline.sm),
           Wrap(
-            spacing: theme.spacing.inline.xxs,
+            spacing: theme.spacing.inline.xs,
             runSpacing: theme.spacing.inline.xxs,
-            children: availableColors.entries.map((entry) {
-              final color = Color(int.parse('0xFF${entry.key}'));
+            children: availableColors.map((color) {
               return GestureDetector(
-                onTap: entry.value
-                    ? () => onColorSelected(color)
-                    : null,
+                onTap: () => onColorSelected(color),
                 child: Container(
                   width: 48,
                   height: 48,
@@ -66,12 +64,6 @@ class SelectPlayerColorModal extends StatelessWidget {
                       width: 1,
                     ),
                   ),
-                  child: entry.value
-                      ? null
-                      : Icon(
-                          Icons.close,
-                          color: theme.colors.white,
-                        ),
                 ),
               );
             }).toList(),
