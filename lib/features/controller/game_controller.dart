@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sequencia/core/game_themes.dart';
 import 'package:sequencia/features/domain/game/game_type_enum%20.dart';
+import 'package:sequencia/features/domain/player/entities/player_entity.dart';
 
 @Injectable()
 class GameController extends ChangeNotifier {
@@ -48,6 +49,29 @@ class GameController extends ChangeNotifier {
     final random = Random().nextInt(gameThemes.length);
     gameThemeNumber = random.toString();
     gameThemeDescription = gameThemes[random];
+    notifyListeners();
+  }
+
+  List<PlayerEntity> players = [];
+
+  set setPlayers(List<PlayerEntity> newPlayers) {
+    players = newPlayers;
+    notifyListeners();
+  }
+
+  void updatePlayer(PlayerEntity player, {String? newNumber}) {
+    final index = players.indexOf(player);
+
+    if (newNumber != null) {
+      players[index] = player.copyWith(orderNumber: newNumber);
+    }
+
+    notifyListeners();
+  }
+
+  void onReorder(int oldIndex, int newIndex) {
+    final player = players.removeAt(oldIndex);
+    players.insert(newIndex, player);
     notifyListeners();
   }
 }

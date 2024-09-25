@@ -32,7 +32,7 @@ class InfoCardWidget extends StatelessWidget {
           textAlign: TextAlign.center,
           customStyle: TextStyle(
             fontWeight: theme.font.weight.regular,
-            fontSize: theme.font.size.xxs,
+            fontSize: theme.font.size.xxxs,
           ),
         ),
       ),

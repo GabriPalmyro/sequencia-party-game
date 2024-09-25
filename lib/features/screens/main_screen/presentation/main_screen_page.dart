@@ -131,7 +131,7 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
               child: PlayersNamesInputsWidget(),
             ),
             SizedBox(height: theme.spacing.inline.xxs),
-            if (context.watch<PlayersController>().players.length < 4) ...[
+            if (context.watch<PlayersController>().players.length <= 4) ...[
               SlideTransition(
                 position: _infoCardAnimation,
                 child: Padding(
@@ -155,7 +155,7 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
                   log(context.read<PlayersController>().players.map((e) => e.name).toList().toString());
                   if (context.read<PlayersController>().playersCount >= 4) {
                     context.read<GameController>().resetGame();
-                    context.read<PlayersController>().normalizePlayers();
+                    context.read<GameController>().setPlayers = context.read<PlayersController>().removeEmptyPlayers();
                     GetIt.I.get<AppNavigator>().pushNamed(Routes.gamePrepare);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -172,8 +172,7 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
                   }
                 },
               ),
-            ),
-            SizedBox(height: theme.spacing.inline.sm),
+            ),  
           ],
         ),
       ),

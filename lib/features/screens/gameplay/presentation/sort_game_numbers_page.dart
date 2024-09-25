@@ -31,7 +31,7 @@ class _SortGameNumbersPageState extends State<SortGameNumbersPage> {
 
       for (var i = 0; i < players.length; i++) {
         final newSortNumber = context.read<GameController>().getRandomAvailableNumber();
-        context.read<PlayersController>().updatePlayer(players[i], newNumber: newSortNumber);
+        context.read<GameController>().updatePlayer(players[i], newNumber: newSortNumber);
       }
 
       await Future.delayed(const Duration(seconds: 3));

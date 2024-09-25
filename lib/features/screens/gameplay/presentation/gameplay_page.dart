@@ -7,7 +7,6 @@ import 'package:sequencia/common/design_system/core/tokens/design.dart';
 import 'package:sequencia/common/router/app_navigator.dart';
 import 'package:sequencia/common/router/routes.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
-import 'package:sequencia/features/controller/players_controller.dart';
 import 'package:sequencia/features/domain/game/game_type_enum%20.dart';
 import 'package:sequencia/features/domain/player/entities/player_entity.dart';
 import 'package:sequencia/features/screens/gameplay/widgets/player_page_view.dart';
@@ -65,9 +64,9 @@ class _GameplayScreenState extends State<GameplayScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = DSTheme.getDesignTokensOf(context);
-    final playersController = Provider.of<PlayersController>(context);
-    players = playersController.players;
+    final gameController = Provider.of<GameController>(context);
     final gameType = context.watch<GameController>().gameType;
+    players = gameController.players;
     return Scaffold(
       backgroundColor: theme.colors.background,
       body: SafeArea(

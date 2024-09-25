@@ -76,8 +76,9 @@ class PlayersController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void normalizePlayers() {
-    _players.removeWhere((player) => player.name.isEmpty);
-    notifyListeners();
+  List<PlayerEntity> removeEmptyPlayers() {
+    final tempPlayers = _players;
+    tempPlayers.removeWhere((player) => player.name.isEmpty);
+    return tempPlayers;
   }
 }
