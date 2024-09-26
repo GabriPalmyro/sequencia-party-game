@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 
 class ThemeCard extends StatefulWidget {
@@ -85,34 +86,46 @@ class _ThemeCardState extends State<ThemeCard> with TickerProviderStateMixin {
         final double angle = rotationValue * pi;
         final bool showBack = rotationValue >= 0.5;
 
-        return GestureDetector(
-          onTap: () => _flipCard(!widget.isHidden),
-          child: Transform(
-            transform: Matrix4.rotationY(angle),
-            alignment: Alignment.center,
-            child: showBack
-                ? Transform(
-                    transform: Matrix4.rotationY(pi),
-                    alignment: Alignment.center,
-                    child: CardContent(
-                      size: widget.size,
-                      value: Padding(
-                        padding: EdgeInsets.all(
-                          theme.spacing.inline.xs,
-                        ),
-                        child: Image.asset(
-                          'assets/images/logo.png',
-                        ),
+        return Transform(
+          transform: Matrix4.rotationY(angle),
+          alignment: Alignment.center,
+          child: showBack
+              ? Transform(
+                  transform: Matrix4.rotationY(pi),
+                  alignment: Alignment.center,
+                  child: CardContent(
+                    size: widget.size,
+                    label:  widget.isEnableFlip ? SizedBox(
+                      height: theme.spacing.inline.sm,
+                    ): null,
+                    value: Padding(
+                      padding: EdgeInsets.all(
+                        theme.spacing.inline.xs,
+                      ),
+                      child: Image.asset(
+                        'assets/images/logo.png',
                       ),
                     ),
-                  )
-                : CardContent(
-                    size: widget.size,
-                    label: widget.label,
-                    value: widget.value,
-                    description: widget.description,
+                    description: widget.isEnableFlip ? Padding(
+                      padding: EdgeInsets.symmetric(horizontal: theme.spacing.inline.xxs),
+                      child: DSText(
+                        'Toque na carta para virar',
+                        textAlign: TextAlign.center,
+                        customStyle: TextStyle(
+                          fontSize: theme.font.size.xxxs,
+                          fontWeight: theme.font.weight.light,
+                          color: theme.colors.white,
+                        ),
+                      ),
+                    ) : null,
                   ),
-          ),
+                )
+              : CardContent(
+                  size: widget.size,
+                  label: widget.label,
+                  value: widget.value,
+                  description: widget.description,
+                ),
         );
       },
     );

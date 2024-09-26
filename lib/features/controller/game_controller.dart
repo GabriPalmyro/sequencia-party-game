@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sequencia/core/game_themes.dart';
-import 'package:sequencia/features/domain/game/game_type_enum%20.dart';
+import 'package:sequencia/features/domain/game/game_type_enum.dart';
 import 'package:sequencia/features/domain/player/entities/player_entity.dart';
 
 @Injectable()

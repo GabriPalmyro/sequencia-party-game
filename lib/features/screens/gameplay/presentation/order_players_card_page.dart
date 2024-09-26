@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:reorderables/reorderables.dart';
 import 'package:sequencia/common/design_system/components/button/button_widget.dart';
@@ -41,7 +42,18 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> {
                   color: theme.colors.white,
                 ),
               ),
-            ),
+            )
+                .animate(
+                  delay: 250.ms,
+                )
+                .fade(
+                  duration: 300.ms,
+                  delay: 300.ms,
+                )
+                .slide(
+                  begin: const Offset(0, 1),
+                  end: const Offset(0, 0),
+                ),
             Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: theme.spacing.inline.xs,
@@ -54,7 +66,18 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> {
                   color: theme.colors.white,
                 ),
               ),
-            ),
+            )
+                .animate(
+                  delay: 250.ms,
+                )
+                .fade(
+                  duration: 300.ms,
+                  delay: 300.ms,
+                )
+                .slide(
+                  begin: const Offset(0, 1),
+                  end: const Offset(0, 0),
+                ),
             SizedBox(height: theme.spacing.inline.xs),
             ReorderableWrap(
               spacing: theme.spacing.inline.sm,
@@ -102,21 +125,24 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> {
                 //this callback is required
                 context.read<GameController>().onReorder(oldIndex, newIndex);
               },
-              onNoReorder: (int index) {
-                //this callback is optional
-                debugPrint('${DateTime.now().toString().substring(5, 22)} reorder cancelled. index:$index');
-              },
-              onReorderStarted: (int index) {
-                //this callback is optional
-                debugPrint('${DateTime.now().toString().substring(5, 22)} reorder started: index:$index');
-              },
-            ),
+            )
+                .animate(
+                  delay: 250.ms,
+                )
+                .fade(
+                  duration: 300.ms,
+                  delay: 300.ms,
+                )
+                .slide(
+                  begin: const Offset(0, 1),
+                  end: const Offset(0, 0),
+                ),
             const Spacer(),
             SizedBox(height: theme.spacing.inline.md),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Spacer(),
+                const Spacer(),
                 DSButtonWidget(
                   label: 'Finalizar',
                   onPressed: () {
@@ -132,14 +158,25 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> {
                       backgroundColor: Colors.transparent,
                       isScrollControlled: true,
                       builder: (BuildContext context) {
-                        return ShowThemeCardModal();
+                        return const ShowThemeCardModal();
                       },
                     );
                   },
-                  size: const Size(80, 40),
+                  size: const Size(70, 40),
                 ),
                 SizedBox(width: theme.spacing.inline.xxs),
-              ],
+              ]
+                  .animate(
+                    delay: 250.ms,
+                  )
+                  .fade(
+                    duration: 300.ms,
+                    delay: 300.ms,
+                  )
+                  .slide(
+                    begin: const Offset(0, 1),
+                    end: const Offset(0, 0),
+                  ),
             ),
             SizedBox(height: theme.spacing.inline.md),
           ],

@@ -7,7 +7,7 @@ import 'package:sequencia/common/design_system/core/tokens/design.dart';
 import 'package:sequencia/common/router/app_navigator.dart';
 import 'package:sequencia/common/router/routes.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
-import 'package:sequencia/features/domain/game/game_type_enum%20.dart';
+import 'package:sequencia/features/domain/game/game_type_enum.dart';
 import 'package:sequencia/features/domain/player/entities/player_entity.dart';
 import 'package:sequencia/features/screens/gameplay/widgets/player_page_view.dart';
 
@@ -57,7 +57,7 @@ class _GameplayScreenState extends State<GameplayScreen> {
         currentPage++;
       });
     } else {
-      GetIt.I<AppNavigator>().pushNamed(Routes.gameOrderPlayers);
+      GetIt.I<AppNavigator>().pushNamedAndRemoveUntil(Routes.gameOrderPlayers);
     }
   }
 

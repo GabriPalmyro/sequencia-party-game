@@ -13,6 +13,8 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:sequencia/common/local_database/local_database.dart' as _i762;
 import 'package:sequencia/common/router/app_navigator.dart' as _i306;
 import 'package:sequencia/common/router/router_config.dart' as _i753;
+import 'package:sequencia/features/controller/card_view_controller.dart'
+    as _i637;
 import 'package:sequencia/features/controller/game_controller.dart' as _i973;
 import 'package:sequencia/features/controller/players_controller.dart' as _i524;
 
@@ -27,6 +29,7 @@ extension GetItInjectableX on _i174.GetIt {
       environment,
       environmentFilter,
     );
+    gh.factory<_i637.CardViewController>(() => _i637.CardViewController());
     gh.factory<_i973.GameController>(() => _i973.GameController());
     gh.factory<_i524.PlayersController>(() => _i524.PlayersController());
     gh.lazySingleton<_i306.AppNavigator>(

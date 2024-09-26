@@ -36,7 +36,7 @@ class _SortGameNumbersPageState extends State<SortGameNumbersPage> {
 
       await Future.delayed(const Duration(seconds: 3));
 
-      GetIt.I<AppNavigator>().pushNamed(Routes.gameplay);
+      GetIt.I<AppNavigator>().pushNamedAndRemoveUntil(Routes.gameplay);
     });
   }
 

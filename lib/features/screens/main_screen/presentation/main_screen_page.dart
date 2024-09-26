@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -151,8 +149,7 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
                 label: 'Começar',
                 isEnabled: context.watch<PlayersController>().players.length >= 4,
                 onPressed: () {
-                  HapticFeedback.selectionClick();
-                  log(context.read<PlayersController>().players.map((e) => e.name).toList().toString());
+                  HapticFeedback.mediumImpact();
                   if (context.read<PlayersController>().playersCount >= 4) {
                     context.read<GameController>().resetGame();
                     context.read<GameController>().setPlayers = context.read<PlayersController>().removeEmptyPlayers();
@@ -172,7 +169,8 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
                   }
                 },
               ),
-            ),  
+            ),
+            SizedBox(height: theme.spacing.inline.sm),
           ],
         ),
       ),

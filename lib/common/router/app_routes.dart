@@ -1,8 +1,8 @@
 import 'package:sequencia/common/router/page_route.dart';
 import 'package:sequencia/common/router/routes.dart';
 import 'package:sequencia/common/router/transition.dart';
-import 'package:sequencia/features/screens/gameplay/presentation/gameplay_page.dart';
 import 'package:sequencia/features/screens/gameplay/presentation/order_players_card_page.dart';
+import 'package:sequencia/features/screens/gameplay/presentation/review_cards_page.dart';
 import 'package:sequencia/features/screens/gameplay/presentation/sort_game_numbers_page.dart';
 import 'package:sequencia/features/screens/main_screen/presentation/main_screen_page.dart';
 
