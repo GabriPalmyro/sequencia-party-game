@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:reorderables/reorderables.dart';
 import 'package:sequencia/common/design_system/components/button/button_widget.dart';
@@ -10,7 +9,10 @@ import 'package:sequencia/common/design_system/components/cards/player_color_car
 import 'package:sequencia/common/design_system/components/cards/theme_card_widget.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
+import 'package:sequencia/common/router/app_navigator.dart';
+import 'package:sequencia/common/router/routes.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
+import 'package:sequencia/features/domain/game/game_type_enum.dart';
 import 'package:sequencia/features/screens/gameplay/presentation/widgets/show_theme_card_modal.dart';
 
 class OrderPlayersCardPage extends StatefulWidget {
@@ -21,6 +23,14 @@ class OrderPlayersCardPage extends StatefulWidget {
 }
 
 class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> {
+  late List<bool> revealedCards;
+
+  @override
+  void initState() {
+    super.initState();
+    revealedCards = List.filled(context.read<GameController>().players.length, false);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = DSTheme.getDesignTokensOf(context);
@@ -98,20 +108,12 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> {
                     ),
                     ThemeCard(
                       size: const Size(100, 150),
-                      isHidden: true,
-                      isEnableFlip: false,
-                      label: DSText(
-                        'Seu número é',
-                        customStyle: TextStyle(
-                          fontSize: theme.font.size.sm,
-                          fontWeight: theme.font.weight.light,
-                          color: theme.colors.white,
-                        ),
-                      ),
+                      isHidden: !revealedCards[context.read<GameController>().players.indexOf(player)],
+                      isEnableFlip: true,
                       value: DSText(
                         player.orderNumber ?? '',
                         customStyle: TextStyle(
-                          fontSize: theme.font.size.xxxl,
+                          fontSize: theme.font.size.md,
                           fontWeight: theme.font.weight.bold,
                           color: theme.colors.white,
                         ),
@@ -146,7 +148,21 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> {
                 DSButtonWidget(
                   label: 'Finalizar',
                   onPressed: () {
-                    log(context.read<GameController>().players.map((e) => e.name).toList().toString());
+                    if (context.read<GameController>().gameType == GameTypeEnum.GAME_FINISHED) {
+                      GetIt.I.get<AppNavigator>().pushReplacementNamed(Routes.home);
+                    }
+
+                    for (int i = 0; i < revealedCards.length; i++) {
+                      Future.delayed(Duration(seconds: i * 3), () {
+                        setState(() {
+                          revealedCards[i] = true;
+                        });
+                      });
+
+                      if (i == revealedCards.length - 1) {
+                        context.read<GameController>().changeGameType(GameTypeEnum.GAME_FINISHED);
+                      }
+                    }
                   },
                 ),
                 SizedBox(width: theme.spacing.inline.xxs),

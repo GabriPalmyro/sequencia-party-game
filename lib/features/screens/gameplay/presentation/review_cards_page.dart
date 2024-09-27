@@ -93,7 +93,7 @@ class _GameplayScreenState extends State<GameplayScreen> {
             ),
             SizedBox(height: theme.spacing.inline.xs),
             DSButtonWidget(
-              label: gameType == GameTypeEnum.SHOW_PLAYERS_NUMBER
+              label: gameType == GameTypeEnum.SHOW_THEME_CARD
                   ? 'Revelar Tema'
                   : gameType == GameTypeEnum.SHOW_PLAYERS_NUMBER
                       ? 'Próximo'
