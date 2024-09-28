@@ -108,5 +108,5 @@ const gameThemes = [
   'Desafios estranhos que seriam divertidos de fazer em grupo',
   'Hobbies que você gostaria de experimentar',
   'Os esportes mais emocionantes que você gostaria de praticar',
-  'Filmes de ficção científica que te fazem pensar'
+  'Filmes de ficção científica que te fazem pensar',
 ];
