@@ -12,6 +12,7 @@ class ThemeCard extends StatefulWidget {
     this.isEnableFlip = true,
     this.isHidden = false,
     this.onTap,
+    this.shoudShowFlipLabel = true,
     this.size = const Size(200, 300),
     Key? key,
   }) : super(key: key);
@@ -23,6 +24,7 @@ class ThemeCard extends StatefulWidget {
   final bool isHidden;
   final VoidCallback? onTap;
   final Size size;
+  final bool shoudShowFlipLabel;
 
   @override
   _ThemeCardState createState() => _ThemeCardState();
@@ -60,7 +62,9 @@ class _ThemeCardState extends State<ThemeCard> with TickerProviderStateMixin {
   }
 
   void _flipCard(bool hide) {
-    if (!widget.isEnableFlip) return;
+    if (!widget.isEnableFlip) {
+      return;
+    }
 
     if (hide) {
       _flipController.forward(); // Anima para "virar" e esconder o conteúdo
@@ -95,9 +99,11 @@ class _ThemeCardState extends State<ThemeCard> with TickerProviderStateMixin {
                   alignment: Alignment.center,
                   child: CardContent(
                     size: widget.size,
-                    label:  widget.isEnableFlip ? SizedBox(
-                      height: theme.spacing.inline.sm,
-                    ): null,
+                    label: widget.isEnableFlip && widget.shoudShowFlipLabel
+                        ? SizedBox(
+                            height: theme.spacing.inline.sm,
+                          )
+                        : null,
                     value: Padding(
                       padding: EdgeInsets.all(
                         theme.spacing.inline.xs,
@@ -106,18 +112,20 @@ class _ThemeCardState extends State<ThemeCard> with TickerProviderStateMixin {
                         'assets/images/logo.png',
                       ),
                     ),
-                    description: widget.isEnableFlip ? Padding(
-                      padding: EdgeInsets.symmetric(horizontal: theme.spacing.inline.xxs),
-                      child: DSText(
-                        'Toque na carta para virar',
-                        textAlign: TextAlign.center,
-                        customStyle: TextStyle(
-                          fontSize: theme.font.size.xxxs,
-                          fontWeight: theme.font.weight.light,
-                          color: theme.colors.white,
-                        ),
-                      ),
-                    ) : null,
+                    description: widget.isEnableFlip && widget.shoudShowFlipLabel
+                        ? Padding(
+                            padding: EdgeInsets.symmetric(horizontal: theme.spacing.inline.xxs),
+                            child: DSText(
+                              'Toque na carta para virar',
+                              textAlign: TextAlign.center,
+                              customStyle: TextStyle(
+                                fontSize: theme.font.size.xxxs,
+                                fontWeight: theme.font.weight.light,
+                                color: theme.colors.white,
+                              ),
+                            ),
+                          )
+                        : null,
                   ),
                 )
               : CardContent(

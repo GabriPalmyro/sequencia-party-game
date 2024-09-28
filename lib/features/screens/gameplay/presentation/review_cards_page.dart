@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
+import 'package:sequencia/common/design_system/components/button/icon_button_widget.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/common/design_system/core/tokens/design.dart';
@@ -61,6 +63,11 @@ class _GameplayScreenState extends State<GameplayScreen> {
     }
   }
 
+  void sortAnotherTheme() {
+    HapticFeedback.mediumImpact();
+    context.read<GameController>().selectRandomTheme();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = DSTheme.getDesignTokensOf(context);
@@ -92,13 +99,28 @@ class _GameplayScreenState extends State<GameplayScreen> {
               ),
             ),
             SizedBox(height: theme.spacing.inline.xs),
-            DSButtonWidget(
-              label: gameType == GameTypeEnum.SHOW_THEME_CARD
-                  ? 'Revelar Tema'
-                  : gameType == GameTypeEnum.SHOW_PLAYERS_NUMBER
-                      ? 'Próximo'
-                      : 'Ordenar Cartas',
-              onPressed: _nextPage,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(width: theme.spacing.inline.xxs),
+                DSButtonWidget(
+                  label: gameType == GameTypeEnum.SHOW_THEME_CARD
+                      ? 'Revelar Tema'
+                      : gameType == GameTypeEnum.SHOW_PLAYERS_NUMBER
+                          ? 'Próximo'
+                          : 'Ordenar Cartas',
+                  onPressed: _nextPage,
+                ),
+                if (gameType == GameTypeEnum.SHOW_THEME_CARD) ...[
+                  SizedBox(width: theme.spacing.inline.sm),
+                  DSIconButtonWidget(
+                    label: Icons.restart_alt,
+                    size: const Size(70, 40),
+                    onPressed: sortAnotherTheme,
+                  ),
+                  SizedBox(width: theme.spacing.inline.xxs),
+                ],
+              ],
             ),
             SizedBox(height: theme.spacing.inline.sm),
           ],

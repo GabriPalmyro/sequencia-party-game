@@ -18,12 +18,12 @@ final routes = [
   ),
   PageRoute(
     route: Routes.gameplay,
-    transition: PageTransition.slideFromRight,
+    transition: PageTransition.slideFromBottom,
     builder: (context, state) => const GameplayScreen(),
   ),
   PageRoute(
     route: Routes.gameOrderPlayers,
-    transition: PageTransition.slideFromRight,
+    transition: PageTransition.slideFromBottom,
     builder: (context, state) => const OrderPlayersCardPage(),
   ),
 ];

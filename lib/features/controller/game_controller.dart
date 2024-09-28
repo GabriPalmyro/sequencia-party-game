@@ -12,6 +12,10 @@ class GameController extends ChangeNotifier {
 
   GameTypeEnum get gameType => _gameType;
 
+  bool isGameFinished() {
+    return _gameType == GameTypeEnum.GAME_FINISHED || _gameType == GameTypeEnum.REVEAL_PLAYERS;
+  }
+
   void changeGameType(GameTypeEnum newGameType) {
     _gameType = newGameType;
     notifyListeners();

@@ -2,6 +2,7 @@ enum GameTypeEnum {
   SHOW_THEME_CARD,
   SHOW_PLAYERS_NUMBER,
   ORDER_PLAYERS,
+  REVEAL_PLAYERS,
   GAME_FINISHED;
 
   static GameTypeEnum fromString(String value) {

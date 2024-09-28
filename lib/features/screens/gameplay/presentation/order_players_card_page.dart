@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,7 @@ import 'package:sequencia/common/router/app_navigator.dart';
 import 'package:sequencia/common/router/routes.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
 import 'package:sequencia/features/domain/game/game_type_enum.dart';
+import 'package:sequencia/features/screens/gameplay/presentation/widgets/show_player_card_modal.dart';
 import 'package:sequencia/features/screens/gameplay/presentation/widgets/show_theme_card_modal.dart';
 
 class OrderPlayersCardPage extends StatefulWidget {
@@ -94,35 +96,55 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> {
               runSpacing: theme.spacing.inline.xxxl,
               padding: const EdgeInsets.all(8),
               children: context.watch<GameController>().players.map((player) {
-                return Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    Positioned(
-                      bottom: -35,
-                      left: 10,
-                      child: PlayerColorCard(
-                        size: const Size(80, 100),
-                        color: player.color ?? theme.colors.tertiary,
-                        name: player.name,
-                      ),
-                    ),
-                    ThemeCard(
-                      size: const Size(100, 150),
-                      isHidden: !revealedCards[context.read<GameController>().players.indexOf(player)],
-                      isEnableFlip: true,
-                      value: DSText(
-                        player.orderNumber ?? '',
-                        customStyle: TextStyle(
-                          fontSize: theme.font.size.md,
-                          fontWeight: theme.font.weight.bold,
-                          color: theme.colors.white,
+                return GestureDetector(
+                  onLongPress: () {
+                    if (context.read<GameController>().isGameFinished()) {
+                      return;
+                    }
+
+                    showModalBottomSheet(
+                      context: context,
+                      backgroundColor: Colors.transparent,
+                      isScrollControlled: true,
+                      builder: (BuildContext context) {
+                        return ShowPlayerCardModal(
+                          player: player,
+                        );
+                      },
+                    );
+                  },
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Positioned(
+                        bottom: -35,
+                        left: 10,
+                        child: PlayerColorCard(
+                          size: const Size(80, 100),
+                          color: player.color ?? theme.colors.tertiary,
+                          name: player.name,
                         ),
                       ),
-                    ),
-                  ],
+                      ThemeCard(
+                        size: const Size(100, 150),
+                        isHidden: !revealedCards[context.read<GameController>().players.indexOf(player)],
+                        isEnableFlip: true,
+                        shoudShowFlipLabel: false,
+                        value: DSText(
+                          player.orderNumber ?? '',
+                          customStyle: TextStyle(
+                            fontSize: theme.font.size.md,
+                            fontWeight: theme.font.weight.bold,
+                            color: theme.colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               }).toList(),
               needsLongPressDraggable: false,
+              enableReorder: !context.watch<GameController>().isGameFinished(),
               onReorder: (int oldIndex, int newIndex) {
                 //this callback is required
                 context.read<GameController>().onReorder(oldIndex, newIndex);
@@ -146,14 +168,18 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> {
               children: [
                 const Spacer(),
                 DSButtonWidget(
-                  label: 'Finalizar',
-                  onPressed: () {
-                    if (context.read<GameController>().gameType == GameTypeEnum.GAME_FINISHED) {
+                  label: context.watch<GameController>().isGameFinished() ? 'Finalizar' : 'Revelar',
+                  onPressed: () async {
+                    HapticFeedback.mediumImpact();
+                    if (context.read<GameController>().isGameFinished()) {
                       GetIt.I.get<AppNavigator>().pushReplacementNamed(Routes.home);
+                    } else {
+                      context.read<GameController>().changeGameType(GameTypeEnum.REVEAL_PLAYERS);
                     }
 
                     for (int i = 0; i < revealedCards.length; i++) {
-                      Future.delayed(Duration(seconds: i * 3), () {
+                      await Future.delayed(const Duration(seconds: 1));
+                      Future.delayed(Duration(seconds: i * 2), () {
                         setState(() {
                           revealedCards[i] = true;
                         });
