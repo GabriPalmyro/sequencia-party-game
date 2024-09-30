@@ -10,6 +10,7 @@ class DSTextField extends StatefulWidget {
     this.hintText = '',
     this.onChanged,
     this.onTapOutside,
+     this.focusNode,
     this.isEnabled = true,
   }) : super(key: key);
 
@@ -19,6 +20,7 @@ class DSTextField extends StatefulWidget {
   final String hintText;
   final void Function(String)? onChanged;
   final void Function(PointerDownEvent)? onTapOutside;
+  final FocusNode? focusNode;
   final bool isEnabled;
 
   @override
@@ -52,6 +54,7 @@ class _DSTextFieldState extends State<DSTextField> {
           fontWeight: theme.font.weight.semiBold,
           fontFamily: theme.font.family.base,
         ),
+        focusNode: widget.focusNode,
         onChanged: widget.onChanged,
         onTapOutside: widget.onTapOutside,
         cursorColor: theme.colors.primary, // Set cursor color to white

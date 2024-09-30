@@ -11,4 +11,6 @@ const Map<String, bool> playersColors = {
   '#F5D01D': true,
   '#DE2189': true,
   '#3D9957': true,
+  '#F5A623': true,
+  '#4f6343': true,
 };

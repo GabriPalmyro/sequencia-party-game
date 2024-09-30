@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
+import 'package:sequencia/utils/app_strings.dart';
 
 class ThemeCard extends StatefulWidget {
   const ThemeCard({
@@ -116,7 +117,7 @@ class _ThemeCardState extends State<ThemeCard> with TickerProviderStateMixin {
                         ? Padding(
                             padding: EdgeInsets.symmetric(horizontal: theme.spacing.inline.xxs),
                             child: DSText(
-                              'Toque na carta para virar',
+                              AppStrings.touchToFlip,
                               textAlign: TextAlign.center,
                               customStyle: TextStyle(
                                 fontSize: theme.font.size.xxxs,

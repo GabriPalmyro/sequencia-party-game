@@ -41,6 +41,8 @@ class SharedPreferencesDatabase implements LocalDatabase {
 
   @override
   Future<dynamic> getData(String key) async {
+    _preferences = await SharedPreferences.getInstance();
+
     return _preferences.get(key);
   }
 

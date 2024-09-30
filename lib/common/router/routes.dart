@@ -1,6 +1,7 @@
 enum Routes {
   home('/home'),
   gamePrepare('/game-prepare'),
+  discussionTime('/discussion-time'),
   gameOrderPlayers('/game-order-players'),
   gameplay('/gameplay');
 

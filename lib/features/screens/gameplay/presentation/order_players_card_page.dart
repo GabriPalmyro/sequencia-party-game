@@ -220,6 +220,32 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> {
                     end: const Offset(0, 0),
                   ),
             ),
+            SizedBox(height: theme.spacing.inline.xxs),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: theme.spacing.inline.xs,
+              ),
+              child: DSText(
+                'Segure em qualquer carta para ver mais detalhes',
+                textAlign: TextAlign.center,
+                customStyle: TextStyle(
+                  fontSize: theme.font.size.us,
+                  fontWeight: theme.font.weight.light,
+                  color: theme.colors.white,
+                ),
+              ),
+            )
+                .animate(
+                  delay: 250.ms,
+                )
+                .fade(
+                  duration: 300.ms,
+                  delay: 300.ms,
+                )
+                .slide(
+                  begin: const Offset(0, 1),
+                  end: const Offset(0, 0),
+                ),
             SizedBox(height: theme.spacing.inline.md),
           ],
         ),

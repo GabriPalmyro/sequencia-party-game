@@ -1,13 +1,19 @@
+import 'dart:developer' as dev;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
+import 'package:sequencia/common/local_database/local_database.dart';
 import 'package:sequencia/core/app_card_colors.dart';
 import 'package:sequencia/features/domain/player/entities/player_entity.dart';
 import 'package:sequencia/helpers/extension/color_extension.dart';
+import 'package:sequencia/utils/app_strings.dart';
 
 @Injectable()
 class PlayersController extends ChangeNotifier {
+  PlayersController({required this.localDatabase});
+  final LocalDatabase localDatabase;
+
   final List<PlayerEntity> _players = [];
   final Map<String, bool> _availableColors = Map.from(playersColors);
 
@@ -80,5 +86,32 @@ class PlayersController extends ChangeNotifier {
     final tempPlayers = _players;
     tempPlayers.removeWhere((player) => player.name.isEmpty);
     return tempPlayers;
+  }
+
+  Future<void> getSavedPlayers() async {
+    try {
+      final savedPlayers = await localDatabase.getData(AppStrings.playersKey);
+      if (savedPlayers != null && savedPlayers.isNotEmpty) {
+        _players.clear();
+        for (final playerName in savedPlayers) {
+          addPlayer(
+            PlayerEntity(
+              name: playerName,
+              color: getRandomAvailableColor(),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      dev.log('Error getting saved players $e');
+    }
+  }
+
+  void savePlayers() {
+    final playersNormalized = removeEmptyPlayers();
+    localDatabase.saveData(
+      AppStrings.playersKey,
+      playersNormalized.map((player) => player.name).toList(),
+    );
   }
 }

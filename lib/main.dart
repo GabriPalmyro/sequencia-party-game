@@ -41,7 +41,7 @@ class _MyAppState extends State<MyApp> {
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(
-            create: (_) => GetIt.I<PlayersController>(),
+            create: (_) => GetIt.I.get<PlayersController>(),
           ),
           ChangeNotifierProvider(
             create: (_) => GetIt.I<GameController>(),

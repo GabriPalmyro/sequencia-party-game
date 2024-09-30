@@ -26,6 +26,8 @@ class GameController extends ChangeNotifier {
   void resetGame() {
     _gameType = GameTypeEnum.SHOW_THEME_CARD;
     _numbersUsed.clear();
+    gameThemeNumber = '';
+    gameThemeDescription = '';
     notifyListeners();
   }
 

@@ -1,16 +1,20 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:sequencia/common/design_system/components/button/button_widget.dart';
 import 'package:sequencia/common/design_system/components/info_card/info_card_widget.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
+import 'package:sequencia/common/local_database/local_database.dart';
 import 'package:sequencia/common/router/app_navigator.dart';
 import 'package:sequencia/common/router/routes.dart';
+import 'package:sequencia/core/app_images.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
 import 'package:sequencia/features/controller/players_controller.dart';
 import 'package:sequencia/features/screens/main_screen/presentation/widgets/players_names_inputs_widget.dart';
+import 'package:sequencia/utils/app_strings.dart';
 
 class MainScreenPage extends StatefulWidget {
   const MainScreenPage({super.key});
@@ -120,24 +124,41 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
             SlideTransition(
               position: _logoAnimation,
               child: Image.asset(
-                'assets/images/logo.png',
-                width: 325,
+                AppImages.logo,
+                width: 250,
               ),
             ),
             SizedBox(height: theme.spacing.inline.xxxs),
-            const Expanded(
-              child: PlayersNamesInputsWidget(),
+            Expanded(
+              child: ShaderMask(
+                shaderCallback: (Rect rect) {
+                  return const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.purple, Colors.transparent, Colors.transparent, Colors.purple],
+                    stops: [0.0, 0.03, 0.97, 1.0],
+                  ).createShader(rect);
+                },
+                blendMode: BlendMode.dstOut,
+                child: const PlayersNamesInputsWidget(),
+              ),
             ),
             SizedBox(height: theme.spacing.inline.xxs),
             if (context.watch<PlayersController>().players.length <= 4) ...[
-              SlideTransition(
-                position: _infoCardAnimation,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: theme.spacing.inline.xs,
-                  ),
-                  child: const InfoCardWidget(
-                    'Para começar um novo jogo, registre pelo menos 4 participantes.',
+              GestureDetector(
+                onTap: () async {
+                  final players = await GetIt.I.get<LocalDatabase>().getData(AppStrings.playersKey);
+                  log('PlayersSavedLocally: $players');
+                },
+                child: SlideTransition(
+                  position: _infoCardAnimation,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: theme.spacing.inline.xs,
+                    ),
+                    child: const InfoCardWidget(
+                      AppStrings.playersInfoLabelLabel,
+                    ),
                   ),
                 ),
               ),
@@ -146,11 +167,13 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
             SlideTransition(
               position: _buttonAnimation,
               child: DSButtonWidget(
-                label: 'Começar',
-                isEnabled: context.watch<PlayersController>().players.length >= 4,
+                label: AppStrings.startLabel,
+                isEnabled: context.watch<PlayersController>().players.length >= 5,
                 onPressed: () {
-                  HapticFeedback.mediumImpact();
-                  if (context.read<PlayersController>().playersCount >= 4) {
+                  log('Players: ${context.read<PlayersController>().players}');
+
+                  if (context.read<PlayersController>().playersCount >= 5) {
+                    context.read<PlayersController>().savePlayers();
                     context.read<GameController>().resetGame();
                     context.read<GameController>().setPlayers = context.read<PlayersController>().removeEmptyPlayers();
                     GetIt.I.get<AppNavigator>().pushNamed(Routes.gamePrepare);
@@ -159,7 +182,7 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
                       SnackBar(
                         backgroundColor: theme.colors.secondary,
                         content: DSText(
-                          'Para começar um novo jogo, registre pelo menos 4 participantes.',
+                          AppStrings.playersInfoErrorMessage,
                           customStyle: TextStyle(
                             fontSize: theme.font.size.xxs,
                           ),

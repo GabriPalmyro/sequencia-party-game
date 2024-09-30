@@ -6,8 +6,10 @@ import 'package:sequencia/common/design_system/components/text/text_widget.dart'
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/common/router/app_navigator.dart';
 import 'package:sequencia/common/router/routes.dart';
+import 'package:sequencia/core/app_images.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
 import 'package:sequencia/features/controller/players_controller.dart';
+import 'package:sequencia/utils/app_strings.dart';
 
 class SortGameNumbersPage extends StatefulWidget {
   const SortGameNumbersPage({super.key});
@@ -26,7 +28,8 @@ class _SortGameNumbersPageState extends State<SortGameNumbersPage> {
   Future<void> _sortNumbers() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       context.read<GameController>().selectRandomTheme();
-
+      
+      context.read<PlayersController>().players.shuffle();
       final players = context.read<PlayersController>().players;
 
       for (var i = 0; i < players.length; i++) {
@@ -36,7 +39,7 @@ class _SortGameNumbersPageState extends State<SortGameNumbersPage> {
 
       await Future.delayed(const Duration(seconds: 3));
 
-      GetIt.I<AppNavigator>().pushNamedAndRemoveUntil(Routes.gameplay);
+      GetIt.I<AppNavigator>().pushReplacementNamed(Routes.gameplay);
     });
   }
 
@@ -50,7 +53,7 @@ class _SortGameNumbersPageState extends State<SortGameNumbersPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             DSText(
-              'Sorteando números...',
+              AppStrings.sortingNumbers,
               textAlign: TextAlign.center,
               customStyle: TextStyle(
                 fontWeight: theme.font.weight.light,
@@ -60,7 +63,7 @@ class _SortGameNumbersPageState extends State<SortGameNumbersPage> {
             ),
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.7,
-              child: Lottie.asset('assets/animations/clock-animation.json'),
+              child: Lottie.asset(AppAnimations.clock),
             ),
           ],
         ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:sequencia/common/design_system/components/button/icon_button_widget.dart';
@@ -16,13 +15,13 @@ import 'package:sequencia/features/screens/gameplay/widgets/player_page_view.dar
 import '../../../../common/design_system/components/button/button_widget.dart';
 import '../../../../common/design_system/components/cards/theme_card_widget.dart';
 
-class GameplayScreen extends StatefulWidget {
-  const GameplayScreen({Key? key}) : super(key: key);
+class RevealCardsPage extends StatefulWidget {
+  const RevealCardsPage({Key? key}) : super(key: key);
   @override
-  _GameplayScreenState createState() => _GameplayScreenState();
+  _RevealCardsPageState createState() => _RevealCardsPageState();
 }
 
-class _GameplayScreenState extends State<GameplayScreen> {
+class _RevealCardsPageState extends State<RevealCardsPage> {
   late PageController _pageController;
   List<PlayerEntity> players = [];
   int currentPage = 0;
@@ -59,12 +58,11 @@ class _GameplayScreenState extends State<GameplayScreen> {
         currentPage++;
       });
     } else {
-      GetIt.I<AppNavigator>().pushNamedAndRemoveUntil(Routes.gameOrderPlayers);
+      GetIt.I<AppNavigator>().pushNamedAndRemoveUntil(Routes.discussionTime);
     }
   }
 
   void sortAnotherTheme() {
-    HapticFeedback.mediumImpact();
     context.read<GameController>().selectRandomTheme();
   }
 
@@ -104,11 +102,7 @@ class _GameplayScreenState extends State<GameplayScreen> {
               children: [
                 SizedBox(width: theme.spacing.inline.xxs),
                 DSButtonWidget(
-                  label: gameType == GameTypeEnum.SHOW_THEME_CARD
-                      ? 'Revelar Tema'
-                      : gameType == GameTypeEnum.SHOW_PLAYERS_NUMBER
-                          ? 'Próximo'
-                          : 'Ordenar Cartas',
+                  label: gameType == GameTypeEnum.ORDER_PLAYERS ? 'Ordenar Cartas' : 'Próximo',
                   onPressed: _nextPage,
                 ),
                 if (gameType == GameTypeEnum.SHOW_THEME_CARD) ...[

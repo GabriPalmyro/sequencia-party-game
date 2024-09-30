@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 
@@ -31,6 +32,8 @@ class _DSButtonWidgetState extends State<DSButtonWidget> {
     setState(() {
       _isPressed = false;
     });
+
+    HapticFeedback.mediumImpact();
     widget.onPressed();
   }
 

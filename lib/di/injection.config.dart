@@ -31,11 +31,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i637.CardViewController>(() => _i637.CardViewController());
     gh.factory<_i973.GameController>(() => _i973.GameController());
-    gh.factory<_i524.PlayersController>(() => _i524.PlayersController());
     gh.lazySingleton<_i306.AppNavigator>(
         () => _i306.AppNavigatorImpl(gh<_i753.AppRouterConfig>()));
     gh.lazySingleton<_i762.LocalDatabase>(
         () => _i762.SharedPreferencesDatabase());
+    gh.factory<_i524.PlayersController>(() =>
+        _i524.PlayersController(localDatabase: gh<_i762.LocalDatabase>()));
     return this;
   }
 }
