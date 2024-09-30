@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:lottie/lottie.dart';
@@ -9,6 +10,7 @@ import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/common/router/app_navigator.dart';
 import 'package:sequencia/common/router/routes.dart';
 import 'package:sequencia/core/app_images.dart';
+import 'package:sequencia/core/app_sounds.dart';
 import 'package:sequencia/utils/time_formatter.dart';
 
 class DiscussionTimePage extends StatefulWidget {
@@ -30,15 +32,26 @@ class _DiscussionTimePageState extends State<DiscussionTimePage> {
   }
 
   void _initTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       setState(() {
         remainingSeconds -= 1;
       });
       if (timer.tick == maxSeconds) {
-        timer.cancel();
-        GetIt.I<AppNavigator>().pushReplacementNamed(Routes.gameOrderPlayers);
+        _finishTimer();
       }
     });
+  }
+
+  Future<void> _finishTimer() async {
+    _timer?.cancel();
+
+    // Play a sound when the timer finishes
+    final player = AudioPlayer();
+    await player.play(DeviceFileSource(AppSounds.finishTime));
+    
+    await Future.delayed(const Duration(seconds: 2));
+
+    GetIt.I<AppNavigator>().pushReplacementNamed(Routes.gameOrderPlayers);
   }
 
   @override
@@ -61,7 +74,7 @@ class _DiscussionTimePageState extends State<DiscussionTimePage> {
               ),
             ),
             Padding(
-              padding:  EdgeInsets.symmetric(
+              padding: EdgeInsets.symmetric(
                 horizontal: theme.spacing.inline.md,
               ),
               child: DSText(
