@@ -6,6 +6,7 @@ import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/features/controller/players_controller.dart';
 import 'package:sequencia/features/domain/player/entities/player_entity.dart';
 import 'package:sequencia/features/screens/main_screen/presentation/widgets/select_player_color_modal.dart';
+import 'package:sequencia/utils/app_consts.dart';
 
 class PlayersNamesInputsWidget extends StatefulWidget {
   const PlayersNamesInputsWidget({super.key});
@@ -64,7 +65,7 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
 
     final playersLength = context.read<PlayersController>().players.length;
 
-    if (lowercaseText.isNotEmpty && index == playersLength - 1 && playersLength < 8) {
+    if (lowercaseText.isNotEmpty && index == playersLength - 1 && playersLength < AppConsts.maxPlayers) {
       context.read<PlayersController>().addPlayer(
             PlayerEntity(
               name: '',
@@ -133,7 +134,7 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
         itemBuilder: (_, index) {
           final player = context.watch<PlayersController>().players[index];
           final isLast = index == context.read<PlayersController>().players.length - 1;
-          final showDeleteAndColorChange = isLast && context.read<PlayersController>().players.length < 8;
+          final showDeleteAndColorChange = isLast && context.read<PlayersController>().players.length < AppConsts.maxPlayers;
 
           return Padding(
             padding: EdgeInsets.symmetric(
@@ -145,6 +146,7 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
             child: DSTextField(
               hintText: 'digite seu nome',
               controller: _controllers[index],
+              textInputAction: TextInputAction.next,
               leading: showDeleteAndColorChange
                   ? null
                   : GestureDetector(

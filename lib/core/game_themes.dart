@@ -1,5 +1,4 @@
 const gameThemes = [
-  'Mangá / anime famoso',
   'Esportes mais conhecidos',
   'Contos de fadas populares',
   'Personagens da ficção com quem você gostaria de ter um encontro',
@@ -48,7 +47,6 @@ const gameThemes = [
   'Pense como um gato: os lugares mais confortáveis do mundo',
   'Brinquedos mais conhecidos',
   'Palavras que você gostaria de ouvir',
-  'Coisas leves',
   'Drinques populares',
   'Coisas que te deixam com sono',
   'Veículos mais comuns',

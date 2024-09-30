@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +11,7 @@ import 'package:sequencia/core/app_images.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
 import 'package:sequencia/features/controller/players_controller.dart';
 import 'package:sequencia/features/screens/main_screen/presentation/widgets/players_names_inputs_widget.dart';
+import 'package:sequencia/utils/app_consts.dart';
 import 'package:sequencia/utils/app_strings.dart';
 
 class MainScreenPage extends StatefulWidget {
@@ -161,11 +160,11 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
               position: _buttonAnimation,
               child: DSButtonWidget(
                 label: AppStrings.startLabel,
-                isEnabled: context.watch<PlayersController>().players.length >= 5,
+                isEnabled: context.watch<PlayersController>().players.length >= AppConsts.minPlayersToStart,
                 onPressed: () {
-                  log('Players: ${context.read<PlayersController>().players}');
+                  FocusScope.of(context).unfocus();
 
-                  if (context.read<PlayersController>().playersCount >= 5) {
+                  if (context.read<PlayersController>().playersCount >= AppConsts.minPlayersToStart) {
                     context.read<PlayersController>().savePlayers();
                     context.read<GameController>().resetGame();
                     context.read<GameController>().setPlayers = context.read<PlayersController>().removeEmptyPlayers();

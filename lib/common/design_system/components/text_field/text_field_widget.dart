@@ -3,14 +3,15 @@ import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 
 class DSTextField extends StatefulWidget {
   const DSTextField({
-     this.controller,
+    this.controller,
     Key? key,
     this.leading,
     this.trailing,
     this.hintText = '',
     this.onChanged,
     this.onTapOutside,
-     this.focusNode,
+    this.focusNode,
+    this.textInputAction,
     this.isEnabled = true,
   }) : super(key: key);
 
@@ -21,6 +22,7 @@ class DSTextField extends StatefulWidget {
   final void Function(String)? onChanged;
   final void Function(PointerDownEvent)? onTapOutside;
   final FocusNode? focusNode;
+  final TextInputAction? textInputAction;
   final bool isEnabled;
 
   @override
@@ -54,8 +56,10 @@ class _DSTextFieldState extends State<DSTextField> {
           fontWeight: theme.font.weight.semiBold,
           fontFamily: theme.font.family.base,
         ),
+        textInputAction: widget.textInputAction,
         focusNode: widget.focusNode,
         onChanged: widget.onChanged,
+        onSubmitted: (_) => widget.focusNode?.nextFocus(),
         onTapOutside: widget.onTapOutside,
         cursorColor: theme.colors.primary, // Set cursor color to white
         decoration: InputDecoration(

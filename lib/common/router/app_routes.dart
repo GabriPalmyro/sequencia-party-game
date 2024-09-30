@@ -10,6 +10,7 @@ import 'package:sequencia/features/screens/main_screen/presentation/main_screen_
 final routes = [
   PageRoute(
     route: Routes.home,
+    transition: PageTransition.slideFromBottom,
     builder: (_, __) => const MainScreenPage( ),
   ),
   PageRoute(
