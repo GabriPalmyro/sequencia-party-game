@@ -7,7 +7,6 @@ import 'package:sequencia/common/design_system/components/button/button_widget.d
 import 'package:sequencia/common/design_system/components/info_card/info_card_widget.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
-import 'package:sequencia/common/local_database/local_database.dart';
 import 'package:sequencia/common/router/app_navigator.dart';
 import 'package:sequencia/common/router/routes.dart';
 import 'package:sequencia/core/app_images.dart';
@@ -145,20 +144,14 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
             ),
             SizedBox(height: theme.spacing.inline.xxs),
             if (context.watch<PlayersController>().players.length <= 4) ...[
-              GestureDetector(
-                onTap: () async {
-                  final players = await GetIt.I.get<LocalDatabase>().getData(AppStrings.playersKey);
-                  log('PlayersSavedLocally: $players');
-                },
-                child: SlideTransition(
-                  position: _infoCardAnimation,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: theme.spacing.inline.xs,
-                    ),
-                    child: const InfoCardWidget(
-                      AppStrings.playersInfoLabelLabel,
-                    ),
+              SlideTransition(
+                position: _infoCardAnimation,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: theme.spacing.inline.xs,
+                  ),
+                  child: const InfoCardWidget(
+                    AppStrings.playersInfoLabelLabel,
                   ),
                 ),
               ),

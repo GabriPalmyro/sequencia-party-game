@@ -1,8 +1,9 @@
 import 'dart:async';
+import 'dart:developer';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sequencia/common/design_system/components/button/button_widget.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
@@ -23,7 +24,8 @@ class DiscussionTimePage extends StatefulWidget {
 class _DiscussionTimePageState extends State<DiscussionTimePage> {
   Timer? _timer;
   static const int maxSeconds = 180;
-  int remainingSeconds = 180;
+  int remainingSeconds = maxSeconds;
+  final player = AudioPlayer();
 
   @override
   void initState() {
@@ -45,13 +47,24 @@ class _DiscussionTimePageState extends State<DiscussionTimePage> {
   Future<void> _finishTimer() async {
     _timer?.cancel();
 
-    // Play a sound when the timer finishes
-    final player = AudioPlayer();
-    await player.play(DeviceFileSource(AppSounds.finishTime));
+    try {
+      // Play a sound when the timer finishes
+      await player.setVolume(1);
+      await player.setAsset(AppSounds.finishTime);
+      player.play();
+    } catch (e) {
+      log('Error playing sound: $e');
+    }
     
     await Future.delayed(const Duration(seconds: 2));
-
     GetIt.I<AppNavigator>().pushReplacementNamed(Routes.gameOrderPlayers);
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    player.dispose();
+    super.dispose();
   }
 
   @override
@@ -78,7 +91,7 @@ class _DiscussionTimePageState extends State<DiscussionTimePage> {
                 horizontal: theme.spacing.inline.md,
               ),
               child: DSText(
-                'Voces tem 3 minutos para definir os temas e discutir a ordem das cartas',
+                'Vocês tem 3 minutos para definir os temas e discutir a ordem das cartas',
                 textAlign: TextAlign.center,
                 customStyle: TextStyle(
                   fontWeight: theme.font.weight.light,
@@ -104,10 +117,7 @@ class _DiscussionTimePageState extends State<DiscussionTimePage> {
             const Spacer(),
             DSButtonWidget(
               label: 'Pular',
-              onPressed: () {
-                _timer?.cancel();
-                GetIt.I<AppNavigator>().pushReplacementNamed(Routes.gameOrderPlayers);
-              },
+              onPressed: _finishTimer,
             ),
             SizedBox(height: theme.spacing.inline.md),
           ],

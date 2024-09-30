@@ -25,6 +25,7 @@ dependencies:
   provider: ^6.1.2
   reorderables: ^0.6.0
   lottie: ^3.1.2
+  just_audio: ^0.9.40
 
   cupertino_icons: ^1.0.2
 
@@ -36,7 +37,6 @@ dev_dependencies:
   json_serializable: ^6.7.1
   mocktail: ^1.0.3
   flutter_launcher_icons: ^0.14.1
-  audioplayers: ^6.1.0
 
 flutter_launcher_icons:
   android: "launcher_icon"
@@ -50,6 +50,7 @@ flutter:
   assets:
     - assets/images/
     - assets/animations/
+    - assets/sounds/
 
   fonts:
     - family: Fredoka

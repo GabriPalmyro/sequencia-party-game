@@ -64,7 +64,7 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
 
     final playersLength = context.read<PlayersController>().players.length;
 
-    if (lowercaseText.isNotEmpty && index == playersLength - 1 && playersLength < 12) {
+    if (lowercaseText.isNotEmpty && index == playersLength - 1 && playersLength < 8) {
       context.read<PlayersController>().addPlayer(
             PlayerEntity(
               name: '',
@@ -133,7 +133,7 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
         itemBuilder: (_, index) {
           final player = context.watch<PlayersController>().players[index];
           final isLast = index == context.read<PlayersController>().players.length - 1;
-          final showDeleteAndColorChange = isLast && context.read<PlayersController>().players.length < 12;
+          final showDeleteAndColorChange = isLast && context.read<PlayersController>().players.length < 8;
 
           return Padding(
             padding: EdgeInsets.symmetric(
