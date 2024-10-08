@@ -2,16 +2,14 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sequencia/common/design_system/components/button/button_widget.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
-import 'package:sequencia/common/router/app_navigator.dart';
-import 'package:sequencia/common/router/routes.dart';
 import 'package:sequencia/core/app_images.dart';
 import 'package:sequencia/core/app_sounds.dart';
+import 'package:sequencia/router/routes.dart';
 import 'package:sequencia/utils/time_formatter.dart';
 
 class DiscussionTimePage extends StatefulWidget {
@@ -55,9 +53,9 @@ class _DiscussionTimePageState extends State<DiscussionTimePage> {
     } catch (e) {
       log('Error playing sound: $e');
     }
-    
+
     await Future.delayed(const Duration(seconds: 2));
-    GetIt.I<AppNavigator>().pushReplacementNamed(Routes.gameOrderPlayers);
+    Navigator.of(context).pushReplacementNamed(Routes.gameOrderPlayers);
   }
 
   @override

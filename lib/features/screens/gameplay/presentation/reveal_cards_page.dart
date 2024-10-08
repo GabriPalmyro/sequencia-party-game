@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:sequencia/common/design_system/components/button/icon_button_widget.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/common/design_system/core/tokens/design.dart';
-import 'package:sequencia/common/router/app_navigator.dart';
-import 'package:sequencia/common/router/routes.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
 import 'package:sequencia/features/domain/game/game_type_enum.dart';
 import 'package:sequencia/features/domain/player/entities/player_entity.dart';
 import 'package:sequencia/features/screens/gameplay/widgets/player_page_view.dart';
+import 'package:sequencia/router/routes.dart';
 
 import '../../../../common/design_system/components/button/button_widget.dart';
 import '../../../../common/design_system/components/cards/theme_card_widget.dart';
@@ -58,7 +56,7 @@ class _RevealCardsPageState extends State<RevealCardsPage> {
         currentPage++;
       });
     } else {
-      GetIt.I<AppNavigator>().pushNamedAndRemoveUntil(Routes.discussionTime);
+      Navigator.of(context).pushReplacementNamed(Routes.discussionTime);
     }
   }
 
@@ -126,6 +124,10 @@ class _RevealCardsPageState extends State<RevealCardsPage> {
   Widget _buildThemePage(DSTokens theme, String selectedTheme, String selectedDescription) {
     return Center(
       child: ThemeCard(
+        size: Size(
+          MediaQuery.of(context).size.width * 0.6,
+          MediaQuery.of(context).size.height * 0.5,
+        ),
         label: DSText(
           'O tema é',
           textAlign: TextAlign.center,

@@ -22,6 +22,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.7.0"
+  animated_reorderable_list:
+    dependency: "direct main"
+    description:
+      name: animated_reorderable_list
+      sha256: "57b1a313d6843d3afc82b8710be02440584e5421dc675009d545a88a78e38b8d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.1"
   archive:
     dependency: transitive
     description:
@@ -314,14 +322,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
-  go_router:
-    dependency: "direct main"
-    description:
-      name: go_router
-      sha256: "2cb236ba3f923043fdbe14a6a3a796b8c250e85658e28caee3e86c0c275847e5"
-      url: "https://pub.dev"
-    source: hosted
-    version: "8.2.0"
   graphs:
     dependency: transitive
     description:

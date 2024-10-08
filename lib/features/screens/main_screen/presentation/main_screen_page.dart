@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:sequencia/common/design_system/components/button/button_widget.dart';
+import 'package:sequencia/common/design_system/components/button/icon_button_widget.dart';
 import 'package:sequencia/common/design_system/components/info_card/info_card_widget.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
-import 'package:sequencia/common/router/app_navigator.dart';
-import 'package:sequencia/common/router/routes.dart';
 import 'package:sequencia/core/app_images.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
 import 'package:sequencia/features/controller/players_controller.dart';
 import 'package:sequencia/features/screens/main_screen/presentation/widgets/players_names_inputs_widget.dart';
+import 'package:sequencia/router/routes.dart';
 import 'package:sequencia/utils/app_consts.dart';
 import 'package:sequencia/utils/app_strings.dart';
 
@@ -158,31 +157,46 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
             SizedBox(height: theme.spacing.inline.sm),
             SlideTransition(
               position: _buttonAnimation,
-              child: DSButtonWidget(
-                label: AppStrings.startLabel,
-                isEnabled: context.watch<PlayersController>().players.length >= AppConsts.minPlayersToStart,
-                onPressed: () {
-                  FocusScope.of(context).unfocus();
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  DSIconButtonWidget(
+                    label: Icons.settings,
+                    size: const Size(50, 40),
+                    onPressed: () => Navigator.of(context).pushNamed(Routes.settings),
+                  ),
+                  DSButtonWidget(
+                    label: AppStrings.startLabel,
+                    isEnabled: context.watch<PlayersController>().players.length >= AppConsts.minPlayersToStart,
+                    onPressed: () {
+                      FocusScope.of(context).unfocus();
 
-                  if (context.read<PlayersController>().playersCount >= AppConsts.minPlayersToStart) {
-                    context.read<PlayersController>().savePlayers();
-                    context.read<GameController>().resetGame();
-                    context.read<GameController>().setPlayers = context.read<PlayersController>().removeEmptyPlayers();
-                    GetIt.I.get<AppNavigator>().pushNamed(Routes.gamePrepare);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        backgroundColor: theme.colors.secondary,
-                        content: DSText(
-                          AppStrings.playersInfoErrorMessage,
-                          customStyle: TextStyle(
-                            fontSize: theme.font.size.xxs,
+                      if (context.read<PlayersController>().playersCount >= AppConsts.minPlayersToStart) {
+                        context.read<PlayersController>().savePlayers();
+                        context.read<GameController>().resetGame();
+                        context.read<GameController>().setPlayers = context.read<PlayersController>().removeEmptyPlayers();
+                        Navigator.of(context).pushNamed(Routes.gamePrepare);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: theme.colors.secondary,
+                            content: DSText(
+                              AppStrings.playersInfoErrorMessage,
+                              customStyle: TextStyle(
+                                fontSize: theme.font.size.xxs,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    );
-                  }
-                },
+                        );
+                      }
+                    },
+                  ),
+                  DSIconButtonWidget(
+                    label: Icons.help_rounded,
+                    size: const Size(50, 40),
+                    onPressed: () => Navigator.of(context).pushNamed(Routes.guide),
+                  ),
+                ],
               ),
             ),
             SizedBox(height: theme.spacing.inline.sm),

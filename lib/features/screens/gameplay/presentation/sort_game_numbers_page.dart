@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
-import 'package:sequencia/common/router/app_navigator.dart';
-import 'package:sequencia/common/router/routes.dart';
 import 'package:sequencia/core/app_images.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
 import 'package:sequencia/features/controller/players_controller.dart';
+import 'package:sequencia/router/routes.dart';
 import 'package:sequencia/utils/app_strings.dart';
 
 class SortGameNumbersPage extends StatefulWidget {
@@ -28,7 +26,7 @@ class _SortGameNumbersPageState extends State<SortGameNumbersPage> {
   Future<void> _sortNumbers() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       context.read<GameController>().selectRandomTheme();
-      
+
       context.read<PlayersController>().players.shuffle();
       final players = context.read<PlayersController>().players;
 
@@ -39,7 +37,7 @@ class _SortGameNumbersPageState extends State<SortGameNumbersPage> {
 
       await Future.delayed(const Duration(seconds: 3));
 
-      GetIt.I<AppNavigator>().pushReplacementNamed(Routes.gameplay);
+      Navigator.of(context).pushReplacementNamed(Routes.gameplay);
     });
   }
 
