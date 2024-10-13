@@ -147,6 +147,7 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
               hintText: 'digite seu nome',
               controller: _controllers[index],
               textInputAction: TextInputAction.next,
+              onTapOutside: (_) => FocusScope.of(context).unfocus(),
               leading: showDeleteAndColorChange
                   ? null
                   : GestureDetector(
@@ -158,7 +159,6 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
                         ),
                         child: Container(
                           width: 40,
-                          height: 30,
                           decoration: BoxDecoration(
                             color: player.color ?? theme.colors.secondary,
                             borderRadius: BorderRadius.circular(
@@ -179,7 +179,7 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
                         child: Icon(
                           Icons.delete_outline,
                           color: theme.colors.white,
-                          size: 32,
+                          size: 28,
                         ),
                       ),
                     ),

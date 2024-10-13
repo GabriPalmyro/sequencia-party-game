@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sequencia/common/design_system/components/button/button_widget.dart';
-import 'package:sequencia/common/design_system/components/button/icon_button_widget.dart';
 import 'package:sequencia/common/design_system/components/info_card/info_card_widget.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
@@ -160,17 +159,16 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  DSIconButtonWidget(
-                    label: Icons.settings,
-                    size: const Size(50, 40),
-                    onPressed: () => Navigator.of(context).pushNamed(Routes.settings),
-                  ),
+                  const Spacer(),
+                  // DSIconButtonWidget(
+                  //   label: Icons.settings,
+                  //   size: const Size(50, 40),
+                  //   onPressed: () => Navigator.of(context).pushNamed(Routes.settings),
+                  // ),
                   DSButtonWidget(
                     label: AppStrings.startLabel,
                     isEnabled: context.watch<PlayersController>().players.length >= AppConsts.minPlayersToStart,
-                    onPressed: () {
-                      FocusScope.of(context).unfocus();
-
+                    onPressed: () {                    
                       if (context.read<PlayersController>().playersCount >= AppConsts.minPlayersToStart) {
                         context.read<PlayersController>().savePlayers();
                         context.read<GameController>().resetGame();
@@ -191,11 +189,12 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
                       }
                     },
                   ),
-                  DSIconButtonWidget(
-                    label: Icons.help_rounded,
-                    size: const Size(50, 40),
-                    onPressed: () => Navigator.of(context).pushNamed(Routes.guide),
-                  ),
+                  const Spacer(),
+                  // DSIconButtonWidget(
+                  //   label: Icons.help_rounded,
+                  //   size: const Size(50, 40),
+                  //   onPressed: () => Navigator.of(context).pushNamed(Routes.guide),
+                  // ),
                 ],
               ),
             ),

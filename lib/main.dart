@@ -65,7 +65,7 @@ class _MyAppState extends State<MyApp> {
           ],
           debugShowCheckedModeBanner: false,
           onGenerateRoute: AppRouter.onGenerateRoute,
-          initialRoute: Routes.home,
+          initialRoute: Routes.splash,
           title: AppStrings.title,
         ),
       ),

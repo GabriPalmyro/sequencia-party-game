@@ -6,6 +6,7 @@ import 'package:sequencia/features/screens/gameplay/presentation/reveal_cards_pa
 import 'package:sequencia/features/screens/gameplay/presentation/sort_game_numbers_page.dart';
 import 'package:sequencia/features/screens/main_screen/presentation/main_screen_page.dart';
 import 'package:sequencia/features/screens/settings/presentation/settings_page.dart';
+import 'package:sequencia/features/screens/splash/presentation/splash_page.dart';
 import 'package:sequencia/router/page_transition.dart';
 import 'package:sequencia/router/routes.dart';
 
@@ -14,6 +15,11 @@ class AppRouter {
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case Routes.splash:
+        return PageRouteBuilder(
+          pageBuilder: (_, __, ___) => const SplashPage(),
+          transitionsBuilder: PageTransition.slideUp,
+        );
       case Routes.home:
         return PageRouteBuilder(
           pageBuilder: (_, __, ___) => const MainScreenPage(),

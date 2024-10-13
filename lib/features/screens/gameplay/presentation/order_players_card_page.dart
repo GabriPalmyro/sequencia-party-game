@@ -13,6 +13,7 @@ import 'package:sequencia/features/domain/game/game_type_enum.dart';
 import 'package:sequencia/features/screens/gameplay/presentation/widgets/show_player_card_modal.dart';
 import 'package:sequencia/features/screens/gameplay/presentation/widgets/show_theme_card_modal.dart';
 import 'package:sequencia/router/routes.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class OrderPlayersCardPage extends StatefulWidget {
   const OrderPlayersCardPage({super.key});
@@ -30,6 +31,13 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> {
     super.initState();
     _scrollController = ScrollController();
     revealedCards = List.filled(context.read<GameController>().players.length, false);
+    WakelockPlus.enable();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WakelockPlus.disable();
   }
 
   @override
@@ -38,71 +46,67 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> {
     return Scaffold(
       backgroundColor: theme.colors.background,
       body: Center(
-        child: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            SliverToBoxAdapter(child: SizedBox(height: theme.spacing.inline.md)),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: theme.spacing.inline.xs,
+        child: Column(
+          // controller: _scrollController,
+          children: [
+            SizedBox(height: theme.spacing.inline.md),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: theme.spacing.inline.xs,
+              ),
+              child: DSText(
+                'Ordene os jogadores',
+                customStyle: TextStyle(
+                  fontSize: theme.font.size.md,
+                  fontWeight: theme.font.weight.semiBold,
+                  color: theme.colors.white,
                 ),
-                child: DSText(
-                  'Ordene os jogadores',
-                  customStyle: TextStyle(
-                    fontSize: theme.font.size.md,
-                    fontWeight: theme.font.weight.semiBold,
-                    color: theme.colors.white,
-                  ),
+              ),
+            )
+                .animate(
+                  delay: 250.ms,
+                )
+                .fade(
+                  duration: 300.ms,
+                  delay: 300.ms,
+                )
+                .slide(
+                  begin: const Offset(0, 1),
+                  end: const Offset(0, 0),
                 ),
-              )
-                  .animate(
-                    delay: 250.ms,
-                  )
-                  .fade(
-                    duration: 300.ms,
-                    delay: 300.ms,
-                  )
-                  .slide(
-                    begin: const Offset(0, 1),
-                    end: const Offset(0, 0),
-                  ),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: theme.spacing.inline.xs,
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: theme.spacing.inline.xs,
+              ),
+              child: DSText(
+                'Do menor para o maior',
+                customStyle: TextStyle(
+                  fontSize: theme.font.size.xxs,
+                  fontWeight: theme.font.weight.light,
+                  color: theme.colors.white,
                 ),
-                child: DSText(
-                  'Do menor para o maior',
-                  customStyle: TextStyle(
-                    fontSize: theme.font.size.xxs,
-                    fontWeight: theme.font.weight.light,
-                    color: theme.colors.white,
-                  ),
+              ),
+            )
+                .animate(
+                  delay: 250.ms,
+                )
+                .fade(
+                  duration: 300.ms,
+                  delay: 300.ms,
+                )
+                .slide(
+                  begin: const Offset(0, 1),
+                  end: const Offset(0, 0),
                 ),
-              )
-                  .animate(
-                    delay: 250.ms,
-                  )
-                  .fade(
-                    duration: 300.ms,
-                    delay: 300.ms,
-                  )
-                  .slide(
-                    begin: const Offset(0, 1),
-                    end: const Offset(0, 0),
-                  ),
-            ),
-            SliverToBoxAdapter(
+            Expanded(
               child: AnimatedReorderableGridView(
+                // controller: _scrollController,
                 items: context.watch<GameController>().players,
                 scrollDirection: Axis.vertical,
                 physics: const BouncingScrollPhysics(),
                 padding: EdgeInsets.symmetric(
                   horizontal: theme.spacing.inline.xs,
                 ),
-                shrinkWrap: true,
                 itemBuilder: (_, index) {
                   final player = context.read<GameController>().players[index];
                   return GestureDetector(
@@ -111,7 +115,7 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> {
                       if (context.read<GameController>().isGameFinished()) {
                         return;
                       }
-
+              
                       showModalBottomSheet(
                         context: context,
                         backgroundColor: Colors.transparent,
@@ -166,87 +170,57 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> {
                 },
               ),
             ),
-            SliverToBoxAdapter(child: SizedBox(height: theme.spacing.inline.sm)),
-            SliverToBoxAdapter(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  DSButtonWidget(
-                    label: context.watch<GameController>().isGameFinished() ? 'Finalizar' : 'Revelar',
-                    onPressed: () async {
-                      if (context.read<GameController>().isGameFinished()) {
-                        Navigator.of(context).pushReplacementNamed(Routes.home);
-                      } else {
-                        context.read<GameController>().changeGameType(GameTypeEnum.REVEAL_PLAYERS);
-                      }
-
-                      _scrollController.animateTo(
-                        0,
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeOut,
-                      );
-
-                      for (int i = 0; i < revealedCards.length; i++) {
-                        await Future.delayed(const Duration(seconds: 1));
-                        Future.delayed(Duration(seconds: i * 2), () {
-                          setState(() {
-                            revealedCards[i] = true;
-                          });
+            SizedBox(height: theme.spacing.inline.sm),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                DSButtonWidget(
+                  label: context.watch<GameController>().isGameFinished() ? 'Finalizar' : 'Revelar',
+                  onPressed: () async {
+                    if (context.read<GameController>().isGameFinished()) {
+                      Navigator.of(context).pushReplacementNamed(Routes.home);
+                    } else {
+                      context.read<GameController>().changeGameType(GameTypeEnum.REVEAL_PLAYERS);
+                    }
+            
+                    _scrollController.animateTo(
+                      0,
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.easeOut,
+                    );
+            
+                    for (int i = 0; i < revealedCards.length; i++) {
+                      await Future.delayed(const Duration(seconds: 1));
+                      Future.delayed(Duration(seconds: i * 2), () {
+                        setState(() {
+                          revealedCards[i] = true;
                         });
-
-                        if (i == revealedCards.length - 1) {
-                          context.read<GameController>().changeGameType(GameTypeEnum.GAME_FINISHED);
-                        }
+                      });
+            
+                      if (i == revealedCards.length - 1) {
+                        context.read<GameController>().changeGameType(GameTypeEnum.GAME_FINISHED);
                       }
-                    },
-                  ),
-                  SizedBox(width: theme.spacing.inline.xs),
-                  DSIconButtonWidget(
-                    label: Icons.remove_red_eye,
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        backgroundColor: Colors.transparent,
-                        isScrollControlled: true,
-                        builder: (BuildContext context) {
-                          return const ShowThemeCardModal();
-                        },
-                      );
-                    },
-                    size: const Size(70, 40),
-                  ),
-                  SizedBox(width: theme.spacing.inline.xxs),
-                ]
-                    .animate(
-                      delay: 250.ms,
-                    )
-                    .fade(
-                      duration: 300.ms,
-                      delay: 300.ms,
-                    )
-                    .slide(
-                      begin: const Offset(0, 1),
-                      end: const Offset(0, 0),
-                    ),
-              ),
-            ),
-            SliverToBoxAdapter(child: SizedBox(height: theme.spacing.inline.xxs)),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: theme.spacing.inline.xs,
+                    }
+                  },
                 ),
-                child: DSText(
-                  'Segure em qualquer carta para ver mais detalhes',
-                  textAlign: TextAlign.center,
-                  customStyle: TextStyle(
-                    fontSize: theme.font.size.us,
-                    fontWeight: theme.font.weight.light,
-                    color: theme.colors.white,
-                  ),
+                SizedBox(width: theme.spacing.inline.xs),
+                DSIconButtonWidget(
+                  label: Icons.remove_red_eye,
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      backgroundColor: Colors.transparent,
+                      isScrollControlled: true,
+                      builder: (BuildContext context) {
+                        return const ShowThemeCardModal();
+                      },
+                    );
+                  },
+                  size: const Size(70, 40),
                 ),
-              )
+                SizedBox(width: theme.spacing.inline.xxs),
+              ]
                   .animate(
                     delay: 250.ms,
                   )
@@ -259,7 +233,33 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> {
                     end: const Offset(0, 0),
                   ),
             ),
-            SliverToBoxAdapter(child: SizedBox(height: theme.spacing.inline.xs)),
+            SizedBox(height: theme.spacing.inline.xxs),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: theme.spacing.inline.xs,
+              ),
+              child: DSText(
+                'Segure em qualquer carta para ver mais detalhes',
+                textAlign: TextAlign.center,
+                customStyle: TextStyle(
+                  fontSize: theme.font.size.us,
+                  fontWeight: theme.font.weight.light,
+                  color: theme.colors.white,
+                ),
+              ),
+            )
+                .animate(
+                  delay: 250.ms,
+                )
+                .fade(
+                  duration: 300.ms,
+                  delay: 300.ms,
+                )
+                .slide(
+                  begin: const Offset(0, 1),
+                  end: const Offset(0, 0),
+                ),
+            SizedBox(height: theme.spacing.inline.xs),
           ],
         ),
       ),

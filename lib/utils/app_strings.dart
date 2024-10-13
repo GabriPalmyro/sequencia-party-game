@@ -8,4 +8,7 @@ class AppStrings {
 
   // KEYS
   static const playersKey = 'players';
+
+  // VERSION
+  static const version = '1.0.1';
 }

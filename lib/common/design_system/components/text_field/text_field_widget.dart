@@ -52,7 +52,7 @@ class _DSTextFieldState extends State<DSTextField> {
         textAlign: TextAlign.center, // Centralize the input text
         style: TextStyle(
           color: theme.colors.white,
-          fontSize: theme.font.size.xxs,
+          fontSize: theme.font.size.xxxs,
           fontWeight: theme.font.weight.semiBold,
           fontFamily: theme.font.family.base,
         ),
@@ -69,7 +69,7 @@ class _DSTextFieldState extends State<DSTextField> {
           suffixIcon: widget.trailing,
           labelStyle: TextStyle(
             color: theme.colors.white,
-            fontSize: theme.font.size.sm,
+            fontSize: theme.font.size.xs,
             fontWeight: theme.font.weight.regular,
             fontFamily: theme.font.family.base,
           ),
