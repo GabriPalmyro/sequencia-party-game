@@ -43,8 +43,8 @@ android {
         applicationId = "br.com.palmyro.sequencia"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = flutterVersionCode.toInteger()
-        versionName = flutterVersionName
+        versionCode = 3
+        versionName = "1.0.3"
     }
 
     signingConfigs {
