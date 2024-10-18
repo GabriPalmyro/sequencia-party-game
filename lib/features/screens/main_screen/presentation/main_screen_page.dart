@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sequencia/common/design_system/components/button/button_widget.dart';
+import 'package:sequencia/common/design_system/components/button/icon_button_widget.dart';
 import 'package:sequencia/common/design_system/components/info_card/info_card_widget.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
@@ -111,6 +112,7 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
     final theme = DSTheme.getDesignTokensOf(context);
     return Scaffold(
       backgroundColor: theme.colors.background,
+      resizeToAvoidBottomInset: false,
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -189,12 +191,13 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
                       }
                     },
                   ),
+                  SizedBox(width: theme.spacing.inline.sm),
+                  DSIconButtonWidget(
+                    label: Icons.help_rounded,
+                    size: const Size(50, 40),
+                    onPressed: () => Navigator.of(context).pushNamed(Routes.guide),
+                  ),
                   const Spacer(),
-                  // DSIconButtonWidget(
-                  //   label: Icons.help_rounded,
-                  //   size: const Size(50, 40),
-                  //   onPressed: () => Navigator.of(context).pushNamed(Routes.guide),
-                  // ),
                 ],
               ),
             ),

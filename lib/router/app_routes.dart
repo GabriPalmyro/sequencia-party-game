@@ -52,7 +52,7 @@ class AppRouter {
         );
       case Routes.guide:
         return PageRouteBuilder(
-          pageBuilder: (_, __, ___) => const GameGuidePage(),
+          pageBuilder: (_, __, ___) => const GameRulesPage(),
           transitionsBuilder: PageTransition.slideLeft,
         );
       default:
