@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
@@ -6,12 +7,18 @@ import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/di/injection.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
 import 'package:sequencia/features/controller/players_controller.dart';
+import 'package:sequencia/firebase_options.dart';
 import 'package:sequencia/router/app_routes.dart';
 import 'package:sequencia/router/routes.dart';
 import 'package:sequencia/utils/app_strings.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Inicialize o Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   final GetIt getIt = GetIt.instance;
 

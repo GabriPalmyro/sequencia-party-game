@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "404203590281",
+    "project_id": "sequencia-game",
+    "storage_bucket": "sequencia-game.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:404203590281:android:3b9b38dee3a64d2bd26c58",
+        "android_client_info": {
+          "package_name": "br.com.palmyro.sequencia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZJ8DWswVjbQ23jrScnYFzs8eJzQitTU4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
