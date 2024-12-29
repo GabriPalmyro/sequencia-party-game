@@ -165,10 +165,11 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
                   DSButtonWidget(
                     label: AppStrings.startLabel,
                     isEnabled: context.watch<PlayersController>().players.length >= AppConsts.minPlayersToStart,
-                    onPressed: () {
+                    onPressed: () async {
                       if (context.read<PlayersController>().playersCount >= AppConsts.minPlayersToStart) {
                         context.read<PlayersController>().savePlayers();
                         context.read<GameController>().resetGame();
+                        await context.read<GameController>().getGameThemes();
                         context.read<GameController>().setPlayers = context.read<PlayersController>().removeEmptyPlayers();
                         Navigator.of(context).pushNamed(Routes.gamePrepare);
                       } else {

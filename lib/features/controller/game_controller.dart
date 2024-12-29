@@ -1,8 +1,9 @@
-import 'dart:math';
+import 'dart:developer';
+import 'dart:math' show Random;
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
-import 'package:sequencia/core/game_themes.dart';
 import 'package:sequencia/features/domain/game/game_type_enum.dart';
 import 'package:sequencia/features/domain/player/entities/player_entity.dart';
 
@@ -11,6 +12,44 @@ class GameController extends ChangeNotifier {
   GameTypeEnum _gameType = GameTypeEnum.SHOW_THEME_CARD;
 
   GameTypeEnum get gameType => _gameType;
+
+  List<String> gameThemes = List.empty(growable: true);
+
+  void setGameThemes(List<String> themes) {
+    gameThemes = themes;
+    notifyListeners();
+  }
+
+  void addGameTheme(String theme) {
+    gameThemes.add(theme);
+    notifyListeners();
+  }
+
+  Future<void> getGameThemes() async {
+    final themesCollection = FirebaseFirestore.instance.collection(
+      'themes',
+    );
+
+    try {
+      // Obtém todos os documentos da coleção
+      final QuerySnapshot snapshot = await themesCollection.get();
+
+      // Extrai os temas dos documentos
+      final List<String> themes = snapshot.docs
+          .map(
+            (doc) => doc['theme'] as String,
+          )
+          .toList();
+
+      setGameThemes(themes);
+
+      log('Temas carregados: ${themes.length}');
+
+      notifyListeners();
+    } catch (e) {
+      log('Erro ao buscar os temas: $e');
+    }
+  }
 
   bool isGameFinished() {
     return _gameType == GameTypeEnum.GAME_FINISHED || _gameType == GameTypeEnum.REVEAL_PLAYERS;
