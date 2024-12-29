@@ -162,15 +162,10 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   const Spacer(),
-                  // DSIconButtonWidget(
-                  //   label: Icons.settings,
-                  //   size: const Size(50, 40),
-                  //   onPressed: () => Navigator.of(context).pushNamed(Routes.settings),
-                  // ),
                   DSButtonWidget(
                     label: AppStrings.startLabel,
                     isEnabled: context.watch<PlayersController>().players.length >= AppConsts.minPlayersToStart,
-                    onPressed: () {                    
+                    onPressed: () {
                       if (context.read<PlayersController>().playersCount >= AppConsts.minPlayersToStart) {
                         context.read<PlayersController>().savePlayers();
                         context.read<GameController>().resetGame();
