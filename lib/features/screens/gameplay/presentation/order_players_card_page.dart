@@ -14,6 +14,7 @@ import 'package:sequencia/features/screens/gameplay/presentation/widgets/exit_ga
 import 'package:sequencia/features/screens/gameplay/presentation/widgets/show_player_card_modal.dart';
 import 'package:sequencia/features/screens/gameplay/presentation/widgets/show_theme_card_modal.dart';
 import 'package:sequencia/router/routes.dart';
+import 'package:sequencia/utils/app_animations.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class OrderPlayersCardPage extends StatefulWidget {
@@ -71,18 +72,7 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> {
                     color: theme.colors.white,
                   ),
                 ),
-              )
-                  .animate(
-                    delay: 250.ms,
-                  )
-                  .fade(
-                    duration: 300.ms,
-                    delay: 300.ms,
-                  )
-                  .slide(
-                    begin: const Offset(0, 1),
-                    end: const Offset(0, 0),
-                  ),
+              ).animateIn(),
               Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: theme.spacing.inline.xs,
@@ -95,21 +85,10 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> {
                     color: theme.colors.white,
                   ),
                 ),
-              )
-                  .animate(
-                    delay: 250.ms,
-                  )
-                  .fade(
-                    duration: 300.ms,
-                    delay: 300.ms,
-                  )
-                  .slide(
-                    begin: const Offset(0, 1),
-                    end: const Offset(0, 0),
-                  ),
+              ).animateIn(),
               Expanded(
                 child: AnimatedReorderableGridView(
-                  // controller: _scrollController,
+                  controller: _scrollController,
                   items: context.watch<GameController>().players,
                   scrollDirection: Axis.vertical,
                   physics: const BouncingScrollPhysics(),
@@ -178,7 +157,7 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> {
                     context.read<GameController>().onReorder(oldIndex, newIndex);
                   },
                 ),
-              ),
+              ).animateIn(),
               SizedBox(height: theme.spacing.inline.sm),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -201,7 +180,26 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> {
 
                       for (int i = 0; i < revealedCards.length; i++) {
                         await Future.delayed(const Duration(seconds: 1));
-                        Future.delayed(Duration(seconds: i * 2), () {
+                        Future.delayed(Duration(seconds: (i * 1.5).toInt()), () {
+                          if (!_scrollController.hasClients) {
+                            return;
+                          }
+
+                          // const cardHeight = 150.0; // Assuming each card has a height of 150
+                          // final cardPosition = i * cardHeight;
+                          // final screenHeight = MediaQuery.of(context).size.height;
+                          // final scrollOffset = _scrollController.offset;
+                          // final cardBottomPosition = cardPosition + cardHeight;
+
+                          // if (cardBottomPosition > scrollOffset + screenHeight || cardPosition < scrollOffset) {
+                          //   final targetPosition = cardPosition - (screenHeight - cardHeight) / 2;
+                          //   _scrollController.animateTo(
+                          //     targetPosition,
+                          //     duration: const Duration(milliseconds: 300),
+                          //     curve: Curves.easeOut,
+                          //   );
+                          // }
+
                           setState(() {
                             revealedCards[i] = true;
                           });
@@ -256,18 +254,7 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> {
                     color: theme.colors.white,
                   ),
                 ),
-              )
-                  .animate(
-                    delay: 250.ms,
-                  )
-                  .fade(
-                    duration: 300.ms,
-                    delay: 300.ms,
-                  )
-                  .slide(
-                    begin: const Offset(0, 1),
-                    end: const Offset(0, 0),
-                  ),
+              ).animateIn(),
               SizedBox(height: theme.spacing.inline.xs),
             ],
           ),

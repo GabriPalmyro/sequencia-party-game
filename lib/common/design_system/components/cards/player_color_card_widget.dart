@@ -40,12 +40,17 @@ class PlayerColorCard extends StatelessWidget {
             padding: EdgeInsets.only(
               left: theme.spacing.inline.xxs,
               bottom: theme.spacing.inline.xxxs,
+              right: 4,
             ),
-            child: DSText(
-              name,
-              customStyle: TextStyle(
-                fontSize: theme.font.size.xxxs,
-                fontWeight: theme.font.weight.semiBold,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: DSText(
+                name,
+                maxLines: 1,
+                customStyle: TextStyle(
+                  fontSize: theme.font.size.xxxs,
+                  fontWeight: theme.font.weight.semiBold,
+                ),
               ),
             ),
           ),

@@ -28,9 +28,10 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     gh.factory<_i637.CardViewController>(() => _i637.CardViewController());
-    gh.factory<_i973.GameController>(() => _i973.GameController());
     gh.lazySingleton<_i762.LocalDatabase>(
         () => _i762.SharedPreferencesDatabase());
+    gh.singleton<_i973.GameController>(
+        () => _i973.GameController(gh<_i762.LocalDatabase>()));
     gh.factory<_i524.PlayersController>(() =>
         _i524.PlayersController(localDatabase: gh<_i762.LocalDatabase>()));
     return this;

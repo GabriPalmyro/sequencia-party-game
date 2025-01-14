@@ -169,7 +169,6 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
                       if (context.read<PlayersController>().playersCount >= AppConsts.minPlayersToStart) {
                         context.read<PlayersController>().savePlayers();
                         context.read<GameController>().resetGame();
-                        await context.read<GameController>().getGameThemes();
                         context.read<GameController>().setPlayers = context.read<PlayersController>().removeEmptyPlayers();
                         Navigator.of(context).pushNamed(Routes.gamePrepare);
                       } else {

@@ -6,10 +6,12 @@ class DSText extends StatelessWidget {
     this.label, {
     this.customStyle,
     this.textAlign = TextAlign.left,
+    this.maxLines,
   });
   final String label;
   final TextStyle? customStyle;
   final TextAlign textAlign;
+  final int? maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +28,7 @@ class DSText extends StatelessWidget {
       label,
       style: style,
       textAlign: textAlign,
+      maxLines: maxLines,
     );
   }
 }

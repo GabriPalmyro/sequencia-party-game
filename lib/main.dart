@@ -14,7 +14,7 @@ import 'package:sequencia/utils/app_strings.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Inicialize o Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -38,7 +38,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   Widget build(BuildContext context) {
     return DSTheme(
@@ -46,10 +45,12 @@ class _MyAppState extends State<MyApp> {
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(
+            lazy: false,
             create: (_) => GetIt.I.get<PlayersController>(),
           ),
           ChangeNotifierProvider(
-            create: (_) => GetIt.I<GameController>(),
+            lazy: false,
+            create: (_) => GetIt.I<GameController>()..getGameThemes(),
           ),
         ],
         child: MaterialApp(

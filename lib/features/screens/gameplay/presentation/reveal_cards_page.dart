@@ -61,6 +61,25 @@ class _RevealCardsPageState extends State<RevealCardsPage> {
     }
   }
 
+  void _backPage() {
+    if (currentPage > 0) {
+      _pageController.previousPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+
+      if (currentPage == players.length) {
+        context.read<GameController>().changeGameType(GameTypeEnum.SHOW_PLAYERS_NUMBER);
+      } else if (currentPage - 1 == 0) {
+        context.read<GameController>().changeGameType(GameTypeEnum.SHOW_THEME_CARD);
+      }
+
+      setState(() {
+        currentPage--;
+      });
+    }
+  }
+
   void sortAnotherTheme() {
     context.read<GameController>().selectRandomTheme();
   }
@@ -107,11 +126,20 @@ class _RevealCardsPageState extends State<RevealCardsPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(width: theme.spacing.inline.xxs),
+                  if (currentPage > 0) ...[
+                    const Spacer(),
+                    DSIconButtonWidget(
+                      label: Icons.keyboard_arrow_left_rounded,
+                      size: const Size(70, 40),
+                      onPressed: _backPage,
+                    ),
+                  ],
+                  const Spacer(),
                   DSButtonWidget(
-                    label: gameType == GameTypeEnum.ORDER_PLAYERS ? 'Ordenar Cartas' : 'Próximo',
+                    label: gameType == GameTypeEnum.ORDER_PLAYERS ? 'Ordenar' : 'Próximo',
                     onPressed: _nextPage,
                   ),
+                  const Spacer(),
                   if (gameType == GameTypeEnum.SHOW_THEME_CARD) ...[
                     SizedBox(width: theme.spacing.inline.sm),
                     DSIconButtonWidget(
@@ -119,7 +147,7 @@ class _RevealCardsPageState extends State<RevealCardsPage> {
                       size: const Size(70, 40),
                       onPressed: sortAnotherTheme,
                     ),
-                    SizedBox(width: theme.spacing.inline.xxs),
+                    const Spacer(),
                   ],
                 ],
               ),
@@ -142,7 +170,7 @@ class _RevealCardsPageState extends State<RevealCardsPage> {
           'O tema é',
           textAlign: TextAlign.center,
           customStyle: TextStyle(
-            fontSize: theme.font.size.xxs,
+            fontSize: theme.font.size.xs,
             fontWeight: theme.font.weight.light,
             color: theme.colors.white,
           ),
@@ -151,18 +179,18 @@ class _RevealCardsPageState extends State<RevealCardsPage> {
           selectedTheme,
           textAlign: TextAlign.center,
           customStyle: TextStyle(
-            fontSize: theme.font.size.xxxl,
+            fontSize: theme.font.size.ul,
             fontWeight: theme.font.weight.bold,
             color: theme.colors.white,
           ),
         ),
         description: Padding(
-          padding: EdgeInsets.symmetric(horizontal: theme.spacing.inline.xxs),
+          padding: EdgeInsets.symmetric(horizontal: theme.spacing.inline.sm),
           child: DSText(
             selectedDescription,
             textAlign: TextAlign.center,
             customStyle: TextStyle(
-              fontSize: theme.font.size.xxxs,
+              fontSize: theme.font.size.xxs,
               fontWeight: theme.font.weight.regular,
               color: theme.colors.white,
             ),

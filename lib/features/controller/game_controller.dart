@@ -8,12 +8,9 @@ import 'package:sequencia/common/local_database/local_database.dart';
 import 'package:sequencia/features/domain/game/game_type_enum.dart';
 import 'package:sequencia/features/domain/player/entities/player_entity.dart';
 
-@Injectable()
+@singleton
 class GameController extends ChangeNotifier {
-  GameController(this.localDatabase) {
-    getGameThemes();
-  }
-
+  GameController(this.localDatabase);
   final LocalDatabase localDatabase;
 
   GameTypeEnum _gameType = GameTypeEnum.SHOW_THEME_CARD;
@@ -51,7 +48,7 @@ class GameController extends ChangeNotifier {
       setGameThemes(themes);
 
       log('Temas carregados: ${themes.length}');
-      
+
       localDatabase.saveData('gameThemes', themes);
       notifyListeners();
     } catch (e) {
