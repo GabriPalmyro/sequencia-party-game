@@ -7,6 +7,7 @@ import 'package:sequencia/common/design_system/core/tokens/design.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
 import 'package:sequencia/features/domain/game/game_type_enum.dart';
 import 'package:sequencia/features/domain/player/entities/player_entity.dart';
+import 'package:sequencia/features/screens/gameplay/presentation/widgets/exit_game_dialog_widget.dart';
 import 'package:sequencia/features/screens/gameplay/widgets/player_page_view.dart';
 import 'package:sequencia/router/routes.dart';
 
@@ -70,52 +71,61 @@ class _RevealCardsPageState extends State<RevealCardsPage> {
     final gameController = Provider.of<GameController>(context);
     final gameType = context.watch<GameController>().gameType;
     players = gameController.players;
-    return Scaffold(
-      backgroundColor: theme.colors.background,
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  _buildThemePage(
-                    theme,
-                    context.read<GameController>().gameThemeNumber,
-                    context.read<GameController>().gameThemeDescription,
-                  ),
-                  ...players.asMap().entries.map(
-                        (entry) => PlayerPageView(
-                          player: entry.value,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        showDialog(
+          context: context,
+          builder: (_) => const ExitGameDialogWidget(),
+        );
+      },
+      child: Scaffold(
+        backgroundColor: theme.colors.background,
+        body: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: PageView(
+                  controller: _pageController,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    _buildThemePage(
+                      theme,
+                      context.read<GameController>().gameThemeNumber,
+                      context.read<GameController>().gameThemeDescription,
+                    ),
+                    ...players.asMap().entries.map(
+                          (entry) => PlayerPageView(
+                            player: entry.value,
+                          ),
                         ),
-                      ),
+                  ],
+                ),
+              ),
+              SizedBox(height: theme.spacing.inline.xs),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(width: theme.spacing.inline.xxs),
+                  DSButtonWidget(
+                    label: gameType == GameTypeEnum.ORDER_PLAYERS ? 'Ordenar Cartas' : 'Próximo',
+                    onPressed: _nextPage,
+                  ),
+                  if (gameType == GameTypeEnum.SHOW_THEME_CARD) ...[
+                    SizedBox(width: theme.spacing.inline.sm),
+                    DSIconButtonWidget(
+                      label: Icons.restart_alt,
+                      size: const Size(70, 40),
+                      onPressed: sortAnotherTheme,
+                    ),
+                    SizedBox(width: theme.spacing.inline.xxs),
+                  ],
                 ],
               ),
-            ),
-            SizedBox(height: theme.spacing.inline.xs),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(width: theme.spacing.inline.xxs),
-                DSButtonWidget(
-                  label: gameType == GameTypeEnum.ORDER_PLAYERS ? 'Ordenar Cartas' : 'Próximo',
-                  onPressed: _nextPage,
-                ),
-                if (gameType == GameTypeEnum.SHOW_THEME_CARD) ...[
-                  SizedBox(width: theme.spacing.inline.sm),
-                  DSIconButtonWidget(
-                    label: Icons.restart_alt,
-                    size: const Size(70, 40),
-                    onPressed: sortAnotherTheme,
-                  ),
-                  SizedBox(width: theme.spacing.inline.xxs),
-                ],
-              ],
-            ),
-            SizedBox(height: theme.spacing.inline.sm),
-          ],
+              SizedBox(height: theme.spacing.inline.sm),
+            ],
+          ),
         ),
       ),
     );

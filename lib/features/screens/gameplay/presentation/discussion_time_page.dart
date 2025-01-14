@@ -9,6 +9,7 @@ import 'package:sequencia/common/design_system/components/text/text_widget.dart'
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/core/app_images.dart';
 import 'package:sequencia/core/app_sounds.dart';
+import 'package:sequencia/features/screens/gameplay/presentation/widgets/exit_game_dialog_widget.dart';
 import 'package:sequencia/router/routes.dart';
 import 'package:sequencia/utils/time_formatter.dart';
 
@@ -68,57 +69,66 @@ class _DiscussionTimePageState extends State<DiscussionTimePage> {
   @override
   Widget build(BuildContext context) {
     final theme = DSTheme.getDesignTokensOf(context);
-    return Scaffold(
-      backgroundColor: theme.colors.background,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const Spacer(),
-            DSText(
-              'Fase de exemplos',
-              textAlign: TextAlign.center,
-              customStyle: TextStyle(
-                fontWeight: theme.font.weight.semiBold,
-                color: theme.colors.white,
-                fontSize: theme.font.size.sm,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: theme.spacing.inline.md,
-              ),
-              child: DSText(
-                'Vocês tem 3 minutos para definir os temas e discutir a ordem das cartas',
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        showDialog(
+          context: context,
+          builder: (_) => const ExitGameDialogWidget(),
+        );
+      },
+      child: Scaffold(
+        backgroundColor: theme.colors.background,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Spacer(),
+              DSText(
+                'Fase de exemplos',
                 textAlign: TextAlign.center,
                 customStyle: TextStyle(
-                  fontWeight: theme.font.weight.light,
+                  fontWeight: theme.font.weight.semiBold,
                   color: theme.colors.white,
-                  fontSize: theme.font.size.xxs,
+                  fontSize: theme.font.size.sm,
                 ),
               ),
-            ),
-            SizedBox(height: theme.spacing.inline.xs),
-            DSText(
-              TimeFormatter.secondsToTime(remainingSeconds),
-              textAlign: TextAlign.center,
-              customStyle: TextStyle(
-                fontWeight: theme.font.weight.bold,
-                color: theme.colors.white,
-                fontSize: theme.font.size.xxl,
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: theme.spacing.inline.md,
+                ),
+                child: DSText(
+                  'Vocês tem 3 minutos para definir os temas e discutir a ordem das cartas',
+                  textAlign: TextAlign.center,
+                  customStyle: TextStyle(
+                    fontWeight: theme.font.weight.light,
+                    color: theme.colors.white,
+                    fontSize: theme.font.size.xxs,
+                  ),
+                ),
               ),
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.7,
-              child: Lottie.asset(AppAnimations.clock),
-            ),
-            const Spacer(),
-            DSButtonWidget(
-              label: 'Pular',
-              onPressed: _finishTimer,
-            ),
-            SizedBox(height: theme.spacing.inline.md),
-          ],
+              SizedBox(height: theme.spacing.inline.xs),
+              DSText(
+                TimeFormatter.secondsToTime(remainingSeconds),
+                textAlign: TextAlign.center,
+                customStyle: TextStyle(
+                  fontWeight: theme.font.weight.bold,
+                  color: theme.colors.white,
+                  fontSize: theme.font.size.xxl,
+                ),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.7,
+                child: Lottie.asset(AppAnimations.clock),
+              ),
+              const Spacer(),
+              DSButtonWidget(
+                label: 'Pular',
+                onPressed: _finishTimer,
+              ),
+              SizedBox(height: theme.spacing.inline.md),
+            ],
+          ),
         ),
       ),
     );
