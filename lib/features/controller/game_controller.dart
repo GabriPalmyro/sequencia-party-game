@@ -4,11 +4,18 @@ import 'dart:math' show Random;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
+import 'package:sequencia/common/local_database/local_database.dart';
 import 'package:sequencia/features/domain/game/game_type_enum.dart';
 import 'package:sequencia/features/domain/player/entities/player_entity.dart';
 
 @Injectable()
 class GameController extends ChangeNotifier {
+  GameController(this.localDatabase) {
+    getGameThemes();
+  }
+
+  final LocalDatabase localDatabase;
+
   GameTypeEnum _gameType = GameTypeEnum.SHOW_THEME_CARD;
 
   GameTypeEnum get gameType => _gameType;
@@ -44,11 +51,23 @@ class GameController extends ChangeNotifier {
       setGameThemes(themes);
 
       log('Temas carregados: ${themes.length}');
-
+      
+      localDatabase.saveData('gameThemes', themes);
       notifyListeners();
     } catch (e) {
-      log('Erro ao buscar os temas: $e');
+      try {
+        log('Erro ao buscar os temas firebase: $e');
+        final themes = await getThemesFromLocalDatabase();
+        setGameThemes(themes);
+      } catch (e) {
+        log('Erro ao buscar os temas locallmente: $e');
+      }
     }
+  }
+
+  Future<List<String>> getThemesFromLocalDatabase() async {
+    final List<String> themes = await localDatabase.getData('gameThemes');
+    return themes;
   }
 
   bool isGameFinished() {
