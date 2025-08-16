@@ -26,10 +26,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -59,4 +56,14 @@ class DefaultFirebaseOptions {
     projectId: 'sequencia-game',
     storageBucket: 'sequencia-game.firebasestorage.app',
   );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyCRku6QY7URY4T9hwa2nKED2l1F9XW5RU0',
+    appId: '1:404203590281:ios:b296562f02dc917ad26c58',
+    messagingSenderId: '404203590281',
+    projectId: 'sequencia-game',
+    storageBucket: 'sequencia-game.firebasestorage.app',
+    iosBundleId: 'br.com.palmyro.sequencia',
+  );
+
 }

@@ -5,6 +5,7 @@ class AppStrings {
   static const sortingNumbers = 'Sorteando números...';
   static const playersInfoLabelLabel = 'Para começar um novo jogo, registre pelo menos 4 participantes e toque em "Começar".';
   static const playersInfoErrorMessage = 'Para começar um novo jogo, registre pelo menos 4 participantes.';
+  static const closeAppMessage = 'Pressione voltar novamente para sair';
 
   // KEYS
   static const playersKey = 'players';

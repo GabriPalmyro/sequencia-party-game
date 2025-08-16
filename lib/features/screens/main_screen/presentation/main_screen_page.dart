@@ -32,6 +32,8 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
   late AnimationController _infoCardController;
   late Animation<Offset> _infoCardAnimation;
 
+  DateTime? _lastBackPress;
+
   @override
   void initState() {
     super.initState();
@@ -110,94 +112,123 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
   @override
   Widget build(BuildContext context) {
     final theme = DSTheme.getDesignTokensOf(context);
-    return Scaffold(
-      backgroundColor: theme.colors.background,
-      resizeToAvoidBottomInset: false,
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(height: theme.spacing.inline.md),
-            SlideTransition(
-              position: _logoAnimation,
-              child: Image.asset(
-                AppImages.logo,
-                width: 250,
-              ),
-            ),
-            SizedBox(height: theme.spacing.inline.xxxs),
-            Expanded(
-              child: ShaderMask(
-                shaderCallback: (Rect rect) {
-                  return const LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Colors.purple, Colors.transparent, Colors.transparent, Colors.purple],
-                    stops: [0.0, 0.03, 0.97, 1.0],
-                  ).createShader(rect);
-                },
-                blendMode: BlendMode.dstOut,
-                child: const PlayersNamesInputsWidget(),
-              ),
-            ),
-            SizedBox(height: theme.spacing.inline.xxs),
-            if (context.watch<PlayersController>().players.length <= 4) ...[
-              SlideTransition(
-                position: _infoCardAnimation,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: theme.spacing.inline.xs,
-                  ),
-                  child: const InfoCardWidget(
-                    AppStrings.playersInfoLabelLabel,
-                  ),
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) {
+          return;
+        }
+
+        // Check if back was pressed twice within 2 seconds
+        final now = DateTime.now();
+        const backPressThreshold = Duration(seconds: 2);
+
+        if (_lastBackPress == null || now.difference(_lastBackPress!) > backPressThreshold) {
+          _lastBackPress = now;
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: theme.colors.secondary,
+              content: DSText(
+                AppStrings.closeAppMessage,
+                customStyle: TextStyle(
+                  fontSize: theme.font.size.xxs,
                 ),
               ),
-            ],
-            SizedBox(height: theme.spacing.inline.sm),
-            SlideTransition(
-              position: _buttonAnimation,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const Spacer(),
-                  DSButtonWidget(
-                    label: AppStrings.startLabel,
-                    isEnabled: context.watch<PlayersController>().players.length >= AppConsts.minPlayersToStart,
-                    onPressed: () async {
-                      if (context.read<PlayersController>().playersCount >= AppConsts.minPlayersToStart) {
-                        context.read<PlayersController>().savePlayers();
-                        context.read<GameController>().resetGame();
-                        context.read<GameController>().setPlayers = context.read<PlayersController>().removeEmptyPlayers();
-                        Navigator.of(context).pushNamed(Routes.gamePrepare);
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            backgroundColor: theme.colors.secondary,
-                            content: DSText(
-                              AppStrings.playersInfoErrorMessage,
-                              customStyle: TextStyle(
-                                fontSize: theme.font.size.xxs,
+            ),
+          );
+        } else {
+          Navigator.of(context).pop();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: theme.colors.background,
+        resizeToAvoidBottomInset: false,
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(height: theme.spacing.inline.md),
+              SlideTransition(
+                position: _logoAnimation,
+                child: Image.asset(
+                  AppImages.logo,
+                  width: 250,
+                ),
+              ),
+              SizedBox(height: theme.spacing.inline.xxxs),
+              Expanded(
+                child: ShaderMask(
+                  shaderCallback: (Rect rect) {
+                    return const LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Colors.purple, Colors.transparent, Colors.transparent, Colors.purple],
+                      stops: [0.0, 0.03, 0.97, 1.0],
+                    ).createShader(rect);
+                  },
+                  blendMode: BlendMode.dstOut,
+                  child: const PlayersNamesInputsWidget(),
+                ),
+              ),
+              SizedBox(height: theme.spacing.inline.xxs),
+              if (context.watch<PlayersController>().players.length <= 4) ...[
+                SlideTransition(
+                  position: _infoCardAnimation,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: theme.spacing.inline.xs,
+                    ),
+                    child: const InfoCardWidget(
+                      AppStrings.playersInfoLabelLabel,
+                    ),
+                  ),
+                ),
+              ],
+              SizedBox(height: theme.spacing.inline.sm),
+              SlideTransition(
+                position: _buttonAnimation,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const Spacer(),
+                    DSButtonWidget(
+                      label: AppStrings.startLabel,
+                      isEnabled: context.watch<PlayersController>().players.length >= AppConsts.minPlayersToStart,
+                      onPressed: () async {
+                        if (context.read<PlayersController>().playersCount >= AppConsts.minPlayersToStart) {
+                          context.read<PlayersController>().savePlayers();
+                          context.read<GameController>().resetGame();
+                          context.read<GameController>().setPlayers = context.read<PlayersController>().removeEmptyPlayers();
+                          Navigator.of(context).pushNamed(Routes.gamePrepare);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              backgroundColor: theme.colors.secondary,
+                              content: DSText(
+                                AppStrings.playersInfoErrorMessage,
+                                customStyle: TextStyle(
+                                  fontSize: theme.font.size.xxs,
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                  SizedBox(width: theme.spacing.inline.sm),
-                  DSIconButtonWidget(
-                    label: Icons.help_rounded,
-                    size: const Size(50, 40),
-                    onPressed: () => Navigator.of(context).pushNamed(Routes.guide),
-                  ),
-                  const Spacer(),
-                ],
+                          );
+                        }
+                      },
+                    ),
+                    SizedBox(width: theme.spacing.inline.sm),
+                    DSIconButtonWidget(
+                      label: Icons.help_rounded,
+                      size: const Size(50, 40),
+                      onPressed: () => Navigator.of(context).pushNamed(Routes.guide),
+                    ),
+                    const Spacer(),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: theme.spacing.inline.sm),
-          ],
+              SizedBox(height: theme.spacing.inline.sm),
+            ],
+          ),
         ),
       ),
     );
