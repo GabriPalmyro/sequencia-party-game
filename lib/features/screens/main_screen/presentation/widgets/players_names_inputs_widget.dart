@@ -102,6 +102,7 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
                   newColor: color,
                 );
             Navigator.of(context).pop();
+            setState(() {});
           },
         );
       },
@@ -134,7 +135,7 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
         itemBuilder: (_, index) {
           final player = context.watch<PlayersController>().players[index];
           final isLast = index == context.read<PlayersController>().players.length - 1;
-          final showDeleteAndColorChange = isLast && context.read<PlayersController>().players.length < AppConsts.maxPlayers;
+          final isEmptyLastField = isLast && player.name.isEmpty && context.read<PlayersController>().players.length < AppConsts.maxPlayers;
 
           return Padding(
             padding: EdgeInsets.symmetric(
@@ -148,7 +149,7 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
               controller: _controllers[index],
               textInputAction: TextInputAction.next,
               onTapOutside: (_) => FocusScope.of(context).unfocus(),
-              leading: showDeleteAndColorChange
+              leading: isEmptyLastField
                   ? null
                   : GestureDetector(
                       onTap: () => _selectColor(index),
@@ -168,7 +169,7 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
                         ),
                       ),
                     ),
-              trailing: showDeleteAndColorChange
+              trailing: isEmptyLastField
                   ? null
                   : GestureDetector(
                       onTap: () => _removePlayer(index),

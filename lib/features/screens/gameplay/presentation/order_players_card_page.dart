@@ -59,7 +59,7 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> {
           child: Column(
             // controller: _scrollController,
             children: [
-              SizedBox(height: theme.spacing.inline.md),
+              SizedBox(height: MediaQuery.of(context).padding.top),
               Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: theme.spacing.inline.xs,

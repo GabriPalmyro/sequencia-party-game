@@ -104,6 +104,29 @@ class _RevealCardsPageState extends State<RevealCardsPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(left: theme.spacing.inline.sm),
+                  child: TextButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) => const ExitGameDialogWidget(),
+                      );
+                    },
+                    child: DSText(
+                      'Voltar',
+                      textAlign: TextAlign.start,
+                      customStyle: TextStyle(
+                        fontSize: theme.font.size.sm,
+                        fontWeight: theme.font.weight.bold,
+                        color: theme.colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               Expanded(
                 child: PageView(
                   controller: _pageController,

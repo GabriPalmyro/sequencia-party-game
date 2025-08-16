@@ -44,7 +44,7 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
       vsync: this,
     );
     _logoAnimation = Tween<Offset>(
-      begin: const Offset(0.0, -1.0),
+      begin: const Offset(0.0, -2.0),
       end: Offset.zero,
     ).animate(
       CurvedAnimation(
@@ -148,12 +148,13 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(height: theme.spacing.inline.md),
+              SizedBox(height: MediaQuery.of(context).padding.top),
               SlideTransition(
                 position: _logoAnimation,
                 child: Image.asset(
                   AppImages.logo,
                   width: 250,
+                  height: 50,
                 ),
               ),
               SizedBox(height: theme.spacing.inline.xxxs),
