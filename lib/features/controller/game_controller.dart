@@ -130,6 +130,22 @@ class GameController extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool isGameSuccess() {
+    if (_gameType != GameTypeEnum.GAME_FINISHED) {
+      return false;
+    }
+
+    // Verify if the  List<PlayerEntity> players = []; is in a sequencial increase ordem
+    for (int i = 1; i < players.length; i++) {
+      final prev = int.tryParse(players[i - 1].orderNumber ?? '');
+      final curr = int.tryParse(players[i].orderNumber ?? '');
+      if (prev == null || curr == null || curr <= prev) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   void onReorder(int oldIndex, int newIndex) {
     final player = players.removeAt(oldIndex);
     players.insert(newIndex, player);

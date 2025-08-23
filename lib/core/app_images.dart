@@ -7,4 +7,5 @@ class AppImages {
 
 class AppAnimations {
   static const String clock = 'assets/animations/clock-animation.json';
+  static const String party = 'assets/animations/party.json';
 }
