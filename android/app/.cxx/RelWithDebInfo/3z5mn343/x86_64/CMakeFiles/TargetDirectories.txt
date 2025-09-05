@@ -1,0 +1,2 @@
+/Users/gabrielpalmyro/Desktop/programacao/sequencia-party-game/android/app/.cxx/RelWithDebInfo/3z5mn343/x86_64/CMakeFiles/edit_cache.dir
+/Users/gabrielpalmyro/Desktop/programacao/sequencia-party-game/android/app/.cxx/RelWithDebInfo/3z5mn343/x86_64/CMakeFiles/rebuild_cache.dir
