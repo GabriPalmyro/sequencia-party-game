@@ -13,9 +13,9 @@ import 'package:sequencia/core/app_images.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
 import 'package:sequencia/features/domain/game/game_type_enum.dart';
 import 'package:sequencia/features/screens/gameplay/presentation/widgets/exit_game_dialog_widget.dart';
+import 'package:sequencia/features/screens/gameplay/presentation/widgets/finish_game_dialog_widget.dart';
 import 'package:sequencia/features/screens/gameplay/presentation/widgets/show_player_card_modal.dart';
 import 'package:sequencia/features/screens/gameplay/presentation/widgets/show_theme_card_modal.dart';
-import 'package:sequencia/router/routes.dart';
 import 'package:sequencia/utils/app_animations.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -180,7 +180,13 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> with Ticker
                             final controller = context.read<GameController>();
 
                             if (controller.isGameFinished()) {
-                              Navigator.of(context).pushReplacementNamed(Routes.home);
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return const FinishGameDialogWidget();
+                                },
+                              );
+                              return;
                             } else {
                               controller.changeGameType(GameTypeEnum.REVEAL_PLAYERS);
                             }
@@ -245,20 +251,24 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> with Ticker
                           ),
                     ),
                     SizedBox(height: theme.spacing.inline.xxs),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: theme.spacing.inline.xs,
-                      ),
-                      child: DSText(
-                        'Segure em qualquer carta para ver mais detalhes',
-                        textAlign: TextAlign.center,
-                        customStyle: TextStyle(
-                          fontSize: theme.font.size.us,
-                          fontWeight: theme.font.weight.light,
-                          color: theme.colors.white,
+                    AnimatedOpacity(
+                      opacity: context.watch<GameController>().isGameFinished() ? 0 : 1,
+                      duration: const Duration(milliseconds: 300),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: theme.spacing.inline.xs,
                         ),
-                      ),
-                    ).animateIn(),
+                        child: DSText(
+                          'Segure em qualquer carta para ver mais detalhes',
+                          textAlign: TextAlign.center,
+                          customStyle: TextStyle(
+                            fontSize: theme.font.size.us,
+                            fontWeight: theme.font.weight.light,
+                            color: theme.colors.white,
+                          ),
+                        ),
+                      ).animateIn(),
+                    ),
                     SizedBox(height: theme.spacing.inline.xs),
                   ],
                 ),
