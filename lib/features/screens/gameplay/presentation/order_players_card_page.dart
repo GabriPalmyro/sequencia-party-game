@@ -36,7 +36,7 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> with Ticker
     super.initState();
     _scrollController = ScrollController();
     revealedCards = List.filled(context.read<GameController>().players.length, false);
-    _animationController = AnimationController(vsync: this, duration: const Duration(seconds: 3));
+    _animationController = AnimationController(vsync: this, duration: const Duration(seconds: 4));
     WakelockPlus.enable();
   }
 
@@ -177,10 +177,12 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> with Ticker
                         DSButtonWidget(
                           label: context.watch<GameController>().isGameFinished() ? 'Finalizar' : 'Revelar',
                           onPressed: () async {
-                            if (context.read<GameController>().isGameFinished()) {
+                            final controller = context.read<GameController>();
+
+                            if (controller.isGameFinished()) {
                               Navigator.of(context).pushReplacementNamed(Routes.home);
                             } else {
-                              context.read<GameController>().changeGameType(GameTypeEnum.REVEAL_PLAYERS);
+                              controller.changeGameType(GameTypeEnum.REVEAL_PLAYERS);
                             }
 
                             _scrollController.animateTo(
@@ -202,15 +204,15 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> with Ticker
                               });
 
                               if (i == revealedCards.length - 1) {
-                                context.read<GameController>().changeGameType(GameTypeEnum.GAME_FINISHED);
+                                controller.changeGameType(GameTypeEnum.GAME_FINISHED);
+                                // Move the success animation here, after the last card
+                                Future.delayed(Duration(seconds: (i * 1.5).toInt() + 1), () {
+                                  if (controller.isGameSuccess()) {
+                                    _animateSuccessReveal();
+                                  }
+                                });
                               }
                             }
-
-                            // Future.delayed(const Duration(milliseconds: 500), () {
-                            //   if (true) {
-                            //     _animateSuccessReveal();
-                            //   }
-                            // });
                           },
                         ),
                         SizedBox(width: theme.spacing.inline.xs),
