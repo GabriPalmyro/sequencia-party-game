@@ -18,6 +18,15 @@ class GameController extends ChangeNotifier {
   GameTypeEnum get gameType => _gameType;
 
   List<String> gameThemes = List.empty(growable: true);
+  
+  // Set to track used themes in memory (resets every app session)
+  final Set<String> _usedThemes = <String>{};
+
+  /// Returns a copy of the used themes set (for debugging purposes)
+  Set<String> get usedThemes => Set.unmodifiable(_usedThemes);
+
+  /// Returns the number of available themes that haven't been used yet
+  int get availableThemesCount => gameThemes.length - _usedThemes.length;
 
   void setGameThemes(List<String> themes) {
     gameThemes = themes;
@@ -86,6 +95,18 @@ class GameController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Resets the used themes list to allow all themes to be used again
+  void resetUsedThemes() {
+    _usedThemes.clear();
+  }
+
+  /// Marks the current theme as used after game completion
+  void markCurrentThemeAsUsed() {
+    if (gameThemeDescription.isNotEmpty) {
+      _usedThemes.add(gameThemeDescription);
+    }
+  }
+
   String getRandomAvailableNumber() {
     final random = Random();
 
@@ -107,9 +128,27 @@ class GameController extends ChangeNotifier {
   String gameThemeDescription = '';
 
   void selectRandomTheme() {
-    final random = Random().nextInt(gameThemes.length);
-    gameThemeNumber = random.toString();
-    gameThemeDescription = gameThemes[random];
+    // If all themes have been used, reset the used themes set
+    if (_usedThemes.length >= gameThemes.length) {
+      resetUsedThemes();
+    }
+    
+    // Get list of available (unused) themes
+    final availableThemes = gameThemes.where((theme) => !_usedThemes.contains(theme)).toList();
+    
+    // If no available themes (shouldn't happen due to reset above), use all themes
+    final themesToChooseFrom = availableThemes.isNotEmpty ? availableThemes : gameThemes;
+    
+    if (themesToChooseFrom.isEmpty) {
+      log('No themes available to select');
+      return;
+    }
+    
+    final random = Random().nextInt(themesToChooseFrom.length);
+    final selectedTheme = themesToChooseFrom[random];
+    
+    gameThemeNumber = gameThemes.indexOf(selectedTheme).toString();
+    gameThemeDescription = selectedTheme;
     notifyListeners();
   }
 
@@ -144,6 +183,12 @@ class GameController extends ChangeNotifier {
       }
     }
     return true;
+  }
+
+  /// Call this method when a game is completed (regardless of success or failure)
+  /// to mark the current theme as used
+  void completeGame() {
+    markCurrentThemeAsUsed();
   }
 
   void onReorder(int oldIndex, int newIndex) {

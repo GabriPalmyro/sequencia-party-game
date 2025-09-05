@@ -180,6 +180,7 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> with Ticker
                             final controller = context.read<GameController>();
 
                             if (controller.isGameFinished()) {
+                              controller.completeGame();
                               showDialog(
                                 context: context,
                                 builder: (context) {
@@ -211,6 +212,8 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> with Ticker
 
                               if (i == revealedCards.length - 1) {
                                 controller.changeGameType(GameTypeEnum.GAME_FINISHED);
+                                // Mark theme as used when game is completed
+                                controller.completeGame();
                                 // Move the success animation here, after the last card
                                 Future.delayed(Duration(seconds: (i * 1.5).toInt() + 1), () {
                                   if (controller.isGameSuccess()) {

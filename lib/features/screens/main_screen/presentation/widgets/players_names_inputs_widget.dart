@@ -5,7 +5,6 @@ import 'package:sequencia/common/design_system/components/text_field/text_field_
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/features/controller/players_controller.dart';
 import 'package:sequencia/features/domain/player/entities/player_entity.dart';
-import 'package:sequencia/features/screens/main_screen/presentation/widgets/select_player_color_modal.dart';
 import 'package:sequencia/utils/app_consts.dart';
 
 class PlayersNamesInputsWidget extends StatefulWidget {
@@ -89,25 +88,26 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
     }
   }
 
-  void _selectColor(int index) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (BuildContext context) {
-        return SelectPlayerColorModal(
-          availableColors: context.read<PlayersController>().getAvailableColors(),
-          onColorSelected: (color) {
-            context.read<PlayersController>().updatePlayer(
-                  context.read<PlayersController>().players[index],
-                  newColor: color,
-                );
-            Navigator.of(context).pop();
-            setState(() {});
-          },
-        );
-      },
-    );
-  }
+  // Deprecated color selection
+  // void _selectColor(int index) {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     backgroundColor: Colors.transparent,
+  //     builder: (BuildContext context) {
+  //       return SelectPlayerColorModal(
+  //         availableColors: context.read<PlayersController>().getAvailableColors(),
+  //         onColorSelected: (color) {
+  //           context.read<PlayersController>().updatePlayer(
+  //                 context.read<PlayersController>().players[index],
+  //                 newColor: color,
+  //               );
+  //           Navigator.of(context).pop();
+  //           setState(() {});
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   void dispose() {
@@ -152,7 +152,7 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
               leading: isEmptyLastField
                   ? null
                   : GestureDetector(
-                      onTap: () => _selectColor(index),
+                      // onTap: () => _selectColor(index),
                       child: Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: theme.spacing.inline.xxs,
