@@ -20,6 +20,9 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  // FlutterError.onError = 
+      // FirebaseCrashlytics.instance.recordFlutterFatalError;
+
   final GetIt getIt = GetIt.instance;
 
   await configureAppDependencies(getIt);

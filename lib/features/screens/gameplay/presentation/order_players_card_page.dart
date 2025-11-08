@@ -25,7 +25,8 @@ class OrderPlayersCardPage extends StatefulWidget {
   State<OrderPlayersCardPage> createState() => _OrderPlayersCardPageState();
 }
 
-class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> with TickerProviderStateMixin {
+class _OrderPlayersCardPageState extends State<OrderPlayersCardPage>
+    with TickerProviderStateMixin {
   late List<bool> revealedCards;
   late ScrollController _scrollController;
   late AnimationController _animationController;
@@ -34,24 +35,56 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> with Ticker
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    revealedCards = List.filled(context.read<GameController>().players.length, false);
-    _animationController = AnimationController(vsync: this, duration: const Duration(seconds: 4));
+    revealedCards =
+        List.filled(context.read<GameController>().players.length, false);
+    _animationController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 4));
     WakelockPlus.enable();
   }
 
   void _animateSuccessReveal() {
-    _animationController.forward();
+    if (mounted) {
+      print('Starting success animation');
+      _animationController.reset();
+      _animationController.forward().then((_) {
+        print('Success animation completed');
+        // Automatically hide animation after completion
+        if (mounted) {
+          setState(() {});
+        }
+      });
+    }
+  }
+
+  void _showReorderLockedMessage() {
+    if (!mounted) {
+      return;
+    }
+
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        const SnackBar(
+          content: Text('Não é possível reordenar após revelar os resultados.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
   }
 
   @override
   void dispose() {
-    super.dispose();
+    _scrollController.dispose();
+    _animationController.dispose();
     WakelockPlus.disable();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = DSTheme.getDesignTokensOf(context);
+    final gameController = context.watch<GameController>();
+    final players = gameController.players;
+    final bool isResultsPhase = gameController.isGameFinished();
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -62,6 +95,183 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> with Ticker
       },
       child: Scaffold(
         backgroundColor: theme.colors.background,
+        appBar: AppBar(
+          backgroundColor: theme.colors.background,
+          title: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: theme.spacing.inline.xs,
+                ),
+                child: DSText(
+                  'Ordene os jogadores',
+                  customStyle: TextStyle(
+                    fontSize: theme.font.size.md,
+                    fontWeight: theme.font.weight.semiBold,
+                    color: theme.colors.white,
+                  ),
+                ),
+              ).animateIn(),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: theme.spacing.inline.xs,
+                ),
+                child: DSText(
+                  'Do menor para o maior',
+                  customStyle: TextStyle(
+                    fontSize: theme.font.size.xxs,
+                    fontWeight: theme.font.weight.light,
+                    color: theme.colors.white,
+                  ),
+                ),
+              ).animateIn(),
+            ],
+          ),
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: theme.colors.white,
+            ),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (_) => const ExitGameDialogWidget(),
+              );
+            },
+          ),
+        ),
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            color: theme.colors.background,
+            border: Border(
+              top: BorderSide(
+                color: theme.colors.white.withOpacity(0.1),
+                width: 1,
+              ),
+            ),
+          ),
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AnimatedOpacity(
+                  opacity: isResultsPhase ? 0 : 1,
+                  duration: const Duration(milliseconds: 300),
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      top: theme.spacing.inline.xxs,
+                      bottom: theme.spacing.inline.xxs,
+                    ),
+                    child: DSText(
+                      'Segure em qualquer carta para rever um jogador',
+                      textAlign: TextAlign.center,
+                      customStyle: TextStyle(
+                        fontSize: theme.font.size.us,
+                        fontWeight: theme.font.weight.light,
+                        color: theme.colors.white,
+                      ),
+                    ).animateIn(),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    DSButtonWidget(
+                      label: isResultsPhase ? 'Finalizar' : 'Revelar',
+                      onPressed: () async {
+                        final controller = context.read<GameController>();
+            
+                        if (controller.isGameFinished()) {
+                          controller.completeGame();
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return const FinishGameDialogWidget();
+                            },
+                          );
+                          return;
+                        } else {
+                          controller
+                              .changeGameType(GameTypeEnum.REVEAL_PLAYERS);
+                        }
+            
+                        _scrollController.animateTo(
+                          0,
+                          duration: const Duration(milliseconds: 400),
+                          curve: Curves.easeOut,
+                        );
+            
+                        for (int i = 0; i < revealedCards.length; i++) {
+                          await Future.delayed(const Duration(seconds: 1));
+                          Future.delayed(
+                              Duration(seconds: (i * 1.5).toInt()), () {
+                            if (!_scrollController.hasClients) {
+                              return;
+                            }
+            
+                            setState(() {
+                              revealedCards[i] = true;
+                            });
+                          });
+            
+                          if (i == revealedCards.length - 1) {
+                            controller
+                                .changeGameType(GameTypeEnum.GAME_FINISHED);
+                            // Mark theme as used when game is completed
+                            controller.completeGame();
+                            // Trigger success animation after the last card is revealed
+                            Future.delayed(
+                                Duration(seconds: (i * 1.5).toInt() + 2),
+                                () {
+                              if (mounted) {
+                                print('Checking game success: ${controller.isGameSuccess()}');
+                                if (controller.isGameSuccess()) {
+                                  print('Triggering success animation');
+                                  _animateSuccessReveal();
+                                } else {
+                                  print('Game was not successful, no animation');
+                                }
+                              }
+                            });
+                          }
+                        }
+                      },
+                    ),
+                    SizedBox(width: theme.spacing.inline.xs),
+                    DSButtonWidget(
+                      label: 'Tema',
+                      isSecondary: true,
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          backgroundColor: Colors.transparent,
+                          isScrollControlled: true,
+                          builder: (BuildContext context) {
+                            return const ShowThemeCardModal();
+                          },
+                        );
+                      },
+                      size: const Size(100, 50),
+                    ),
+                  ]
+                      .animate(
+                        delay: 250.ms,
+                      )
+                      .fade(
+                        duration: 300.ms,
+                        delay: 300.ms,
+                      )
+                      .slide(
+                        begin: const Offset(0, 1),
+                        end: const Offset(0, 0),
+                      ),
+                ),
+              ],
+            ),
+          ),
+        ),
         body: Stack(
           alignment: Alignment.bottomCenter,
           children: [
@@ -69,48 +279,36 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> with Ticker
               child: Center(
                 child: Column(
                   children: [
-                    SizedBox(height: MediaQuery.of(context).padding.top),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: theme.spacing.inline.xs,
-                      ),
-                      child: DSText(
-                        'Ordene os jogadores',
-                        customStyle: TextStyle(
-                          fontSize: theme.font.size.md,
-                          fontWeight: theme.font.weight.semiBold,
-                          color: theme.colors.white,
-                        ),
-                      ),
-                    ).animateIn(),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: theme.spacing.inline.xs,
-                      ),
-                      child: DSText(
-                        'Do menor para o maior',
-                        customStyle: TextStyle(
-                          fontSize: theme.font.size.xxs,
-                          fontWeight: theme.font.weight.light,
-                          color: theme.colors.white,
-                        ),
-                      ),
-                    ).animateIn(),
                     Expanded(
                       child: AnimatedReorderableGridView(
                         controller: _scrollController,
-                        items: context.watch<GameController>().players,
-                        scrollDirection: Axis.vertical,
-                        physics: const BouncingScrollPhysics(),
+                        items: players,
                         padding: EdgeInsets.symmetric(
                           horizontal: theme.spacing.inline.xs,
                         ),
+                        physics: const BouncingScrollPhysics(),
+                        scrollDirection: Axis.vertical,
+                        sliverGridDelegate:
+                            SliverReorderableGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          childAspectRatio: 0.5,
+                          mainAxisSpacing: theme.spacing.inline.xxs,
+                          crossAxisSpacing: theme.spacing.inline.xxs,
+                        ),
+                        enterTransition: [FadeIn(), ScaleIn()],
+                        exitTransition: [FadeIn(), ScaleIn()],
+                        insertDuration: const Duration(milliseconds: 400),
+                        removeDuration: const Duration(milliseconds: 400),
+                        longPressDraggable: false,
                         itemBuilder: (_, index) {
-                          final player = context.read<GameController>().players[index];
+                          final player = players[index];
                           return GestureDetector(
-                            key: ValueKey(player.orderNumber),
+                            key: ValueKey(
+                                player.orderNumber ?? '$index-${player.name}'),
                             onLongPress: () {
-                              if (context.read<GameController>().isGameFinished()) {
+                              if (context
+                                  .read<GameController>()
+                                  .isGameFinished()) {
                                 return;
                               }
 
@@ -133,13 +331,15 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> with Ticker
                                   left: 10,
                                   child: PlayerColorCard(
                                     size: const Size(80, 100),
-                                    color: player.color ?? theme.colors.tertiary,
+                                    color:
+                                        player.color ?? theme.colors.tertiary,
                                     name: player.name,
                                   ),
                                 ),
                                 ThemeCard(
                                   size: const Size(100, 150),
-                                  isHidden: !revealedCards[context.read<GameController>().players.indexOf(player)],
+                                  isHidden: index >= revealedCards.length ||
+                                      !revealedCards[index],
                                   isEnableFlip: true,
                                   shoudShowFlipLabel: false,
                                   value: DSText(
@@ -155,141 +355,45 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> with Ticker
                             ),
                           );
                         },
-                        sliverGridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          childAspectRatio: 0.5,
-                        ),
-                        longPressDraggable: false,
-                        enterTransition: [FadeIn(), ScaleIn()],
-                        insertDuration: const Duration(milliseconds: 400),
-                        removeDuration: const Duration(milliseconds: 400),
+                        onReorderStart: (_) {
+                          if (context.read<GameController>().isGameFinished()) {
+                            _showReorderLockedMessage();
+                          }
+                        },
                         onReorder: (int oldIndex, int newIndex) {
-                          context.read<GameController>().onReorder(oldIndex, newIndex);
+                          final controller = context.read<GameController>();
+                          if (controller.isGameFinished()) {
+                            _showReorderLockedMessage();
+                            return;
+                          }
+                          controller.onReorder(oldIndex, newIndex);
                         },
                       ),
                     ).animateIn(),
-                    SizedBox(height: theme.spacing.inline.sm),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        DSButtonWidget(
-                          label: context.watch<GameController>().isGameFinished() ? 'Finalizar' : 'Revelar',
-                          onPressed: () async {
-                            final controller = context.read<GameController>();
-
-                            if (controller.isGameFinished()) {
-                              controller.completeGame();
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return const FinishGameDialogWidget();
-                                },
-                              );
-                              return;
-                            } else {
-                              controller.changeGameType(GameTypeEnum.REVEAL_PLAYERS);
-                            }
-
-                            _scrollController.animateTo(
-                              0,
-                              duration: const Duration(milliseconds: 400),
-                              curve: Curves.easeOut,
-                            );
-
-                            for (int i = 0; i < revealedCards.length; i++) {
-                              await Future.delayed(const Duration(seconds: 1));
-                              Future.delayed(Duration(seconds: (i * 1.5).toInt()), () {
-                                if (!_scrollController.hasClients) {
-                                  return;
-                                }
-
-                                setState(() {
-                                  revealedCards[i] = true;
-                                });
-                              });
-
-                              if (i == revealedCards.length - 1) {
-                                controller.changeGameType(GameTypeEnum.GAME_FINISHED);
-                                // Mark theme as used when game is completed
-                                controller.completeGame();
-                                // Move the success animation here, after the last card
-                                Future.delayed(Duration(seconds: (i * 1.5).toInt() + 1), () {
-                                  if (controller.isGameSuccess()) {
-                                    _animateSuccessReveal();
-                                  }
-                                });
-                              }
-                            }
-                          },
-                        ),
-                        SizedBox(width: theme.spacing.inline.xs),
-                        DSButtonWidget(
-                          label: 'Tema',
-                          isSecondary: true,
-                          onPressed: () {
-                            showModalBottomSheet(
-                              context: context,
-                              backgroundColor: Colors.transparent,
-                              isScrollControlled: true,
-                              builder: (BuildContext context) {
-                                return const ShowThemeCardModal();
-                              },
-                            );
-                          },
-                          size: const Size(100, 50),
-                        ),
-                        SizedBox(width: theme.spacing.inline.xxs),
-                      ]
-                          .animate(
-                            delay: 250.ms,
-                          )
-                          .fade(
-                            duration: 300.ms,
-                            delay: 300.ms,
-                          )
-                          .slide(
-                            begin: const Offset(0, 1),
-                            end: const Offset(0, 0),
-                          ),
-                    ),
-                    SizedBox(height: theme.spacing.inline.xxs),
-                    AnimatedOpacity(
-                      opacity: context.watch<GameController>().isGameFinished() ? 0 : 1,
-                      duration: const Duration(milliseconds: 300),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: theme.spacing.inline.xs,
-                        ),
-                        child: DSText(
-                          'Segure em qualquer carta para ver mais detalhes',
-                          textAlign: TextAlign.center,
-                          customStyle: TextStyle(
-                            fontSize: theme.font.size.us,
-                            fontWeight: theme.font.weight.light,
-                            color: theme.colors.white,
-                          ),
-                        ),
-                      ).animateIn(),
-                    ),
-                    SizedBox(height: theme.spacing.inline.xs),
                   ],
                 ),
               ),
             ),
-            // Lottie animation at the bottom, behind the buttons
-            IgnorePointer(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: Lottie.asset(
-                    AppAnimations.party,
-                    controller: _animationController,
+            // Lottie animation for celebration - only shows when animating
+            if (_animationController.isAnimating)
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: Container(
+                    color: Colors.transparent,
+                    child: Center(
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        height: MediaQuery.of(context).size.height * 0.6,
+                        child: Lottie.asset(
+                          AppAnimations.party,
+                          controller: _animationController,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
           ],
         ),
       ),
