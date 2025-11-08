@@ -47,7 +47,7 @@ class DSFontSize {
     required this.xxxl,
     required this.ul,
   });
-  
+
   /// `12`
   double us;
 

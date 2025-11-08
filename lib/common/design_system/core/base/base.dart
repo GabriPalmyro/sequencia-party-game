@@ -1,5 +1,3 @@
-
-
 import '../theme/ds_theme.dart';
 import '../tokens/design.dart';
 import '../tokens/design/borders.dart';
@@ -34,5 +32,4 @@ class BaseOwnThemeData implements DSThemeData {
 
   @override
   String get name => 'base';
-  
 }

@@ -1,10 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
+
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
+import 'package:sequencia/core/ads/ads_service.dart';
 import 'package:sequencia/di/injection.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
 import 'package:sequencia/features/controller/locale_controller.dart';
@@ -27,6 +29,7 @@ void main() async {
   final GetIt getIt = GetIt.instance;
 
   await configureAppDependencies(getIt);
+  await getIt<AdsService>().initialize();
 
   final DSThemeData theme = DSThemeAppData();
 
@@ -48,6 +51,9 @@ class _MyAppState extends State<MyApp> {
       data: widget.theme,
       child: MultiProvider(
         providers: [
+          Provider<AdsService>.value(
+            value: GetIt.I<AdsService>(),
+          ),
           ChangeNotifierProvider(
             create: (_) => LocaleController(),
           ),

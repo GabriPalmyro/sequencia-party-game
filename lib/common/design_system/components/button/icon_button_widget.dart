@@ -54,7 +54,9 @@ class _DSIconButtonWidgetState extends State<DSIconButtonWidget> {
           color: widget.isEnabled ? theme.colors.tertiary : theme.colors.grey,
           boxShadow: [
             BoxShadow(
-              color: widget.isEnabled ? theme.colors.tertiary.withOpacity(0.55) : theme.colors.grey.withOpacity(0.55),
+              color: widget.isEnabled
+                  ? theme.colors.tertiary.withOpacity(0.55)
+                  : theme.colors.grey.withOpacity(0.55),
               spreadRadius: 0,
               blurRadius: 0,
               offset: Offset(0, _isPressed ? 0 : 5),

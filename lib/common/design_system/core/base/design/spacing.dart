@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../../tokens/design/spacing.dart';
@@ -117,7 +116,6 @@ class BaseDSThemeSpacingInset implements DSThemeSpacingInset {
 }
 
 class BaseDSThemeSpacingSquish implements DSThemeSpacingSquish {
-
   BaseDSThemeSpacingSquish({
     EdgeInsets? xs,
     EdgeInsets? sm,

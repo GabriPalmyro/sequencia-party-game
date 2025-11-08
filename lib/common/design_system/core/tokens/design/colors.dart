@@ -11,7 +11,7 @@ class DSThemeColor {
     required this.card,
     required this.background,
   });
-  
+
   Color primary;
   Color secondary;
   Color tertiary;

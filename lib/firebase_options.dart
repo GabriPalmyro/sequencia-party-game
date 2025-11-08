@@ -65,5 +65,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'sequencia-game.firebasestorage.app',
     iosBundleId: 'br.com.palmyro.sequencia',
   );
-
 }

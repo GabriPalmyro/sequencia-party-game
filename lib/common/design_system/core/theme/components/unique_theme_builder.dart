@@ -1,11 +1,11 @@
-
 import 'package:flutter/widgets.dart';
 
 import '../ds_theme.dart';
 import '../unique_theme_manager.dart';
 
 class UniqueThemeBuilder extends StatelessWidget {
-  const UniqueThemeBuilder({required this.uniqueThemeManager, required this.child, super.key});
+  const UniqueThemeBuilder(
+      {required this.uniqueThemeManager, required this.child, super.key});
   final UniqueThemeManager uniqueThemeManager;
   final Widget child;
 

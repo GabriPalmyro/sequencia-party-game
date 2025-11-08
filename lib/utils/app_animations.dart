@@ -10,7 +10,9 @@ extension CustomAnimationExtension on Widget {
     Curve curve = Curves.easeInOut,
     int order = 1,
   }) {
-    final delay = (kDefaultAnimationDelay.inMilliseconds + (kDefaultAnimationInterval.inMilliseconds * order)).ms;
+    final delay = (kDefaultAnimationDelay.inMilliseconds +
+            (kDefaultAnimationInterval.inMilliseconds * order))
+        .ms;
 
     return animate(
       delay: delay,

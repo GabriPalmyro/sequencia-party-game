@@ -126,7 +126,6 @@ class DSThemeSpacingInset {
 }
 
 class DSThemeSpacingSquish {
-
   DSThemeSpacingSquish({
     required this.xs,
     required this.sm,

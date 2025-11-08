@@ -1,5 +1,4 @@
 class AppIconData {
-
   const AppIconData(this.name);
   final String name;
 }

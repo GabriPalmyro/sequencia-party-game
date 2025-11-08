@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../../tokens/design/borders.dart';
@@ -40,7 +39,7 @@ class BaseDSThemeBorderRadius implements DSBorderRadius {
     this.circular = circular ?? this.circular;
     this.radiusDefault = radiusDefault ?? this.radiusDefault;
   }
-  
+
   @override
   double radiusDefault = 0;
 
@@ -52,10 +51,10 @@ class BaseDSThemeBorderRadius implements DSBorderRadius {
 
   @override
   double large = 16;
-  
+
   @override
   double circular = 500;
-  
+
   @override
   double pill = 500;
 }
@@ -66,7 +65,7 @@ class BaseDSThemeBorderStyle implements DSBorderStyle {
   }) {
     this.styleDefault = styleDefault ?? this.styleDefault;
   }
-  
+
   @override
   BorderStyle styleDefault = BorderStyle.solid;
 }
@@ -83,7 +82,7 @@ class BaseDSThemeBorderWidth implements DSBorderWidth {
     this.thicker = thicker ?? this.thicker;
     this.widthDefault = widthDefault ?? this.widthDefault;
   }
-  
+
   @override
   double widthDefault = 0;
 

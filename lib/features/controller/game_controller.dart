@@ -19,7 +19,7 @@ class GameController extends ChangeNotifier {
   GameTypeEnum get gameType => _gameType;
 
   List<String> gameThemes = List.empty(growable: true);
-  
+
   // Set to track used themes in memory (resets every app session)
   final Set<String> _usedThemes = <String>{};
   // Pool of themes available for selection before needing a reset
@@ -84,7 +84,8 @@ class GameController extends ChangeNotifier {
   }
 
   bool isGameFinished() {
-    return _gameType == GameTypeEnum.GAME_FINISHED || _gameType == GameTypeEnum.REVEAL_PLAYERS;
+    return _gameType == GameTypeEnum.GAME_FINISHED ||
+        _gameType == GameTypeEnum.REVEAL_PLAYERS;
   }
 
   void changeGameType(GameTypeEnum newGameType) {
@@ -144,7 +145,7 @@ class GameController extends ChangeNotifier {
       log('No themes available to select');
       return;
     }
-    
+
     if (_availableThemePool.isEmpty) {
       resetUsedThemes();
     }
@@ -153,11 +154,11 @@ class GameController extends ChangeNotifier {
       log('No themes available to select');
       return;
     }
-    
+
     final randomIndex = _randomGenerator.nextInt(_availableThemePool.length);
     final selectedTheme = _availableThemePool.removeAt(randomIndex);
     _usedThemes.add(selectedTheme);
-    
+
     gameThemeNumber = gameThemes.indexOf(selectedTheme).toString();
     gameThemeDescription = selectedTheme;
     notifyListeners();

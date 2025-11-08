@@ -1,6 +1,7 @@
 class AppImages {
   static const String logo = 'assets/images/logo.png';
-  static const String sequenciaNamePage = 'assets/images/sequencia_name_screen.jpg';
+  static const String sequenciaNamePage =
+      'assets/images/sequencia_name_screen.jpg';
   static const String sortThemePage = 'assets/images/sort_theme_screen.jpg';
   static const String revealThemePage = 'assets/images/reveal_theme_screen.jpg';
 }

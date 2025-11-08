@@ -1,8 +1,8 @@
-
 import 'package:flutter/material.dart';
 
 import '../base/base.dart';
 import '../tokens/design.dart';
+
 abstract class DSThemeData {
   DSThemeData({
     required this.designTokens,
@@ -43,14 +43,16 @@ class DSTheme extends InheritedWidget {
   }
 
   static void changeOwnThemeData(BuildContext context, DSThemeData data) {
-    final DSTheme? result = context.dependOnInheritedWidgetOfExactType<DSTheme>();
+    final DSTheme? result =
+        context.dependOnInheritedWidgetOfExactType<DSTheme>();
     if (result?.changeCallback case final callback?) {
       callback(data);
     }
   }
 
   static DSTokens getDesignTokensOf(BuildContext context) {
-    final DSTheme? result = context.dependOnInheritedWidgetOfExactType<DSTheme>();
+    final DSTheme? result =
+        context.dependOnInheritedWidgetOfExactType<DSTheme>();
     assert(result != null, 'No OwnTheme found in context');
     return result!.data.designTokens;
   }

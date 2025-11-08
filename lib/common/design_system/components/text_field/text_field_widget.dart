@@ -64,7 +64,9 @@ class _DSTextFieldState extends State<DSTextField> {
         cursorColor: theme.colors.primary, // Set cursor color to white
         decoration: InputDecoration(
           hintText: widget.hintText,
-          hintStyle: TextStyle(color: theme.colors.white.withOpacity(0.7)), // Set hint text color to white
+          hintStyle: TextStyle(
+              color: theme.colors.white
+                  .withOpacity(0.7)), // Set hint text color to white
           prefixIcon: widget.leading,
           suffixIcon: widget.trailing,
           labelStyle: TextStyle(
