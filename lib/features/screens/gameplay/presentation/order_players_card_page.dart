@@ -4,7 +4,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:sequencia/common/design_system/components/button/button_widget.dart';
-import 'package:sequencia/common/design_system/components/button/icon_button_widget.dart';
 import 'package:sequencia/common/design_system/components/cards/player_color_card_widget.dart';
 import 'package:sequencia/common/design_system/components/cards/theme_card_widget.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
@@ -225,8 +224,9 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> with Ticker
                           },
                         ),
                         SizedBox(width: theme.spacing.inline.xs),
-                        DSIconButtonWidget(
-                          label: Icons.remove_red_eye,
+                        DSButtonWidget(
+                          label: 'Tema',
+                          isSecondary: true,
                           onPressed: () {
                             showModalBottomSheet(
                               context: context,
@@ -237,7 +237,7 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage> with Ticker
                               },
                             );
                           },
-                          size: const Size(70, 40),
+                          size: const Size(100, 50),
                         ),
                         SizedBox(width: theme.spacing.inline.xxs),
                       ]

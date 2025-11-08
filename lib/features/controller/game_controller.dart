@@ -12,6 +12,7 @@ import 'package:sequencia/features/domain/player/entities/player_entity.dart';
 class GameController extends ChangeNotifier {
   GameController(this.localDatabase);
   final LocalDatabase localDatabase;
+  final Random _randomGenerator = Random();
 
   GameTypeEnum _gameType = GameTypeEnum.SHOW_THEME_CARD;
 
@@ -21,20 +22,26 @@ class GameController extends ChangeNotifier {
   
   // Set to track used themes in memory (resets every app session)
   final Set<String> _usedThemes = <String>{};
+  // Pool of themes available for selection before needing a reset
+  final List<String> _availableThemePool = <String>[];
 
   /// Returns a copy of the used themes set (for debugging purposes)
   Set<String> get usedThemes => Set.unmodifiable(_usedThemes);
 
   /// Returns the number of available themes that haven't been used yet
-  int get availableThemesCount => gameThemes.length - _usedThemes.length;
+  int get availableThemesCount => _availableThemePool.length;
 
   void setGameThemes(List<String> themes) {
     gameThemes = themes;
+    _resetThemeCycle();
     notifyListeners();
   }
 
   void addGameTheme(String theme) {
     gameThemes.add(theme);
+    if (!_availableThemePool.contains(theme)) {
+      _availableThemePool.add(theme);
+    }
     notifyListeners();
   }
 
@@ -97,7 +104,14 @@ class GameController extends ChangeNotifier {
 
   /// Resets the used themes list to allow all themes to be used again
   void resetUsedThemes() {
+    _resetThemeCycle();
+  }
+
+  void _resetThemeCycle() {
     _usedThemes.clear();
+    _availableThemePool
+      ..clear()
+      ..addAll(gameThemes);
   }
 
   /// Marks the current theme as used after game completion
@@ -108,9 +122,7 @@ class GameController extends ChangeNotifier {
   }
 
   String getRandomAvailableNumber() {
-    final random = Random();
-
-    final number = random.nextInt(100).toString();
+    final number = _randomGenerator.nextInt(100).toString();
 
     if (!_numbersUsed.contains(number)) {
       _numbersUsed.add(number);
@@ -128,24 +140,23 @@ class GameController extends ChangeNotifier {
   String gameThemeDescription = '';
 
   void selectRandomTheme() {
-    // If all themes have been used, reset the used themes set
-    if (_usedThemes.length >= gameThemes.length) {
-      resetUsedThemes();
-    }
-    
-    // Get list of available (unused) themes
-    final availableThemes = gameThemes.where((theme) => !_usedThemes.contains(theme)).toList();
-    
-    // If no available themes (shouldn't happen due to reset above), use all themes
-    final themesToChooseFrom = availableThemes.isNotEmpty ? availableThemes : gameThemes;
-    
-    if (themesToChooseFrom.isEmpty) {
+    if (gameThemes.isEmpty) {
       log('No themes available to select');
       return;
     }
     
-    final random = Random().nextInt(themesToChooseFrom.length);
-    final selectedTheme = themesToChooseFrom[random];
+    if (_availableThemePool.isEmpty) {
+      resetUsedThemes();
+    }
+
+    if (_availableThemePool.isEmpty) {
+      log('No themes available to select');
+      return;
+    }
+    
+    final randomIndex = _randomGenerator.nextInt(_availableThemePool.length);
+    final selectedTheme = _availableThemePool.removeAt(randomIndex);
+    _usedThemes.add(selectedTheme);
     
     gameThemeNumber = gameThemes.indexOf(selectedTheme).toString();
     gameThemeDescription = selectedTheme;

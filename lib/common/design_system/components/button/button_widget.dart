@@ -9,12 +9,14 @@ class DSButtonWidget extends StatefulWidget {
     required this.onPressed,
     this.size = const Size(200, 50),
     this.isEnabled = true,
+    this.isSecondary = false,
     super.key,
   });
   final String label;
   final void Function() onPressed;
   final Size size;
   final bool isEnabled;
+  final bool isSecondary;
   @override
   _DSButtonWidgetState createState() => _DSButtonWidgetState();
 }
@@ -46,6 +48,8 @@ class _DSButtonWidgetState extends State<DSButtonWidget> {
   @override
   Widget build(BuildContext context) {
     final theme = DSTheme.getDesignTokensOf(context);
+    final buttonColor =
+        widget.isSecondary ? theme.colors.tertiary : theme.colors.primary;
     return GestureDetector(
       onTapDown: widget.isEnabled ? _handleTapDown : null,
       onTapUp: widget.isEnabled ? _handleTapUp : null,
@@ -55,10 +59,12 @@ class _DSButtonWidgetState extends State<DSButtonWidget> {
         height: widget.size.height,
         duration: const Duration(milliseconds: 100),
         decoration: BoxDecoration(
-          color: widget.isEnabled ? theme.colors.primary : theme.colors.grey,
+          color: widget.isEnabled ? buttonColor : theme.colors.grey,
           boxShadow: [
             BoxShadow(
-              color: widget.isEnabled ? theme.colors.primary.withOpacity(0.55) : theme.colors.grey.withOpacity(0.55),
+              color: widget.isEnabled
+                  ? buttonColor.withOpacity(0.55)
+                  : theme.colors.grey.withOpacity(0.55),
               spreadRadius: 0,
               blurRadius: 0,
               offset: Offset(0, _isPressed ? 0 : 5),
@@ -75,7 +81,9 @@ class _DSButtonWidgetState extends State<DSButtonWidget> {
             widget.label,
             textAlign: TextAlign.center,
             customStyle: TextStyle(
-              color: widget.isEnabled ? theme.colors.white : theme.colors.white.withOpacity(0.3),
+              color: widget.isEnabled
+                  ? theme.colors.white
+                  : theme.colors.white.withOpacity(0.3),
               fontWeight: theme.font.weight.medium,
             ),
           ),

@@ -20,7 +20,8 @@ class MainScreenPage extends StatefulWidget {
   State<MainScreenPage> createState() => _MainScreenPageState();
 }
 
-class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStateMixin {
+class _MainScreenPageState extends State<MainScreenPage>
+    with TickerProviderStateMixin {
   late AnimationController _logoController;
   late Animation<Offset> _logoAnimation;
 
@@ -122,7 +123,8 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
         final now = DateTime.now();
         const backPressThreshold = Duration(seconds: 2);
 
-        if (_lastBackPress == null || now.difference(_lastBackPress!) > backPressThreshold) {
+        if (_lastBackPress == null ||
+            now.difference(_lastBackPress!) > backPressThreshold) {
           _lastBackPress = now;
 
           ScaffoldMessenger.of(context).showSnackBar(
@@ -151,10 +153,24 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
               SizedBox(height: MediaQuery.of(context).padding.top),
               SlideTransition(
                 position: _logoAnimation,
-                child: Image.asset(
-                  AppImages.logo,
-                  width: 250,
-                  height: 50,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(width: theme.spacing.inline.xxxl),
+                    Expanded(
+                      child: Image.asset(
+                        AppImages.logo,
+                      ),
+                    ),
+                    SizedBox(width: theme.spacing.inline.xl),
+                    DSIconButtonWidget(
+                      label: Icons.help_rounded,
+                      size: const Size(50, 40),
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed(Routes.guide),
+                    ),
+                    SizedBox(width: theme.spacing.inline.xs),
+                  ],
                 ),
               ),
               SizedBox(height: theme.spacing.inline.xxxs),
@@ -164,7 +180,12 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
                     return const LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [Colors.purple, Colors.transparent, Colors.transparent, Colors.purple],
+                      colors: [
+                        Colors.purple,
+                        Colors.transparent,
+                        Colors.transparent,
+                        Colors.purple
+                      ],
                       stops: [0.0, 0.03, 0.97, 1.0],
                     ).createShader(rect);
                   },
@@ -189,42 +210,34 @@ class _MainScreenPageState extends State<MainScreenPage> with TickerProviderStat
               SizedBox(height: theme.spacing.inline.sm),
               SlideTransition(
                 position: _buttonAnimation,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    const Spacer(),
-                    DSButtonWidget(
-                      label: AppStrings.startLabel,
-                      isEnabled: context.watch<PlayersController>().players.length >= AppConsts.minPlayersToStart,
-                      onPressed: () async {
-                        if (context.read<PlayersController>().playersCount >= AppConsts.minPlayersToStart) {
-                          context.read<PlayersController>().savePlayers();
-                          context.read<GameController>().resetGame();
-                          context.read<GameController>().setPlayers = context.read<PlayersController>().removeEmptyPlayers();
-                          Navigator.of(context).pushNamed(Routes.gamePrepare);
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              backgroundColor: theme.colors.secondary,
-                              content: DSText(
-                                AppStrings.playersInfoErrorMessage,
-                                customStyle: TextStyle(
-                                  fontSize: theme.font.size.xxs,
-                                ),
-                              ),
+                child: DSButtonWidget(
+                  label: AppStrings.startLabel,
+                  isEnabled:
+                      context.watch<PlayersController>().players.length >=
+                          AppConsts.minPlayersToStart,
+                  onPressed: () async {
+                    if (context.read<PlayersController>().playersCount >=
+                        AppConsts.minPlayersToStart) {
+                      context.read<PlayersController>().savePlayers();
+                      context.read<GameController>().resetGame();
+                      context.read<GameController>().setPlayers = context
+                          .read<PlayersController>()
+                          .removeEmptyPlayers();
+                      Navigator.of(context).pushNamed(Routes.gamePrepare);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: theme.colors.secondary,
+                          content: DSText(
+                            AppStrings.playersInfoErrorMessage,
+                            customStyle: TextStyle(
+                              fontSize: theme.font.size.xxs,
                             ),
-                          );
-                        }
-                      },
-                    ),
-                    SizedBox(width: theme.spacing.inline.sm),
-                    DSIconButtonWidget(
-                      label: Icons.help_rounded,
-                      size: const Size(50, 40),
-                      onPressed: () => Navigator.of(context).pushNamed(Routes.guide),
-                    ),
-                    const Spacer(),
-                  ],
+                          ),
+                        ),
+                      );
+                    }
+                  },
                 ),
               ),
               SizedBox(height: theme.spacing.inline.sm),
