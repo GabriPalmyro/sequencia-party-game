@@ -5,13 +5,15 @@ import 'package:sequencia/common/design_system/components/text_field/text_field_
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/features/controller/players_controller.dart';
 import 'package:sequencia/features/domain/player/entities/player_entity.dart';
+import 'package:sequencia/helpers/extension/context_extension.dart';
 import 'package:sequencia/utils/app_consts.dart';
 
 class PlayersNamesInputsWidget extends StatefulWidget {
   const PlayersNamesInputsWidget({super.key});
 
   @override
-  State<PlayersNamesInputsWidget> createState() => _PlayersNamesInputsWidgetState();
+  State<PlayersNamesInputsWidget> createState() =>
+      _PlayersNamesInputsWidgetState();
 }
 
 class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
@@ -32,7 +34,8 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
       context.read<PlayersController>().addPlayer(
             PlayerEntity(
               name: '',
-              color: context.read<PlayersController>().getRandomAvailableColor(),
+              color:
+                  context.read<PlayersController>().getRandomAvailableColor(),
             ),
           );
       _addNewController();
@@ -64,11 +67,14 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
 
     final playersLength = context.read<PlayersController>().players.length;
 
-    if (lowercaseText.isNotEmpty && index == playersLength - 1 && playersLength < AppConsts.maxPlayers) {
+    if (lowercaseText.isNotEmpty &&
+        index == playersLength - 1 &&
+        playersLength < AppConsts.maxPlayers) {
       context.read<PlayersController>().addPlayer(
             PlayerEntity(
               name: '',
-              color: context.read<PlayersController>().getRandomAvailableColor(),
+              color:
+                  context.read<PlayersController>().getRandomAvailableColor(),
             ),
           );
       _addNewController();
@@ -82,7 +88,9 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
 
   void _removePlayer(int index) {
     if (context.read<PlayersController>().players.length > 1) {
-      context.read<PlayersController>().removePlayer(context.read<PlayersController>().players[index]);
+      context
+          .read<PlayersController>()
+          .removePlayer(context.read<PlayersController>().players[index]);
       _removeController(index);
       setState(() {});
     }
@@ -134,18 +142,23 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
         itemCount: context.watch<PlayersController>().players.length,
         itemBuilder: (_, index) {
           final player = context.watch<PlayersController>().players[index];
-          final isLast = index == context.read<PlayersController>().players.length - 1;
-          final isEmptyLastField = isLast && player.name.isEmpty && context.read<PlayersController>().players.length < AppConsts.maxPlayers;
+          final isLast =
+              index == context.read<PlayersController>().players.length - 1;
+          final isEmptyLastField = isLast &&
+              player.name.isEmpty &&
+              context.read<PlayersController>().players.length <
+                  AppConsts.maxPlayers;
 
           return Padding(
             padding: EdgeInsets.symmetric(
               horizontal: theme.spacing.inline.xs,
               vertical: theme.spacing.inline.xxs,
             ).copyWith(
-              bottom: isLast ? theme.spacing.inline.sm : theme.spacing.inline.xxs,
+              bottom:
+                  isLast ? theme.spacing.inline.sm : theme.spacing.inline.xxs,
             ),
             child: DSTextField(
-              hintText: 'digite seu nome',
+              hintText: context.l10n.enterNameHint,
               controller: _controllers[index],
               textInputAction: TextInputAction.next,
               onTapOutside: (_) => FocusScope.of(context).unfocus(),

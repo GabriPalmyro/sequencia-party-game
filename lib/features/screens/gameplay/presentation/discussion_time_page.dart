@@ -10,6 +10,7 @@ import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/core/app_images.dart';
 import 'package:sequencia/core/app_sounds.dart';
 import 'package:sequencia/features/screens/gameplay/presentation/widgets/exit_game_dialog_widget.dart';
+import 'package:sequencia/helpers/extension/context_extension.dart';
 import 'package:sequencia/router/routes.dart';
 import 'package:sequencia/utils/time_formatter.dart';
 
@@ -85,7 +86,7 @@ class _DiscussionTimePageState extends State<DiscussionTimePage> {
             children: [
               const Spacer(),
               DSText(
-                'Fase de exemplos',
+                context.l10n.discussionPhaseTitle,
                 textAlign: TextAlign.center,
                 customStyle: TextStyle(
                   fontWeight: theme.font.weight.semiBold,
@@ -98,7 +99,7 @@ class _DiscussionTimePageState extends State<DiscussionTimePage> {
                   horizontal: theme.spacing.inline.md,
                 ),
                 child: DSText(
-                  'Vocês tem 3 minutos para definir os temas e discutir a ordem das cartas',
+                  context.l10n.discussionPhaseSubtitle,
                   textAlign: TextAlign.center,
                   customStyle: TextStyle(
                     fontWeight: theme.font.weight.light,
@@ -123,7 +124,7 @@ class _DiscussionTimePageState extends State<DiscussionTimePage> {
               ),
               const Spacer(),
               DSButtonWidget(
-                label: 'Pular',
+                label: context.l10n.skipLabel,
                 onPressed: _finishTimer,
               ),
               SizedBox(height: theme.spacing.inline.md),

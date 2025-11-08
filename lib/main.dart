@@ -1,16 +1,17 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/di/injection.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
+import 'package:sequencia/features/controller/locale_controller.dart';
 import 'package:sequencia/features/controller/players_controller.dart';
 import 'package:sequencia/firebase_options.dart';
 import 'package:sequencia/router/app_routes.dart';
 import 'package:sequencia/router/routes.dart';
-import 'package:sequencia/utils/app_strings.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,8 +21,8 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // FlutterError.onError = 
-      // FirebaseCrashlytics.instance.recordFlutterFatalError;
+  // FlutterError.onError =
+  // FirebaseCrashlytics.instance.recordFlutterFatalError;
 
   final GetIt getIt = GetIt.instance;
 
@@ -48,6 +49,9 @@ class _MyAppState extends State<MyApp> {
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(
+            create: (_) => LocaleController(),
+          ),
+          ChangeNotifierProvider(
             lazy: false,
             create: (_) => GetIt.I.get<PlayersController>(),
           ),
@@ -56,28 +60,33 @@ class _MyAppState extends State<MyApp> {
             create: (_) => GetIt.I<GameController>()..getGameThemes(),
           ),
         ],
-        child: MaterialApp(
-          theme: ThemeData(
-            pageTransitionsTheme: const PageTransitionsTheme(
-              builders: {
-                TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-              },
-            ),
-            primaryColor: widget.theme.designTokens.colors.primary,
-          ),
-          localizationsDelegates: const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: const [
-            Locale('pt', ''),
-          ],
-          debugShowCheckedModeBanner: false,
-          onGenerateRoute: AppRouter.onGenerateRoute,
-          initialRoute: Routes.splash,
-          title: AppStrings.title,
+        child: Consumer<LocaleController>(
+          builder: (context, localeController, _) {
+            return MaterialApp(
+              locale: localeController.locale,
+              theme: ThemeData(
+                pageTransitionsTheme: const PageTransitionsTheme(
+                  builders: {
+                    TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+                    TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+                  },
+                ),
+                primaryColor: widget.theme.designTokens.colors.primary,
+              ),
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: AppLocalizations.supportedLocales,
+              onGenerateTitle: (context) =>
+                  AppLocalizations.of(context)!.appTitle,
+              debugShowCheckedModeBanner: false,
+              onGenerateRoute: AppRouter.onGenerateRoute,
+              initialRoute: Routes.splash,
+            );
+          },
         ),
       ),
     );

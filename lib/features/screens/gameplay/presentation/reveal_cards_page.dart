@@ -9,6 +9,7 @@ import 'package:sequencia/features/domain/game/game_type_enum.dart';
 import 'package:sequencia/features/domain/player/entities/player_entity.dart';
 import 'package:sequencia/features/screens/gameplay/presentation/widgets/exit_game_dialog_widget.dart';
 import 'package:sequencia/features/screens/gameplay/widgets/player_page_view.dart';
+import 'package:sequencia/helpers/extension/context_extension.dart';
 import 'package:sequencia/router/routes.dart';
 
 import '../../../../common/design_system/components/button/button_widget.dart';
@@ -41,7 +42,9 @@ class _RevealCardsPageState extends State<RevealCardsPage> {
   void _nextPage() {
     if (currentPage < players.length) {
       if (currentPage == 0) {
-        context.read<GameController>().changeGameType(GameTypeEnum.SHOW_PLAYERS_NUMBER);
+        context
+            .read<GameController>()
+            .changeGameType(GameTypeEnum.SHOW_PLAYERS_NUMBER);
       }
 
       _pageController.nextPage(
@@ -50,7 +53,9 @@ class _RevealCardsPageState extends State<RevealCardsPage> {
       );
 
       if (currentPage + 1 == players.length) {
-        context.read<GameController>().changeGameType(GameTypeEnum.ORDER_PLAYERS);
+        context
+            .read<GameController>()
+            .changeGameType(GameTypeEnum.ORDER_PLAYERS);
       }
 
       setState(() {
@@ -69,9 +74,13 @@ class _RevealCardsPageState extends State<RevealCardsPage> {
       );
 
       if (currentPage == players.length) {
-        context.read<GameController>().changeGameType(GameTypeEnum.SHOW_PLAYERS_NUMBER);
+        context
+            .read<GameController>()
+            .changeGameType(GameTypeEnum.SHOW_PLAYERS_NUMBER);
       } else if (currentPage - 1 == 0) {
-        context.read<GameController>().changeGameType(GameTypeEnum.SHOW_THEME_CARD);
+        context
+            .read<GameController>()
+            .changeGameType(GameTypeEnum.SHOW_THEME_CARD);
       }
 
       setState(() {
@@ -116,7 +125,7 @@ class _RevealCardsPageState extends State<RevealCardsPage> {
                       );
                     },
                     child: DSText(
-                      'Voltar',
+                      context.l10n.backLabel,
                       textAlign: TextAlign.start,
                       customStyle: TextStyle(
                         fontSize: theme.font.size.sm,
@@ -159,7 +168,9 @@ class _RevealCardsPageState extends State<RevealCardsPage> {
                   ],
                   const Spacer(),
                   DSButtonWidget(
-                    label: gameType == GameTypeEnum.ORDER_PLAYERS ? 'Ordenar' : 'Próximo',
+                    label: gameType == GameTypeEnum.ORDER_PLAYERS
+                        ? context.l10n.orderLabel
+                        : context.l10n.nextLabel,
                     onPressed: _nextPage,
                   ),
                   const Spacer(),
@@ -182,7 +193,8 @@ class _RevealCardsPageState extends State<RevealCardsPage> {
     );
   }
 
-  Widget _buildThemePage(DSTokens theme, String selectedTheme, String selectedDescription) {
+  Widget _buildThemePage(
+      DSTokens theme, String selectedTheme, String selectedDescription) {
     return Center(
       child: ThemeCard(
         size: Size(
@@ -190,7 +202,7 @@ class _RevealCardsPageState extends State<RevealCardsPage> {
           MediaQuery.of(context).size.height * 0.5,
         ),
         label: DSText(
-          'O tema é',
+          context.l10n.themeIsLabel,
           textAlign: TextAlign.center,
           customStyle: TextStyle(
             fontSize: theme.font.size.xs,

@@ -5,6 +5,7 @@ import 'package:sequencia/common/design_system/components/cards/theme_card_widge
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
+import 'package:sequencia/helpers/extension/context_extension.dart';
 
 class ShowThemeCardModal extends StatelessWidget {
   const ShowThemeCardModal({
@@ -39,7 +40,7 @@ class ShowThemeCardModal extends StatelessWidget {
           SizedBox(height: theme.spacing.inline.sm),
           ThemeCard(
             label: DSText(
-              'O tema é',
+              context.l10n.themeIsLabel,
               textAlign: TextAlign.center,
               customStyle: TextStyle(
                 fontSize: theme.font.size.xxs,
@@ -57,7 +58,8 @@ class ShowThemeCardModal extends StatelessWidget {
               ),
             ),
             description: Padding(
-              padding: EdgeInsets.symmetric(horizontal: theme.spacing.inline.xxs),
+              padding:
+                  EdgeInsets.symmetric(horizontal: theme.spacing.inline.xxs),
               child: DSText(
                 context.read<GameController>().gameThemeDescription,
                 textAlign: TextAlign.center,
@@ -73,7 +75,7 @@ class ShowThemeCardModal extends StatelessWidget {
           SizedBox(height: theme.spacing.inline.xxl),
           DSButtonWidget(
             onPressed: () => Navigator.of(context).pop(),
-            label: 'Fechar',
+            label: context.l10n.closeLabel,
           ),
           SizedBox(height: theme.spacing.inline.md),
         ],

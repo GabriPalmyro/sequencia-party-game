@@ -4,6 +4,7 @@ import 'package:sequencia/common/app_infos/app_infos_service.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/core/app_images.dart';
+import 'package:sequencia/helpers/extension/context_extension.dart';
 import 'package:sequencia/router/routes.dart';
 
 class SplashPage extends StatefulWidget {
@@ -30,6 +31,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     final theme = DSTheme.getDesignTokensOf(context);
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: theme.colors.background,
@@ -57,7 +59,7 @@ class _SplashPageState extends State<SplashPage> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return DSText(
-                      'Versão: ${snapshot.data}',
+                      l10n.versionLabel(snapshot.data ?? '...'),
                       customStyle: TextStyle(
                         fontSize: theme.font.size.xs,
                       ),
@@ -75,7 +77,7 @@ class _SplashPageState extends State<SplashPage> {
                         );
                   } else {
                     return DSText(
-                      'Versão: ...',
+                      l10n.versionLabel('...'),
                       customStyle: TextStyle(
                         fontSize: theme.font.size.xs,
                       ),

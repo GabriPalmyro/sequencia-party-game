@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
-import 'package:sequencia/utils/app_strings.dart';
+import 'package:sequencia/helpers/extension/context_extension.dart';
 
 class ThemeCard extends StatefulWidget {
   const ThemeCard({
@@ -44,7 +44,8 @@ class _ThemeCardState extends State<ThemeCard> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    _rotationAnimation = Tween<double>(begin: 0, end: 1).animate(_flipController);
+    _rotationAnimation =
+        Tween<double>(begin: 0, end: 1).animate(_flipController);
 
     // Verifica o estado inicial de isHidden
     if (widget.isHidden) {
@@ -113,20 +114,22 @@ class _ThemeCardState extends State<ThemeCard> with TickerProviderStateMixin {
                         'assets/images/logo.png',
                       ),
                     ),
-                    description: widget.isEnableFlip && widget.shoudShowFlipLabel
-                        ? Padding(
-                            padding: EdgeInsets.symmetric(horizontal: theme.spacing.inline.xxs),
-                            child: DSText(
-                              AppStrings.touchToFlip,
-                              textAlign: TextAlign.center,
-                              customStyle: TextStyle(
-                                fontSize: theme.font.size.xxxs,
-                                fontWeight: theme.font.weight.light,
-                                color: theme.colors.white,
-                              ),
-                            ),
-                          )
-                        : null,
+                    description:
+                        widget.isEnableFlip && widget.shoudShowFlipLabel
+                            ? Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: theme.spacing.inline.xxs),
+                                child: DSText(
+                                  context.l10n.touchToFlip,
+                                  textAlign: TextAlign.center,
+                                  customStyle: TextStyle(
+                                    fontSize: theme.font.size.xxxs,
+                                    fontWeight: theme.font.weight.light,
+                                    color: theme.colors.white,
+                                  ),
+                                ),
+                              )
+                            : null,
                   ),
                 )
               : CardContent(

@@ -7,8 +7,8 @@ import 'package:sequencia/core/app_images.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
 import 'package:sequencia/features/controller/players_controller.dart';
 import 'package:sequencia/features/screens/gameplay/presentation/widgets/exit_game_dialog_widget.dart';
+import 'package:sequencia/helpers/extension/context_extension.dart';
 import 'package:sequencia/router/routes.dart';
-import 'package:sequencia/utils/app_strings.dart';
 
 class SortGameNumbersPage extends StatefulWidget {
   const SortGameNumbersPage({super.key});
@@ -32,8 +32,11 @@ class _SortGameNumbersPageState extends State<SortGameNumbersPage> {
       final players = context.read<PlayersController>().players;
 
       for (var i = 0; i < players.length; i++) {
-        final newSortNumber = context.read<GameController>().getRandomAvailableNumber();
-        context.read<GameController>().updatePlayer(players[i], newNumber: newSortNumber);
+        final newSortNumber =
+            context.read<GameController>().getRandomAvailableNumber();
+        context
+            .read<GameController>()
+            .updatePlayer(players[i], newNumber: newSortNumber);
       }
 
       await Future.delayed(const Duration(seconds: 3));
@@ -60,7 +63,7 @@ class _SortGameNumbersPageState extends State<SortGameNumbersPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               DSText(
-                AppStrings.sortingNumbers,
+                context.l10n.sortingNumbers,
                 textAlign: TextAlign.center,
                 customStyle: TextStyle(
                   fontWeight: theme.font.weight.light,

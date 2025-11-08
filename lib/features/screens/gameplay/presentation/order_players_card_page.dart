@@ -15,6 +15,7 @@ import 'package:sequencia/features/screens/gameplay/presentation/widgets/exit_ga
 import 'package:sequencia/features/screens/gameplay/presentation/widgets/finish_game_dialog_widget.dart';
 import 'package:sequencia/features/screens/gameplay/presentation/widgets/show_player_card_modal.dart';
 import 'package:sequencia/features/screens/gameplay/presentation/widgets/show_theme_card_modal.dart';
+import 'package:sequencia/helpers/extension/context_extension.dart';
 import 'package:sequencia/utils/app_animations.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -64,9 +65,9 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage>
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
-        const SnackBar(
-          content: Text('Não é possível reordenar após revelar os resultados.'),
-          duration: Duration(seconds: 2),
+        SnackBar(
+          content: Text(context.l10n.reorderLockedMessage),
+          duration: const Duration(seconds: 2),
         ),
       );
   }
@@ -104,7 +105,7 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage>
                   horizontal: theme.spacing.inline.xs,
                 ),
                 child: DSText(
-                  'Ordene os jogadores',
+                  context.l10n.orderPlayersTitle,
                   customStyle: TextStyle(
                     fontSize: theme.font.size.md,
                     fontWeight: theme.font.weight.semiBold,
@@ -117,7 +118,7 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage>
                   horizontal: theme.spacing.inline.xs,
                 ),
                 child: DSText(
-                  'Do menor para o maior',
+                  context.l10n.orderPlayersSubtitle,
                   customStyle: TextStyle(
                     fontSize: theme.font.size.xxs,
                     fontWeight: theme.font.weight.light,
@@ -164,7 +165,7 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage>
                       bottom: theme.spacing.inline.xxs,
                     ),
                     child: DSText(
-                      'Segure em qualquer carta para rever um jogador',
+                      context.l10n.orderPlayersHint,
                       textAlign: TextAlign.center,
                       customStyle: TextStyle(
                         fontSize: theme.font.size.us,
@@ -179,10 +180,12 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage>
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     DSButtonWidget(
-                      label: isResultsPhase ? 'Finalizar' : 'Revelar',
+                      label: isResultsPhase
+                          ? context.l10n.finishLabel
+                          : context.l10n.revealLabel,
                       onPressed: () async {
                         final controller = context.read<GameController>();
-            
+
                         if (controller.isGameFinished()) {
                           controller.completeGame();
                           showDialog(
@@ -196,26 +199,26 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage>
                           controller
                               .changeGameType(GameTypeEnum.REVEAL_PLAYERS);
                         }
-            
+
                         _scrollController.animateTo(
                           0,
                           duration: const Duration(milliseconds: 400),
                           curve: Curves.easeOut,
                         );
-            
+
                         for (int i = 0; i < revealedCards.length; i++) {
                           await Future.delayed(const Duration(seconds: 1));
-                          Future.delayed(
-                              Duration(seconds: (i * 1.5).toInt()), () {
+                          Future.delayed(Duration(seconds: (i * 1.5).toInt()),
+                              () {
                             if (!_scrollController.hasClients) {
                               return;
                             }
-            
+
                             setState(() {
                               revealedCards[i] = true;
                             });
                           });
-            
+
                           if (i == revealedCards.length - 1) {
                             controller
                                 .changeGameType(GameTypeEnum.GAME_FINISHED);
@@ -223,15 +226,16 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage>
                             controller.completeGame();
                             // Trigger success animation after the last card is revealed
                             Future.delayed(
-                                Duration(seconds: (i * 1.5).toInt() + 2),
-                                () {
+                                Duration(seconds: (i * 1.5).toInt() + 2), () {
                               if (mounted) {
-                                print('Checking game success: ${controller.isGameSuccess()}');
+                                print(
+                                    'Checking game success: ${controller.isGameSuccess()}');
                                 if (controller.isGameSuccess()) {
                                   print('Triggering success animation');
                                   _animateSuccessReveal();
                                 } else {
-                                  print('Game was not successful, no animation');
+                                  print(
+                                      'Game was not successful, no animation');
                                 }
                               }
                             });
@@ -241,7 +245,7 @@ class _OrderPlayersCardPageState extends State<OrderPlayersCardPage>
                     ),
                     SizedBox(width: theme.spacing.inline.xs),
                     DSButtonWidget(
-                      label: 'Tema',
+                      label: context.l10n.themeLabel,
                       isSecondary: true,
                       onPressed: () {
                         showModalBottomSheet(

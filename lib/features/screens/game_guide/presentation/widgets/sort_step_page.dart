@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/core/app_images.dart';
+import 'package:sequencia/helpers/extension/context_extension.dart';
 
 class SortStepPage extends StatelessWidget {
   const SortStepPage({super.key});
@@ -10,16 +11,16 @@ class SortStepPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = DSTheme.getDesignTokensOf(context);
     return Padding(
-      padding:  EdgeInsets.symmetric(
+      padding: EdgeInsets.symmetric(
         horizontal: theme.spacing.inline.xs,
       ),
       child: Column(
         children: [
           SizedBox(height: theme.spacing.inline.lg),
           DSText(
-            'Após adicionar o nome dos jogadores,\nos números serão sorteados',
+            context.l10n.guideSortStepDescription,
             textAlign: TextAlign.center,
-            customStyle:  TextStyle(
+            customStyle: TextStyle(
               fontSize: theme.font.size.xxs,
               fontWeight: theme.font.weight.light,
             ),

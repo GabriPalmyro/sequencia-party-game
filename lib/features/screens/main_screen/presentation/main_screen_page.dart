@@ -8,10 +8,11 @@ import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/core/app_images.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
 import 'package:sequencia/features/controller/players_controller.dart';
+import 'package:sequencia/features/screens/main_screen/presentation/widgets/language_selector_widget.dart';
 import 'package:sequencia/features/screens/main_screen/presentation/widgets/players_names_inputs_widget.dart';
+import 'package:sequencia/helpers/extension/context_extension.dart';
 import 'package:sequencia/router/routes.dart';
 import 'package:sequencia/utils/app_consts.dart';
-import 'package:sequencia/utils/app_strings.dart';
 
 class MainScreenPage extends StatefulWidget {
   const MainScreenPage({super.key});
@@ -131,7 +132,7 @@ class _MainScreenPageState extends State<MainScreenPage>
             SnackBar(
               backgroundColor: theme.colors.secondary,
               content: DSText(
-                AppStrings.closeAppMessage,
+                context.l10n.closeAppMessage,
                 customStyle: TextStyle(
                   fontSize: theme.font.size.xxs,
                 ),
@@ -156,7 +157,9 @@ class _MainScreenPageState extends State<MainScreenPage>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(width: theme.spacing.inline.xxxl),
+                    SizedBox(width: theme.spacing.inline.xs),
+                    const LanguageSelectorWidget(),
+                    SizedBox(width: theme.spacing.inline.sm),
                     Expanded(
                       child: Image.asset(
                         AppImages.logo,
@@ -201,8 +204,8 @@ class _MainScreenPageState extends State<MainScreenPage>
                     padding: EdgeInsets.symmetric(
                       horizontal: theme.spacing.inline.xs,
                     ),
-                    child: const InfoCardWidget(
-                      AppStrings.playersInfoLabelLabel,
+                    child: InfoCardWidget(
+                      context.l10n.playersInfoLabel,
                     ),
                   ),
                 ),
@@ -211,7 +214,7 @@ class _MainScreenPageState extends State<MainScreenPage>
               SlideTransition(
                 position: _buttonAnimation,
                 child: DSButtonWidget(
-                  label: AppStrings.startLabel,
+                  label: context.l10n.startLabel,
                   isEnabled:
                       context.watch<PlayersController>().players.length >=
                           AppConsts.minPlayersToStart,
@@ -229,7 +232,7 @@ class _MainScreenPageState extends State<MainScreenPage>
                         SnackBar(
                           backgroundColor: theme.colors.secondary,
                           content: DSText(
-                            AppStrings.playersInfoErrorMessage,
+                            context.l10n.playersInfoError,
                             customStyle: TextStyle(
                               fontSize: theme.font.size.xxs,
                             ),

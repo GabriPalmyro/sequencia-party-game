@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
+import 'package:sequencia/helpers/extension/context_extension.dart';
 import 'package:sequencia/router/routes.dart';
 
 class ExitGameDialogWidget extends StatelessWidget {
@@ -12,7 +13,7 @@ class ExitGameDialogWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = DSTheme.getDesignTokensOf(context);
-    
+
     if (Platform.isIOS) {
       return _buildCupertinoDialog(context, theme);
     }
@@ -20,9 +21,10 @@ class ExitGameDialogWidget extends StatelessWidget {
   }
 
   Widget _buildCupertinoDialog(BuildContext context, dynamic theme) {
+    final l10n = context.l10n;
     return CupertinoAlertDialog(
       title: DSText(
-        'Sair do jogo',
+        l10n.exitGameTitle,
         customStyle: TextStyle(
           color: theme.colors.background,
           fontSize: theme.font.size.sm,
@@ -30,7 +32,7 @@ class ExitGameDialogWidget extends StatelessWidget {
         ),
       ),
       content: DSText(
-        'Tem certeza que deseja sair do jogo?',
+        l10n.exitGameDescription,
         customStyle: TextStyle(
           color: theme.colors.primary,
           fontSize: theme.font.size.xs,
@@ -43,7 +45,7 @@ class ExitGameDialogWidget extends StatelessWidget {
             Navigator.of(context).pop();
           },
           child: DSText(
-            'Cancelar',
+            l10n.cancelLabel,
             customStyle: TextStyle(
               color: theme.colors.tertiary,
               fontSize: theme.font.size.xs,
@@ -57,7 +59,7 @@ class ExitGameDialogWidget extends StatelessWidget {
             Navigator.pushReplacementNamed(context, Routes.home);
           },
           child: DSText(
-            'Sair',
+            l10n.exitLabel,
             customStyle: TextStyle(
               color: theme.colors.tertiary,
               fontSize: theme.font.size.xs,
@@ -70,9 +72,10 @@ class ExitGameDialogWidget extends StatelessWidget {
   }
 
   Widget _buildMaterialDialog(BuildContext context, dynamic theme) {
+    final l10n = context.l10n;
     return AlertDialog(
       title: DSText(
-        'Sair do jogo',
+        l10n.exitGameTitle,
         customStyle: TextStyle(
           color: theme.colors.background,
           fontSize: theme.font.size.sm,
@@ -80,7 +83,7 @@ class ExitGameDialogWidget extends StatelessWidget {
         ),
       ),
       content: DSText(
-        'Tem certeza que deseja sair do jogo?',
+        l10n.exitGameDescription,
         customStyle: TextStyle(
           color: theme.colors.primary,
           fontSize: theme.font.size.xs,
@@ -93,7 +96,7 @@ class ExitGameDialogWidget extends StatelessWidget {
             Navigator.of(context).pop();
           },
           child: DSText(
-            'Cancelar',
+            l10n.cancelLabel,
             customStyle: TextStyle(
               color: theme.colors.tertiary,
               fontSize: theme.font.size.xs,
@@ -106,7 +109,7 @@ class ExitGameDialogWidget extends StatelessWidget {
             Navigator.pushReplacementNamed(context, Routes.home);
           },
           child: DSText(
-            'Sair',
+            l10n.exitLabel,
             customStyle: TextStyle(
               color: theme.colors.tertiary,
               fontSize: theme.font.size.xs,

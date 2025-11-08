@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sequencia/helpers/extension/context_extension.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -7,7 +8,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text('Settings Page'),
+        child: Text(context.l10n.settingsTitle),
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:sequencia/common/design_system/components/button/button_widget.d
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/features/domain/player/entities/player_entity.dart';
 import 'package:sequencia/features/screens/gameplay/widgets/player_page_view.dart';
+import 'package:sequencia/helpers/extension/context_extension.dart';
 
 class ShowPlayerCardModal extends StatelessWidget {
   const ShowPlayerCardModal({
@@ -43,7 +44,7 @@ class ShowPlayerCardModal extends StatelessWidget {
           SizedBox(height: theme.spacing.inline.xxxl),
           DSButtonWidget(
             onPressed: () => Navigator.of(context).pop(),
-            label: 'Fechar',
+            label: context.l10n.closeLabel,
           ),
           SizedBox(height: theme.spacing.inline.md),
         ],

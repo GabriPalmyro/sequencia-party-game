@@ -8,6 +8,7 @@ import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/features/controller/card_view_controller.dart';
 import 'package:sequencia/features/domain/game/card_view_enum.dart';
 import 'package:sequencia/features/domain/player/entities/player_entity.dart';
+import 'package:sequencia/helpers/extension/context_extension.dart';
 
 class PlayerPageView extends StatefulWidget {
   const PlayerPageView({required this.player, Key? key}) : super(key: key);
@@ -44,19 +45,26 @@ class _PlayerPageViewState extends State<PlayerPageView> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      if (context.read<CardViewController>().cardView == CardViewEnum.HIDE_CARD) {
-                        context.read<CardViewController>().changeCardView(CardViewEnum.SHOW_CARD);
+                      if (context.read<CardViewController>().cardView ==
+                          CardViewEnum.HIDE_CARD) {
+                        context
+                            .read<CardViewController>()
+                            .changeCardView(CardViewEnum.SHOW_CARD);
                       } else {
-                        context.read<CardViewController>().changeCardView(CardViewEnum.HIDE_CARD);
+                        context
+                            .read<CardViewController>()
+                            .changeCardView(CardViewEnum.HIDE_CARD);
                       }
                     },
                     child: Builder(
                       builder: (context) {
-                        final shouldHideCard = context.watch<CardViewController>().cardView == CardViewEnum.HIDE_CARD;
+                        final shouldHideCard =
+                            context.watch<CardViewController>().cardView ==
+                                CardViewEnum.HIDE_CARD;
                         return ThemeCard(
                           isHidden: shouldHideCard,
                           label: DSText(
-                            'Seu número é',
+                            context.l10n.playerNumberLabel,
                             customStyle: TextStyle(
                               fontSize: theme.font.size.sm,
                               fontWeight: theme.font.weight.light,

@@ -9,6 +9,7 @@ import 'package:sequencia/common/design_system/components/text/text_widget.dart'
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/common/design_system/core/tokens/design.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
+import 'package:sequencia/helpers/extension/context_extension.dart';
 import 'package:sequencia/router/routes.dart';
 
 class FinishGameDialogWidget extends StatelessWidget {
@@ -36,9 +37,10 @@ class FinishGameDialogWidget extends StatelessWidget {
   }
 
   Widget _buildCupertinoDialog(BuildContext context, DSTokens theme) {
+    final l10n = context.l10n;
     return CupertinoAlertDialog(
       title: DSText(
-        'Finalizar o jogo',
+        l10n.finishGameTitle,
         customStyle: TextStyle(
           color: theme.colors.background,
           fontSize: theme.font.size.sm,
@@ -46,7 +48,7 @@ class FinishGameDialogWidget extends StatelessWidget {
         ),
       ),
       content: DSText(
-        'Deseja começar outra rodada ou sair para a tela inicial?',
+        l10n.finishGameDescription,
         customStyle: TextStyle(
           color: theme.colors.primary,
           fontSize: theme.font.size.xs,
@@ -57,7 +59,7 @@ class FinishGameDialogWidget extends StatelessWidget {
         CupertinoDialogAction(
           onPressed: () => _goToMainPage(context),
           child: DSText(
-            'Retornar ao início',
+            l10n.returnHomeLabel,
             customStyle: TextStyle(
               color: theme.colors.tertiary,
               fontSize: theme.font.size.xs,
@@ -69,7 +71,7 @@ class FinishGameDialogWidget extends StatelessWidget {
           isDestructiveAction: true,
           onPressed: () => _restartGame(context),
           child: DSText(
-            'Jogar novamente',
+            l10n.playAgainLabel,
             customStyle: TextStyle(
               color: theme.colors.primary,
               fontSize: theme.font.size.xs,
@@ -82,9 +84,10 @@ class FinishGameDialogWidget extends StatelessWidget {
   }
 
   Widget _buildMaterialDialog(BuildContext context, DSTokens theme) {
+    final l10n = context.l10n;
     return AlertDialog(
       title: DSText(
-        'Finalizar o jogo',
+        l10n.finishGameTitle,
         customStyle: TextStyle(
           color: theme.colors.background,
           fontSize: theme.font.size.sm,
@@ -92,7 +95,7 @@ class FinishGameDialogWidget extends StatelessWidget {
         ),
       ),
       content: DSText(
-        'Deseja começar outra rodada ou sair para a tela inicial?',
+        l10n.finishGameDescription,
         customStyle: TextStyle(
           color: theme.colors.primary,
           fontSize: theme.font.size.xs,
@@ -103,7 +106,7 @@ class FinishGameDialogWidget extends StatelessWidget {
         TextButton(
           onPressed: () => _goToMainPage(context),
           child: DSText(
-            'Retornar ao início',
+            l10n.returnHomeLabel,
             customStyle: TextStyle(
               color: theme.colors.tertiary,
               fontSize: theme.font.size.xs,
@@ -114,7 +117,7 @@ class FinishGameDialogWidget extends StatelessWidget {
         TextButton(
           onPressed: () => _restartGame(context),
           child: DSText(
-            'Jogar novamente',
+            l10n.playAgainLabel,
             customStyle: TextStyle(
               color: theme.colors.primary,
               fontSize: theme.font.size.xs,

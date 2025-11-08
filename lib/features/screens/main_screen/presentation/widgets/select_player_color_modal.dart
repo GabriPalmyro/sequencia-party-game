@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sequencia/common/design_system/components/button/button_widget.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
+import 'package:sequencia/helpers/extension/context_extension.dart';
 
 class SelectPlayerColorModal extends StatelessWidget {
   const SelectPlayerColorModal({
@@ -39,7 +40,7 @@ class SelectPlayerColorModal extends StatelessWidget {
             ),
           ),
           DSText(
-            'Selecione uma cor',
+            context.l10n.selectColorTitle,
             customStyle: TextStyle(
               fontWeight: theme.font.weight.medium,
               fontSize: 20,
@@ -71,7 +72,7 @@ class SelectPlayerColorModal extends StatelessWidget {
           SizedBox(height: theme.spacing.inline.xxl),
           DSButtonWidget(
             onPressed: () => Navigator.of(context).pop(),
-            label: 'Cancelar',
+            label: context.l10n.cancelLabel,
           ),
           SizedBox(height: theme.spacing.inline.md),
         ],
