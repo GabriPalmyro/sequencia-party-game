@@ -53,7 +53,7 @@ class _MyAppState extends State<MyApp> {
           ),
           ChangeNotifierProvider(
             lazy: false,
-            create: (_) => GetIt.I.get<PlayersController>(),
+            create: (_) => GetIt.I.get<PlayersController>()..getSavedPlayers(),
           ),
           ChangeNotifierProvider(
             lazy: false,

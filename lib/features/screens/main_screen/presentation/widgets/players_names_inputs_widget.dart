@@ -5,6 +5,7 @@ import 'package:sequencia/common/design_system/components/text_field/text_field_
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/features/controller/players_controller.dart';
 import 'package:sequencia/features/domain/player/entities/player_entity.dart';
+import 'package:sequencia/features/screens/main_screen/presentation/widgets/select_player_color_modal.dart';
 import 'package:sequencia/helpers/extension/context_extension.dart';
 import 'package:sequencia/utils/app_consts.dart';
 
@@ -17,67 +18,76 @@ class PlayersNamesInputsWidget extends StatefulWidget {
 }
 
 class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
-  late ScrollController _scrollController;
+  late final ScrollController _scrollController;
 
   final List<TextEditingController> _controllers = [];
+  bool _isSyncingControllers = false;
+
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    if (context.read<PlayersController>().players.isNotEmpty) {
-      for (final player in context.read<PlayersController>().players) {
-        _addNewController(player.name);
+  }
+
+  TextEditingController _createController(String value) {
+    final controller = TextEditingController(text: value);
+    controller.addListener(() {
+      final index = _controllers.indexOf(controller);
+      if (index != -1) {
+        _onTextChanged(controller.text, index);
       }
+    });
+    return controller;
+  }
+
+  void _syncControllers(List<PlayerEntity> players) {
+    _isSyncingControllers = true;
+    while (_controllers.length < players.length) {
+      final player = players[_controllers.length];
+      _controllers.add(_createController(player.name));
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<PlayersController>().addPlayer(
-            PlayerEntity(
-              name: '',
-              color:
-                  context.read<PlayersController>().getRandomAvailableColor(),
-            ),
+    while (_controllers.length > players.length) {
+      final removedController = _controllers.removeLast();
+      removedController.dispose();
+    }
+
+    for (var i = 0; i < players.length; i++) {
+      final playerName = players[i].name;
+      final controller = _controllers[i];
+      if (controller.text != playerName) {
+        controller
+          ..text = playerName
+          ..selection = TextSelection.fromPosition(
+            TextPosition(offset: controller.text.length),
           );
-      _addNewController();
-      setState(() {});
-    });
-  }
-
-  void _addNewController([String? initialText]) {
-    final newController = TextEditingController(text: initialText);
-    newController.addListener(
-      () {
-        final index = _controllers.indexOf(newController);
-        _onTextChanged(newController.text, index);
-      },
-    );
-    _controllers.add(newController);
-  }
-
-  void _removeController(int index) {
-    _controllers.removeAt(index);
+      }
+    }
+    _isSyncingControllers = false;
   }
 
   void _onTextChanged(String text, int index) {
+    if (_isSyncingControllers) {
+      return;
+    }
     final lowercaseText = text.toLowerCase();
-    context.read<PlayersController>().updatePlayer(
-          context.read<PlayersController>().players[index],
-          newName: lowercaseText,
-        );
+    final playersController = context.read<PlayersController>();
+    playersController.updatePlayer(
+      playersController.players[index],
+      newName: lowercaseText,
+    );
 
-    final playersLength = context.read<PlayersController>().players.length;
+    final playersLength = playersController.players.length;
 
     if (lowercaseText.isNotEmpty &&
         index == playersLength - 1 &&
         playersLength < AppConsts.maxPlayers) {
-      context.read<PlayersController>().addPlayer(
-            PlayerEntity(
-              name: '',
-              color:
-                  context.read<PlayersController>().getRandomAvailableColor(),
-            ),
-          );
-      _addNewController();
+      playersController.addPlayer(
+        PlayerEntity(
+          name: '',
+          color: playersController.getRandomAvailableColor(),
+        ),
+      );
       _scrollController.animateTo(
         _scrollController.position.maxScrollExtent,
         duration: 150.ms,
@@ -87,35 +97,44 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
   }
 
   void _removePlayer(int index) {
-    if (context.read<PlayersController>().players.length > 1) {
-      context
-          .read<PlayersController>()
-          .removePlayer(context.read<PlayersController>().players[index]);
-      _removeController(index);
-      setState(() {});
+    final playersController = context.read<PlayersController>();
+    if (playersController.players.length > 1) {
+      playersController.removePlayer(playersController.players[index]);
+      if (index < _controllers.length) {
+        final controller = _controllers.removeAt(index);
+        controller.dispose();
+      }
     }
   }
 
-  // Deprecated color selection
-  // void _selectColor(int index) {
-  //   showModalBottomSheet(
-  //     context: context,
-  //     backgroundColor: Colors.transparent,
-  //     builder: (BuildContext context) {
-  //       return SelectPlayerColorModal(
-  //         availableColors: context.read<PlayersController>().getAvailableColors(),
-  //         onColorSelected: (color) {
-  //           context.read<PlayersController>().updatePlayer(
-  //                 context.read<PlayersController>().players[index],
-  //                 newColor: color,
-  //               );
-  //           Navigator.of(context).pop();
-  //           setState(() {});
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
+  void _selectColor(int index) {
+    final playersController = context.read<PlayersController>();
+    final player = playersController.players[index];
+    final availableColors =
+        List<Color>.from(playersController.getAvailableColors());
+
+    if (player.color != null &&
+        !availableColors.any((color) => color.value == player.color!.value)) {
+      availableColors.insert(0, player.color!);
+    }
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return SelectPlayerColorModal(
+          availableColors: availableColors,
+          onColorSelected: (color) {
+            playersController.updatePlayer(
+              playersController.players[index],
+              newColor: color,
+            );
+            Navigator.of(context).pop();
+          },
+        );
+      },
+    );
+  }
 
   @override
   void dispose() {
@@ -129,6 +148,10 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
   @override
   Widget build(BuildContext context) {
     final theme = DSTheme.getDesignTokensOf(context);
+    final playersController = context.watch<PlayersController>();
+    final players = playersController.players;
+    _syncControllers(players);
+
     return RawScrollbar(
       controller: _scrollController,
       thumbVisibility: true,
@@ -139,15 +162,13 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
       child: ListView.builder(
         controller: _scrollController,
         shrinkWrap: true,
-        itemCount: context.watch<PlayersController>().players.length,
+        itemCount: players.length,
         itemBuilder: (_, index) {
-          final player = context.watch<PlayersController>().players[index];
-          final isLast =
-              index == context.read<PlayersController>().players.length - 1;
+          final player = players[index];
+          final isLast = index == players.length - 1;
           final isEmptyLastField = isLast &&
               player.name.isEmpty &&
-              context.read<PlayersController>().players.length <
-                  AppConsts.maxPlayers;
+              players.length < AppConsts.maxPlayers;
 
           return Padding(
             padding: EdgeInsets.symmetric(
@@ -165,7 +186,7 @@ class _PlayersNamesInputsWidgetState extends State<PlayersNamesInputsWidget> {
               leading: isEmptyLastField
                   ? null
                   : GestureDetector(
-                      // onTap: () => _selectColor(index),
+                      onTap: () => _selectColor(index),
                       child: Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal: theme.spacing.inline.xxs,
