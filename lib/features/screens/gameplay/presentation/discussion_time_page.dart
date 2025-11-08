@@ -4,9 +4,12 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 import 'package:sequencia/common/design_system/components/button/button_widget.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
+import 'package:sequencia/common/widgets/ads/banner_ad_slot.dart';
+import 'package:sequencia/core/ads/ads_service.dart';
 import 'package:sequencia/core/app_images.dart';
 import 'package:sequencia/core/app_sounds.dart';
 import 'package:sequencia/features/screens/gameplay/presentation/widgets/exit_game_dialog_widget.dart';
@@ -46,6 +49,7 @@ class _DiscussionTimePageState extends State<DiscussionTimePage> {
 
   Future<void> _finishTimer() async {
     _timer?.cancel();
+    final adsService = context.read<AdsService>();
 
     try {
       // Play a sound when the timer finishes
@@ -57,6 +61,10 @@ class _DiscussionTimePageState extends State<DiscussionTimePage> {
     }
 
     await Future.delayed(const Duration(seconds: 2));
+    await adsService.showInterstitialIfAvailable();
+    if (!mounted) {
+      return;
+    }
     Navigator.of(context).pushReplacementNamed(Routes.gameOrderPlayers);
   }
 
@@ -121,6 +129,10 @@ class _DiscussionTimePageState extends State<DiscussionTimePage> {
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.7,
                 child: Lottie.asset(AppAnimations.clock),
+              ),
+              SizedBox(height: theme.spacing.inline.xxs),
+              const BannerAdSlot(
+                placement: AdBannerPlacement.countdown,
               ),
               const Spacer(),
               DSButtonWidget(

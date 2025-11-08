@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
+import 'package:sequencia/common/widgets/ads/banner_ad_slot.dart';
+import 'package:sequencia/core/ads/ads_service.dart';
 import 'package:sequencia/core/app_images.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
 import 'package:sequencia/features/controller/players_controller.dart';
@@ -41,6 +44,10 @@ class _SortGameNumbersPageState extends State<SortGameNumbersPage> {
 
       await Future.delayed(const Duration(seconds: 3));
 
+      if (!mounted) {
+        return;
+      }
+
       Navigator.of(context).pushReplacementNamed(Routes.gameplay);
     });
   }
@@ -74,6 +81,11 @@ class _SortGameNumbersPageState extends State<SortGameNumbersPage> {
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.7,
                 child: Lottie.asset(AppAnimations.clock),
+              ),
+              SizedBox(height: theme.spacing.inline.xxs),
+              const BannerAdSlot(
+                placement: AdBannerPlacement.playerSorting,
+                size: AdSize.largeBanner,
               ),
             ],
           ),

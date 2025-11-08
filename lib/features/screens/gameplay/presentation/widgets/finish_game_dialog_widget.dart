@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/common/design_system/core/tokens/design.dart';
+import 'package:sequencia/core/ads/ads_service.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
 import 'package:sequencia/helpers/extension/context_extension.dart';
 import 'package:sequencia/router/routes.dart';
@@ -30,10 +31,15 @@ class FinishGameDialogWidget extends StatelessWidget {
     Navigator.pushReplacementNamed(context, Routes.home);
   }
 
-  void _restartGame(BuildContext context) {
+  Future<void> _restartGame(BuildContext context) async {
     context.read<GameController>().resetGame();
-    Navigator.of(context).pop();
-    Navigator.of(context).pushNamed(Routes.gamePrepare);
+    final navigator = Navigator.of(context);
+    navigator.pop();
+    await context.read<AdsService>().showInterstitialIfAvailable();
+    if (!navigator.mounted) {
+      return;
+    }
+    navigator.pushNamed(Routes.gamePrepare);
   }
 
   Widget _buildCupertinoDialog(BuildContext context, DSTokens theme) {
@@ -69,7 +75,9 @@ class FinishGameDialogWidget extends StatelessWidget {
         ),
         CupertinoDialogAction(
           isDestructiveAction: true,
-          onPressed: () => _restartGame(context),
+          onPressed: () {
+            _restartGame(context);
+          },
           child: DSText(
             l10n.playAgainLabel,
             customStyle: TextStyle(
@@ -115,7 +123,9 @@ class FinishGameDialogWidget extends StatelessWidget {
           ),
         ),
         TextButton(
-          onPressed: () => _restartGame(context),
+          onPressed: () {
+            _restartGame(context);
+          },
           child: DSText(
             l10n.playAgainLabel,
             customStyle: TextStyle(

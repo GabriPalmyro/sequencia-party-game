@@ -16,7 +16,8 @@ class AdsConfig {
   // TODO(gabrielpalmyro): drop the nulls below once production ad units exist.
   static const String? _androidBannerAdUnitId =
       'ca-app-pub-7831186229252322/3372961345';
-  static const String? _androidInterstitialAdUnitId = null;
+  static const String? _androidInterstitialAdUnitId =
+      'ca-app-pub-7831186229252322/1227688896';
   static const String? _iosBannerAdUnitId =
       'ca-app-pub-7831186229252322/8972772388';
   static const String? _iosInterstitialAdUnitId = null;

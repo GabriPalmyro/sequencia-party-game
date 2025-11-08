@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:sequencia/common/design_system/components/button/button_widget.dart';
 import 'package:sequencia/common/design_system/components/button/icon_button_widget.dart';
 import 'package:sequencia/common/design_system/components/info_card/info_card_widget.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
+import 'package:sequencia/common/widgets/ads/banner_ad_slot.dart';
 import 'package:sequencia/core/ads/ads_service.dart';
 import 'package:sequencia/core/app_images.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
@@ -179,7 +179,10 @@ class _MainScreenPageState extends State<MainScreenPage>
                   ],
                 ),
               ),
-              SizedBox(height: theme.spacing.inline.xxxs),
+              SizedBox(height: theme.spacing.inline.xs),
+              const BannerAdSlot(
+                placement: AdBannerPlacement.home,
+              ),
               Expanded(
                 child: ShaderMask(
                   shaderCallback: (Rect rect) {
@@ -246,23 +249,6 @@ class _MainScreenPageState extends State<MainScreenPage>
                     }
                   },
                 ),
-              ),
-              SizedBox(height: theme.spacing.inline.xxs),
-              ValueListenableBuilder<BannerAd?>(
-                valueListenable: adsService.homeBannerAdNotifier,
-                builder: (_, bannerAd, __) {
-                  if (bannerAd == null) {
-                    return SizedBox(
-                      height: AdSize.banner.height.toDouble(),
-                    );
-                  }
-
-                  return SizedBox(
-                    width: bannerAd.size.width.toDouble(),
-                    height: bannerAd.size.height.toDouble(),
-                    child: AdWidget(ad: bannerAd),
-                  );
-                },
               ),
               SizedBox(height: theme.spacing.inline.sm),
             ],

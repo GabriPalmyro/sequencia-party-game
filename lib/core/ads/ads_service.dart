@@ -5,18 +5,25 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sequencia/core/ads/ads_config.dart';
 
+enum AdBannerPlacement {
+  home,
+  countdown,
+  playerSorting,
+}
+
 @lazySingleton
-class AdsService {
+class AdsService extends ChangeNotifier {
   AdsService();
 
-  final ValueNotifier<BannerAd?> homeBannerAdNotifier =
-      ValueNotifier<BannerAd?>(null);
-
   bool _isInitialized = false;
-  bool _isBannerLoading = false;
+  bool _isPremium = false;
   bool _isInterstitialLoading = false;
 
   InterstitialAd? _interstitialAd;
+
+  bool get canShowAds => !_isPremium;
+
+  bool canShowBanner(AdBannerPlacement _) => !_isPremium;
 
   Future<void> initialize() async {
     if (_isInitialized || kIsWeb) {
@@ -25,45 +32,29 @@ class AdsService {
 
     await MobileAds.instance.initialize();
     _isInitialized = true;
-    unawaited(loadHomeBannerAd());
     unawaited(loadInterstitialAd());
   }
 
-  Future<void> loadHomeBannerAd() async {
-    if (_isBannerLoading || kIsWeb) {
-      return;
-    }
-    final adUnitId = AdsConfig.bannerAdUnitId;
-    if (adUnitId == null) {
+  void setPremium(bool value) {
+    if (_isPremium == value) {
       return;
     }
 
-    _isBannerLoading = true;
-
-    final banner = BannerAd(
-      adUnitId: adUnitId,
-      request: const AdRequest(),
-      size: AdSize.banner,
-      listener: BannerAdListener(
-        onAdLoaded: (ad) {
-          _isBannerLoading = false;
-          if (ad is BannerAd) {
-            homeBannerAdNotifier.value?.dispose();
-            homeBannerAdNotifier.value = ad;
-          }
-        },
-        onAdFailedToLoad: (ad, error) {
-          _isBannerLoading = false;
-          ad.dispose();
-        },
-      ),
-    );
-
-    await banner.load();
+    _isPremium = value;
+    if (_isPremium) {
+      _interstitialAd?.dispose();
+      _interstitialAd = null;
+    } else {
+      unawaited(loadInterstitialAd());
+    }
+    notifyListeners();
   }
 
   Future<void> loadInterstitialAd() async {
-    if (_isInterstitialLoading || _interstitialAd != null || kIsWeb) {
+    if (_isPremium ||
+        _isInterstitialLoading ||
+        _interstitialAd != null ||
+        kIsWeb) {
       return;
     }
     final adUnitId = AdsConfig.interstitialAdUnitId;
@@ -103,7 +94,7 @@ class AdsService {
   }
 
   Future<void> showInterstitialIfAvailable() async {
-    if (kIsWeb) {
+    if (_isPremium || kIsWeb) {
       return;
     }
 
@@ -117,10 +108,10 @@ class AdsService {
     unawaited(loadInterstitialAd());
   }
 
+  @override
   @disposeMethod
   void dispose() {
-    homeBannerAdNotifier.value?.dispose();
-    homeBannerAdNotifier.dispose();
     _interstitialAd?.dispose();
+    super.dispose();
   }
 }

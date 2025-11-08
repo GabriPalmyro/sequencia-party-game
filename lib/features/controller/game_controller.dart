@@ -173,6 +173,11 @@ class GameController extends ChangeNotifier {
 
   void updatePlayer(PlayerEntity player, {String? newNumber}) {
     final index = players.indexOf(player);
+    
+    if (index == -1) {
+      // Player not found in the list
+      return;
+    }
 
     if (newNumber != null) {
       players[index] = player.copyWith(orderNumber: newNumber);

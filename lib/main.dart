@@ -51,7 +51,7 @@ class _MyAppState extends State<MyApp> {
       data: widget.theme,
       child: MultiProvider(
         providers: [
-          Provider<AdsService>.value(
+          ChangeNotifierProvider<AdsService>.value(
             value: GetIt.I<AdsService>(),
           ),
           ChangeNotifierProvider(

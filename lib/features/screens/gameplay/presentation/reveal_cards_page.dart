@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:sequencia/common/design_system/components/button/icon_button_widget.dart';
 import 'package:sequencia/common/design_system/components/text/text_widget.dart';
 import 'package:sequencia/common/design_system/core/theme/ds_theme.dart';
 import 'package:sequencia/common/design_system/core/tokens/design.dart';
+import 'package:sequencia/common/widgets/ads/banner_ad_slot.dart';
+import 'package:sequencia/core/ads/ads_service.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
 import 'package:sequencia/features/domain/game/game_type_enum.dart';
 import 'package:sequencia/features/domain/player/entities/player_entity.dart';
@@ -135,6 +138,11 @@ class _RevealCardsPageState extends State<RevealCardsPage> {
                     ),
                   ),
                 ),
+              ),
+              SizedBox(height: theme.spacing.inline.md),
+              const BannerAdSlot(
+                placement: AdBannerPlacement.playerSorting,
+                size: AdSize.largeBanner,
               ),
               Expanded(
                 child: PageView(
