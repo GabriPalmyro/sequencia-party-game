@@ -9,6 +9,7 @@ import 'package:sequencia/features/screens/settings/presentation/settings_page.d
 import 'package:sequencia/features/screens/splash/presentation/splash_page.dart';
 import 'package:sequencia/router/page_transition.dart';
 import 'package:sequencia/router/routes.dart';
+import 'package:sequencia/features/screens/custom_themes/presentation/custom_themes_page.dart';
 
 class AppRouter {
   AppRouter._();
@@ -53,6 +54,11 @@ class AppRouter {
       case Routes.guide:
         return PageRouteBuilder(
           pageBuilder: (_, __, ___) => const GameRulesPage(),
+          transitionsBuilder: PageTransition.slideLeft,
+        );
+      case Routes.customThemes:
+        return PageRouteBuilder(
+          pageBuilder: (_, __, ___) => const CustomThemesPage(),
           transitionsBuilder: PageTransition.slideLeft,
         );
       default:

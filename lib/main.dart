@@ -11,6 +11,7 @@ import 'package:sequencia/di/injection.dart';
 import 'package:sequencia/features/controller/game_controller.dart';
 import 'package:sequencia/features/controller/locale_controller.dart';
 import 'package:sequencia/features/controller/players_controller.dart';
+import 'package:sequencia/features/purchases/purchase_service.dart';
 import 'package:sequencia/firebase_options.dart';
 import 'package:sequencia/router/app_routes.dart';
 import 'package:sequencia/router/routes.dart';
@@ -30,6 +31,7 @@ void main() async {
 
   await configureAppDependencies(getIt);
   await getIt<AdsService>().initialize();
+  await getIt<PurchaseService>().init();
 
   final DSThemeData theme = DSThemeAppData();
 
@@ -51,6 +53,9 @@ class _MyAppState extends State<MyApp> {
       data: widget.theme,
       child: MultiProvider(
         providers: [
+          ChangeNotifierProvider<PurchaseService>.value(
+            value: GetIt.I<PurchaseService>(),
+          ),
           ChangeNotifierProvider<AdsService>.value(
             value: GetIt.I<AdsService>(),
           ),

@@ -19,6 +19,9 @@ class GameController extends ChangeNotifier {
   GameTypeEnum get gameType => _gameType;
 
   List<String> gameThemes = List.empty(growable: true);
+  List<String> _customThemes = [];
+
+  List<String> get customThemes => _customThemes;
 
   // Set to track used themes in memory (resets every app session)
   final Set<String> _usedThemes = <String>{};
@@ -45,6 +48,24 @@ class GameController extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> addCustomTheme(String theme) async {
+    if (theme.isNotEmpty && !_customThemes.contains(theme)) {
+      _customThemes.add(theme);
+      addGameTheme(theme);
+      await localDatabase.saveData('custom_themes', _customThemes);
+      notifyListeners();
+    }
+  }
+
+  Future<void> deleteCustomTheme(String theme) async {
+    if (_customThemes.contains(theme)) {
+      _customThemes.remove(theme);
+      gameThemes.remove(theme);
+      await localDatabase.saveData('custom_themes', _customThemes);
+      notifyListeners();
+    }
+  }
+
   Future<void> getGameThemes() async {
     final themesCollection = FirebaseFirestore.instance.collection(
       'themes',
@@ -60,6 +81,12 @@ class GameController extends ChangeNotifier {
             (doc) => doc['theme'] as String,
           )
           .toList();
+
+      final localThemes = await localDatabase.getData('custom_themes') as List<String>?;
+      if (localThemes != null) {
+        _customThemes = localThemes;
+        themes.addAll(localThemes);
+      }
 
       setGameThemes(themes);
 

@@ -16,6 +16,7 @@ import 'package:sequencia/features/controller/card_view_controller.dart'
     as _i637;
 import 'package:sequencia/features/controller/game_controller.dart' as _i973;
 import 'package:sequencia/features/controller/players_controller.dart' as _i524;
+import 'package:sequencia/features/purchases/purchase_service.dart' as _i0;
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -29,12 +30,13 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     gh.factory<_i637.CardViewController>(() => _i637.CardViewController());
-    gh.lazySingleton<_i661.AdsService>(
-      () => _i661.AdsService(),
-      dispose: (i) => i.dispose(),
-    );
+    gh.singleton<_i0.PurchaseService>(() => _i0.PurchaseService());
     gh.lazySingleton<_i762.LocalDatabase>(
         () => _i762.SharedPreferencesDatabase());
+    gh.lazySingleton<_i661.AdsService>(
+      () => _i661.AdsService(gh<_i0.PurchaseService>()),
+      dispose: (i) => i.dispose(),
+    );
     gh.singleton<_i973.GameController>(
         () => _i973.GameController(gh<_i762.LocalDatabase>()));
     gh.factory<_i524.PlayersController>(() =>

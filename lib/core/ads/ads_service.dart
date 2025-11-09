@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sequencia/core/ads/ads_config.dart';
+import 'package:sequencia/features/purchases/purchase_service.dart';
 
 enum AdBannerPlacement {
   home,
@@ -13,17 +14,18 @@ enum AdBannerPlacement {
 
 @lazySingleton
 class AdsService extends ChangeNotifier {
-  AdsService();
+  AdsService(this._purchaseService);
+
+  final PurchaseService _purchaseService;
 
   bool _isInitialized = false;
-  bool _isPremium = false;
   bool _isInterstitialLoading = false;
 
   InterstitialAd? _interstitialAd;
 
-  bool get canShowAds => !_isPremium;
+  bool get canShowAds => !_purchaseService.isPremium;
 
-  bool canShowBanner(AdBannerPlacement _) => !_isPremium;
+  bool canShowBanner(AdBannerPlacement _) => !_purchaseService.isPremium;
 
   Future<void> initialize() async {
     if (_isInitialized || kIsWeb) {
@@ -33,15 +35,12 @@ class AdsService extends ChangeNotifier {
     await MobileAds.instance.initialize();
     _isInitialized = true;
     unawaited(loadInterstitialAd());
+
+    _purchaseService.addListener(_onPremiumStatusChanged);
   }
 
-  void setPremium(bool value) {
-    if (_isPremium == value) {
-      return;
-    }
-
-    _isPremium = value;
-    if (_isPremium) {
+  void _onPremiumStatusChanged() {
+    if (_purchaseService.isPremium) {
       _interstitialAd?.dispose();
       _interstitialAd = null;
     } else {
@@ -51,7 +50,7 @@ class AdsService extends ChangeNotifier {
   }
 
   Future<void> loadInterstitialAd() async {
-    if (_isPremium ||
+    if (_purchaseService.isPremium ||
         _isInterstitialLoading ||
         _interstitialAd != null ||
         kIsWeb) {
@@ -94,7 +93,7 @@ class AdsService extends ChangeNotifier {
   }
 
   Future<void> showInterstitialIfAvailable() async {
-    if (_isPremium || kIsWeb) {
+    if (_purchaseService.isPremium || kIsWeb) {
       return;
     }
 
@@ -111,6 +110,7 @@ class AdsService extends ChangeNotifier {
   @override
   @disposeMethod
   void dispose() {
+    _purchaseService.removeListener(_onPremiumStatusChanged);
     _interstitialAd?.dispose();
     super.dispose();
   }

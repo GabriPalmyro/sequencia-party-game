@@ -7,4 +7,5 @@ class Routes {
   static const String gameOrderPlayers = '/game-order-players';
   static const String settings = '/settings';
   static const String guide = '/guide';
+  static const String customThemes = '/custom-themes';
 }
