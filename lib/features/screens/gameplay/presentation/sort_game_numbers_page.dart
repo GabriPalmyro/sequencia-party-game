@@ -28,15 +28,17 @@ class _SortGameNumbersPageState extends State<SortGameNumbersPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       context.read<GameController>().selectRandomTheme();
 
-      context.read<PlayersController>().players.shuffle();
-      final players = context.read<PlayersController>().players;
+      final playersController = context.read<PlayersController>();
+      final players = List.of(
+        playersController.players.where((player) => player.name.isNotEmpty),
+      )..shuffle();
 
-      for (var i = 0; i < players.length; i++) {
+      for (final player in players) {
         final newSortNumber =
             context.read<GameController>().getRandomAvailableNumber();
         context
             .read<GameController>()
-            .updatePlayer(players[i], newNumber: newSortNumber);
+            .updatePlayer(player, newNumber: newSortNumber);
       }
 
       await Future.delayed(const Duration(seconds: 3));
